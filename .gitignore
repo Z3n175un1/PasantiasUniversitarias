@@ -32,3 +32,5 @@ auth.json
 ./bootstrap
 
 ./vendor
+.vercel
+.env*.local
