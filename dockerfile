@@ -21,5 +21,9 @@ RUN chmod -R 775 storage bootstrap/cache
 # Exponer puerto
 EXPOSE 10000
 
+# Correr php artisan
+
+RUN php artisan migrate --force
+
 # Comando de inicio
 CMD php -S 0.0.0.0:10000 -t public
