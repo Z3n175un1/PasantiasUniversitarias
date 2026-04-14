@@ -27,3 +27,9 @@ RUN php artisan migrate --force
 
 # Comando de inicio
 CMD php -S 0.0.0.0:10000 -t public
+
+# Rapidez al momento de ejecutar el proyecto
+
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
