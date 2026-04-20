@@ -3,186 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Login - UWorkFlow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --bg-color: #f4f4f9;
-            --text-color: #333;
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
-            --card-bg: #fff;
-            --border-color: #e5e7eb;
-            --error-color: #ef4444;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 100% 100%, #e0e7ff 0, transparent 50%), 
-                              radial-gradient(circle at 0 0, #c7d2fe 0, transparent 50%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: var(--text-color);
-        }
-
-        .login-container {
-            background-color: var(--card-bg);
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05), 0 20px 48px rgba(0, 0, 0, 0.05);
-            padding: 3rem;
-            width: 100%;
-            max-width: 400px;
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .login-header h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin: 0 0 0.5rem 0;
-            color: #111827;
-        }
-
-        .login-header p {
-            font-size: 0.95rem;
-            color: #6b7280;
-            margin: 0;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #374151;
-        }
-
-        .form-group input[type="email"],
-        .form-group input[type="password"] {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            font-family: inherit;
-            box-sizing: border-box;
-            transition: all 0.2s;
-            background-color: #f9fafb;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-            background-color: #fff;
-        }
-
-        .form-actions {
-            margin-top: 2rem;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 0.875rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
-        }
-
-        .btn-submit:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-submit:active {
-            transform: scale(0.98);
-        }
-
-        .error-msg {
-            color: var(--error-color);
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: block;
-        }
-
-        .alert-error {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 0.875rem;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
 
-    <div class="login-container">
-        <div class="login-header">
-            <h1>Bienvenido</h1>
-            <p>Ingresa a tu cuenta para continuar</p>
+    <div class="w-full max-w-md">
+        <!-- Brand -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-xl shadow-blue-100 mb-4">
+                <i data-lucide="graduation-cap" class="text-white w-8 h-8"></i>
+            </div>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Bienvenido</h1>
+            <p class="text-slate-500 mt-2">Ingresa para continuar a tu panel de control</p>
         </div>
 
-        @if (session('status'))
-            <div class="alert-error">
-                {{ session('status') }}
-            </div>
-        @endif
-        
-        @if ($errors->any())
-            <div class="alert-error">
-                Revisa tus credenciales e intenta de nuevo.
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
-
-            <div class="form-group">
-                <label for="email">Correo Electrónico</label>
-                <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="admin@admin.com">
-                @error('email')
-                    <span class="error-msg">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="password">Contraseña</label>
-                <input id="password" type="password" name="password" required placeholder="••••••••">
-                @error('password')
-                    <span class="error-msg">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn-submit">
-                    Iniciar Sesión
+        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
+            <!-- Role Selector Mockup -->
+            <div class="bg-slate-50 p-1.5 rounded-2xl flex mb-8">
+                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-bold bg-white text-slate-900 shadow-sm transition-all" onclick="this.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm')); this.classList.add('bg-white', 'text-slate-900', 'shadow-sm')">
+                    Estudiante
+                </button>
+                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-slate-400 hover:text-slate-600 transition-all font-semibold" onclick="this.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm')); this.classList.add('bg-white', 'text-slate-900', 'shadow-sm')">
+                    Empresa
                 </button>
             </div>
-        </form>
+
+            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                @csrf
+
+                <!-- Email Address -->
+                <div>
+                    <label for="email" class="block text-sm font-bold text-slate-700 mb-2">Email</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                        </div>
+                        <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username" 
+                               class="block w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent rounded-2xl text-slate-900 text-sm focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all" placeholder="tu@email.com">
+                    </div>
+                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs" />
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label for="password" class="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                            <i data-lucide="lock" class="w-5 h-5"></i>
+                        </div>
+                        <input id="password" type="password" name="password" required autocomplete="current-password"
+                               class="block w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent rounded-2xl text-slate-900 text-sm focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all" placeholder="••••••••">
+                    </div>
+                    <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs" />
+                </div>
+
+                <!-- Extras -->
+                <div class="flex items-center justify-between text-xs">
+                    <label for="remember_me" class="inline-flex items-center cursor-pointer group">
+                        <input id="remember_me" type="checkbox" name="remember" class="rounded-lg bg-slate-50 border-slate-200 text-blue-600 shadow-sm focus:ring-blue-500">
+                        <span class="ms-2 font-bold text-slate-500 group-hover:text-slate-700 transition-colors uppercase tracking-tight">Recordar sesión</span>
+                    </label>
+
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="font-bold text-blue-600 hover:text-blue-700 transition-colors uppercase tracking-tight">
+                            ¿Olvidaste tu clave?
+                        </a>
+                    @endif
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold text-sm hover:bg-slate-800 focus:ring-4 focus:ring-slate-100 transition-all shadow-xl shadow-slate-100">
+                    Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="mt-10 text-center">
+                <p class="text-sm text-slate-500">
+                    ¿No tienes una cuenta? 
+                    <a href="{{ route('register') }}" class="font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                        Regístrate aquí
+                    </a>
+                </p>
+                <p class="mt-6 text-[11px] text-slate-400 leading-relaxed px-4">
+                    Al iniciar sesión, aceptas nuestros <a href="#" class="underline">Términos de Servicio</a> y nuestra <a href="#" class="underline">Política de Privacidad</a>.
+                </p>
+            </div>
+        </div>
     </div>
 
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
