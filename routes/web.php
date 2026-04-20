@@ -18,6 +18,7 @@ Route::get('/dashboard', function () {
 // Public routes for viewing offers
 Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
 Route::get('/offers/{offer}', [OfferController::class, 'show'])->name('offers.show');
+Route::view('/terminos-y-condiciones', 'terminos-cond')->name('terms');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

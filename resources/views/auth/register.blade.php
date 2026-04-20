@@ -95,7 +95,7 @@
                     <label class="flex items-start gap-3 cursor-pointer group">
                         <input type="checkbox" required class="mt-1 rounded-lg bg-slate-50 border-slate-200 text-blue-600 shadow-sm focus:ring-blue-500">
                         <span class="text-xs text-slate-500 leading-relaxed font-medium">
-                            Estoy de acuerdo con los <a href="#" class="text-blue-600 font-bold hover:underline">Términos de Servicio</a> y la <a href="#" class="text-blue-600 font-bold hover:underline">Política de Privacidad</a> de UWorkFlow.
+                            Estoy de acuerdo con los <a href="{{ route('terms') }}" target="_blank" class="text-blue-600 font-bold hover:underline">Términos y Condiciones</a> de UWorkFlow.
                         </span>
                     </label>
                 </div>
