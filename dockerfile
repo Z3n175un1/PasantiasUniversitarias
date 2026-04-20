@@ -49,6 +49,7 @@ RUN composer install --no-dev --no-scripts --optimize-autoloader
 
 # Copiar el resto del código
 COPY . .
+RUN rm -f public/hot
 
 # Copiar los assets ya compilados desde la etapa 1
 COPY --from=frontend-builder /app/public/build ./public/build
