@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InternConnect</title>
+    <title>UWorkFlow - Pasantias Universitarias Para ti</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <style>
@@ -177,7 +177,7 @@ body {
 <body>
     <header class="navbar">
         <div class="logo">
-            <span class="icon-grad">🎓</span> <strong>InternConnect</strong>
+            <span class="icon-grad"><strong>UWorkFlow</strong>
         </div>
         <nav>
             <a href="#" class="nav-link">Home</a>
@@ -188,19 +188,19 @@ body {
 
     <section class="hero">
         <div class="hero-content">
-            <h1>Conecta tu futuro con la <span class="highlight">Pasantía Perfecta</span></h1>
+            <h1>Conecta tu futuro con la <span class="highlight"><br>Pasantía Perfecta</span></h1>
             <p>Cerrar la brecha entre estudiantes ambiciosos y empresas pensantes. Encuentra oportunidades de pasantía significativas o descubre el mejor talento para tu organización.</p>
             <div class="hero-buttons">
-                <button class="btn-dark">🔍 Buscar Pasantías</button>
-                <button class="btn-light">🏢 Publicar Pasantía</button>
+                <button class="btn-dark">Buscar Pasantías</button>
+                <button class="btn-light">Publicar Pasantía</button>
             </div>
         </div>
         <div class="hero-image-container">
             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800" alt="Students" class="main-img">
             <div class="stats-card">
-                <div class="stats-icon">👥</div>
+                <div class="stats-icon"></div>
                 <div class="stats-text">
-                    <span>Tasa de Éxito</span>
+                    <span>Tasa de Éxito del</span>
                     <strong>87%</strong>
                 </div>
             </div>
@@ -209,26 +209,22 @@ body {
 
     <section class="features">
         <div class="feature-card">
-            <div class="f-icon blue-bg">📈</div>
-            <h3>Matching Inteligente</h3>
+            <h3>Matching inteligente</h3>
             <p>Nuestra inteligente algoritmo combina estudiantes con las oportunidades de pasantía más relevantes basadas en habilidades, intereses y objetivos profesionales.</p>
         </div>
         <div class="feature-card">
-            <div class="f-icon blue-bg">🛡️</div>
-            <h3>Empresas Verificadas</h3>
+            <h3>Empresas verificadas</h3>
             <p>Trabaja con confianza sabiendo que todas las empresas están verificadas y comprometidas a proporcionar experiencias de aprendizaje valiosas para los pasantes.</p>
         </div>
         <div class="feature-card">
-            <div class="f-icon blue-bg">👥</div>
-            <h3>Manejo Simplificado</h3>
+            <h3>Manejo simplificado</h3>
             <p>El proceso de gestión de aplicaciones es intuitivo y sencillo, permitiéndote encontrar la coincidencia perfecta de manera eficiente.</p>
         </div>
     </section>
 
     <section class="section-students">
         <div class="students-content">
-            <span class="big-icon">🎓</span>
-            <h2>Para Estudiantes</h2>
+            <h2>Dirigido para estudiantes</h2>
             <ul>
                 <li>✓ Explorar cientos de oportunidades de pasantía</li>
                 <li>✓ Ser emparejado con posiciones que se ajusten a tu perfil</li>
@@ -251,7 +247,6 @@ body {
             <div class="step-card-white"><span>Contratar el mejor talento</span> <h3>Paso 3</h3></div>
         </div>
         <div class="companies-content">
-            <span class="big-icon-blue">🏢</span>
             <h2>Para Empresas</h2>
             <ul>
                 <li>✓ Acceder a un pool de estudiantes talentosos</li>
@@ -289,7 +284,7 @@ body {
             </div>
         </div>
         <div class="footer-bottom">
-            © 2026 InternConnect. Todos los derechos reservados.
+            © 2026 InternConnect. Todos los derechos reservados a ADRI.
         </div>
     </footer>
 
