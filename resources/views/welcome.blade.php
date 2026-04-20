@@ -180,9 +180,9 @@ body {
             <span class="icon-grad"><strong>UWorkFlow</strong>
         </div>
         <nav>
-            <a href="#" class="nav-link">Home</a>
-            <a href="#" class="btn-login">Login</a>
-            <a href="#" class="btn-register">Registro</a>
+            <a href="{{ route('welcome') }}" class="nav-link">Home</a>
+            <a href="{{ route('login') }}" class="btn-login">Login</a>
+            <a href="{{ route('register') }}" class="btn-register">Registro</a>
         </nav>
     </header>
 
