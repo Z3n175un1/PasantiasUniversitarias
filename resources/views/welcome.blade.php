@@ -32,14 +32,14 @@
                     <p class="text-lg text-slate-600 leading-relaxed mb-10 max-w-xl">
                         Cerrar la brecha entre estudiantes ambiciosos y empresas innovadoras. Encuentra oportunidades significativas o descubre el mejor talento para tu organización.
                     </p>
-                    <div class="flex flex-col sm:flex-row gap-4">
+                    <!-- <div class="flex flex-col sm:flex-row gap-4">
                         <a href="{{ route('offers.index') }}" class="px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold text-center hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 hover:-translate-y-1">
                             Buscar Pasantías
                         </a>
                         <a href="{{ route('offers.create') }}" class="px-8 py-4 bg-white text-slate-900 border border-slate-200 rounded-2xl font-bold text-center hover:bg-slate-50 transition-all hover:-translate-y-1">
                             Publicar Pasantía
                         </a>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="lg:w-1/2 relative">
                     <div class="relative z-10 rounded-[2.5rem] overflow-hidden shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-500">
