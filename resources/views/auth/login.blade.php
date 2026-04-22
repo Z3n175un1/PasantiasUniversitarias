@@ -12,7 +12,9 @@
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
-    <x-nav-bar />
+    
+<x-nav-bar />
+
     <div class="w-full max-w-md">
         <!-- Brand -->
         <div class="text-center mb-10">

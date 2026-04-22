@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'UWorkFlow') }} - Encuentra tu Pasantía</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -149,7 +150,7 @@
             <div class="grid md:grid-cols-4 gap-12 pb-16 border-b border-slate-800">
                 <div class="col-span-1 md:col-span-1">
                     <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">🎓</div>
+                        <x-application-logo class="w-8 h-8" />
                         <span class="text-xl font-bold">UWorkFlow</span>
                     </div>
                     <p class="text-slate-400 leading-relaxed mb-6">

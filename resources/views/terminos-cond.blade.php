@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Términos y Condiciones - UWorkFlow   </title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('application-logo.blade.php') }}">
     <style>
         body {
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
