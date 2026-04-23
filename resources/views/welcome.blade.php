@@ -12,7 +12,7 @@
     </style>
 </head>
 <body class="bg-white text-slate-900 antialiased overflow-x-hidden">
-    
+
     <x-nav-bar />
 
     <!-- Hero Section -->
@@ -102,6 +102,48 @@
     </section>
 
     <!-- Students Section -->
+    <section class="py-24 bg-blue-600 rounded-[3rem] mx-6 md:mx-12 mb-24 overflow-hidden relative">
+        <div class="container mx-auto px-8 md:px-16 flex flex-col lg:flex-row items-center gap-16 relative z-10 text-white">
+            <div class="lg:w-1/2">
+                <span class="text-blue-200 font-bold uppercase tracking-widest text-sm mb-4 block">Estudiantes</span>
+                <h2 class="text-4xl lg:text-5xl font-extrabold mb-8 leading-tight">Impulsa tu carrera profesional</h2>
+                <ul class="space-y-4 mb-10">
+                    <li class="flex items-center gap-3">
+                        <div class="bg-blue-500/30 p-1 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <span class="text-lg">Explora cientos de oportunidades reales</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="bg-blue-500/30 p-1 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <span class="text-lg">Seguimiento de aplicaciones en tiempo real</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <div class="bg-blue-500/30 p-1 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg></div>
+                        <span class="text-lg">Construye tu red profesional</span>
+                    </li>
+                </ul>
+                <a href="{{ route('register') }}" class="inline-block px-10 py-5 bg-white text-blue-600 rounded-2xl font-extrabold shadow-xl hover:-translate-y-1 transition-transform">
+                    Comenzar como estudiante
+                </a>
+            </div>
+            <div class="lg:w-1/2 grid grid-cols-1 gap-6 w-full">
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-[2rem] border border-white/20">
+                    <p class="text-sm font-bold opacity-60 mb-2">PASO 1</p>
+                    <h3 class="text-2xl font-bold">Crea tu perfil profesional</h3>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 translate-x-4">
+                    <p class="text-sm font-bold opacity-60 mb-2">PASO 2</p>
+                    <h3 class="text-2xl font-bold">Busca y aplica a ofertas</h3>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 translate-x-8">
+                    <p class="text-sm font-bold opacity-60 mb-2">PASO 3</p>
+                    <h3 class="text-2xl font-bold">Inicia tu pasantía</h3>
+                </div>
+            </div>
+        </div>
+        <!-- Abstract curves -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+    </section>
+
     <section class="py-24 bg-blue-600 rounded-[3rem] mx-6 md:mx-12 mb-24 overflow-hidden relative">
         <div class="container mx-auto px-8 md:px-16 flex flex-col lg:flex-row items-center gap-16 relative z-10 text-white">
             <div class="lg:w-1/2">
