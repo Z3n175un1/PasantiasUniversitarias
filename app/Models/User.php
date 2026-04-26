@@ -45,8 +45,12 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'contrasena' => 'hashed',
         ];
+    }
+
+    public function getAuthPasswordName()
+    {
+        return 'contrasena';
     }
 
     public function getAuthPassword()

@@ -13,7 +13,7 @@
 </head>
 <body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
 
-    <div class="w-full max-w-xl">
+    <div class="w-full max-w-lg">
         <!-- Brand -->
         <div class="text-center mb-10">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-xl shadow-blue-100 mb-4">
@@ -23,7 +23,7 @@
             <p class="text-slate-500 mt-2">Únete a la red de pasantías universitarias</p>
         </div>
 
-        <div class="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
+        <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100">
             
             <!-- Role Selector Mockup -->
             <div class="bg-slate-50 p-1.5 rounded-2xl flex mb-8">
@@ -66,7 +66,7 @@
 
                 <!-- Password -->
                 <div>
-                    <label for="password" class="block text-sm font-bold text-slate-700 mb-2">Password</label>
+                    <label for="password" class="block text-sm font-bold text-slate-700 mb-2">Contraseña</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
                             <i data-lucide="lock" class="w-5 h-5"></i>
