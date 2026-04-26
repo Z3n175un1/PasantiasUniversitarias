@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('applications', function (Blueprint $table) {
+        Schema::create('postulaciones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('offer_id')->constrained()->cascadeOnDelete();
-            $table->date('applied_at');
-            $table->string('status')->default('pending');
+            $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
+            $table->foreignId('oferta_id')->constrained('ofertas')->cascadeOnDelete();
+            $table->date('fecha_postulacion');
+            $table->string('estado')->default('pendiente');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('applications');
+        Schema::dropIfExists('postulaciones');
     }
 };

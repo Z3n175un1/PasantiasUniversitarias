@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('algorithms', function (Blueprint $table) {
+        Schema::create('algoritmos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained();
-            $table->foreignId('company_id')->constrained();
-            $table->decimal('score', 5, 2)->nullable();
+            $table->foreignId('estudiante_id')->constrained('estudiantes');
+            $table->foreignId('empresa_id')->constrained('empresas');
+            $table->decimal('puntaje', 5, 2)->nullable();
             $table->text('foda')->nullable();
-            $table->text('evaluation')->nullable();
-            $table->date('applied_at');
+            $table->text('evaluacion')->nullable();
+            $table->date('fecha_aplicacion');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('algorithms');
+        Schema::dropIfExists('algoritmos');
     }
 };

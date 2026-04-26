@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('estudiantes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('last_name');
-            $table->date('birth_date');
+            $table->foreignId('usuario_id')->constrained('usuarios')->cascadeOnDelete();
+            $table->string('apellidos');
+            $table->date('fecha_nacimiento');
             $table->string('ci');
-            $table->foreignId('career_id')->constrained();
-            $table->boolean('has_internship')->default(false);
+            $table->foreignId('carrera_id')->constrained('carreras');
+            $table->boolean('tiene_pasantia')->default(false);
             $table->text('cv')->nullable();
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('estudiantes');
     }
 };

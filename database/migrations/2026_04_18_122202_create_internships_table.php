@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('internships', function (Blueprint $table) {
+        Schema::create('pasantias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('company_id')->constrained()->cascadeOnDelete();
-            $table->string('title');
-            $table->date('start_date');
-            $table->date('end_date');
-            $table->text('description')->nullable();
+            $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
+            $table->foreignId('empresa_id')->constrained('empresas')->cascadeOnDelete();
+            $table->string('titulo');
+            $table->date('fecha_inicio');
+            $table->date('fecha_fin');
+            $table->text('descripcion')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('internships');
+        Schema::dropIfExists('pasantias');
     }
 };
