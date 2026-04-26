@@ -11,11 +11,12 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
+<body class="bg-slate-50 min-h-screen flex flex-col">
     
 <x-nav-bar />
 
-    <div class="w-full max-w-sm">
+<main class="flex-1 flex items-center justify-center p-6">
+    <div class="w-2/3 max-w-sm">
         <!-- Brand -->
         <div class="text-center mb-10">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-xl shadow-blue-100 mb-4">
@@ -26,16 +27,7 @@
         </div>
 
         <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100">
-            <!-- Role Selector Mockup -->
-            <div class="bg-slate-50 p-1.5 rounded-2xl flex mb-8">
-                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-bold bg-white text-slate-900 shadow-sm transition-all" onclick="this.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm')); this.classList.add('bg-white', 'text-slate-900', 'shadow-sm')">
-                    Estudiante
-                </button>
-                <button class="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-slate-400 hover:text-slate-600 transition-all font-semibold" onclick="this.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm')); this.classList.add('bg-white', 'text-slate-900', 'shadow-sm')">
-                    Empresa
-                </button>
-            </div>
-
+            
             <form method="POST" action="{{ route('login') }}" class="space-y-6">
                 @csrf
 
@@ -97,6 +89,7 @@
             </div>
         </div>
     </div>
+</main>
 
     <script>
         lucide.createIcons();

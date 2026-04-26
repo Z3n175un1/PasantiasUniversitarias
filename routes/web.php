@@ -11,6 +11,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/registro/tipo-cuenta', function () {
+    return view('acctype');
+})->name('account.type');
+
 Route::get('/dashboard', function () {
     return view('dash_est');
 })->middleware(['auth', 'verified'])->name('dashboard');
