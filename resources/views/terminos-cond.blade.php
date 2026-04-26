@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Términos y Condiciones - UWorkFlow   </title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('application-logo.blade.php') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <style>
         body {
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
@@ -68,6 +68,11 @@
     </style>
 </head>
 <body>
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/">
+            <x-application-logo class="w-16 h-16 mx-auto mb-4" />
+        </a>
+    </div>
 <h1>Términos y Condiciones de Uso</h1>
 <p><strong>Vigencia:</strong> 20 de abril de 2026<br>
 <strong>Plataforma:</strong> Sistema de Gestión de Oportunidades de Pasantías (en adelante, “UWorkFlow”)<br>
