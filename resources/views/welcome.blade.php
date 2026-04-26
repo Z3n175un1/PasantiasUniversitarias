@@ -167,20 +167,6 @@
                     Comenzar como estudiante
                 </a>
             </div>
-            <div class="lg:w-1/2 grid grid-cols-1 gap-6 w-full">
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-[2rem] border border-white/20">
-                    <p class="text-sm font-bold opacity-60 mb-2">PASO 1</p>
-                    <h3 class="text-2xl font-bold">Crea tu perfil profesional</h3>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 translate-x-4">
-                    <p class="text-sm font-bold opacity-60 mb-2">PASO 2</p>
-                    <h3 class="text-2xl font-bold">Busca y aplica a ofertas</h3>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-[2rem] border border-white/20 translate-x-8">
-                    <p class="text-sm font-bold opacity-60 mb-2">PASO 3</p>
-                    <h3 class="text-2xl font-bold">Inicia tu pasantía</h3>
-                </div>
-            </div>
         </div>
         <!-- Abstract curves -->
         <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
