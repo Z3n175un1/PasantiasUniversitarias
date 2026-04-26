@@ -12,8 +12,13 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('dash_est');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+// Alias to match route names in the view
+Route::get('/student/dashboard', function () {
+    return redirect()->route('dashboard');
+})->name('student.dashboard');
 
 // Public routes for viewing offers
 Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');

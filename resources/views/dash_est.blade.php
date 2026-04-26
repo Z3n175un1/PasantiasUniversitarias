@@ -37,8 +37,8 @@
             </div>
             <div class="sidebar-bottom">
                 <div class="user-pill">
-                    <strong>Emma Rodriguez</strong>
-                    <span>Student</span>
+                    <strong>{{ Auth::user()->nombre ?? 'Estudiante' }}</strong>
+                    <span>Estudiante</span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -52,8 +52,8 @@
 
         <main class="content">
             <header class="header">
-                <h1>Welcome back, Emma Rodriguez!</h1>
-                <p>Explore internship opportunities and track your applications</p>
+                <h1>¡Bienvenido de vuelta, {{ Auth::user()->nombre ?? 'Estudiante' }}!</h1>
+                <p>Explora oportunidades de pasantías y haz seguimiento a tus postulaciones</p>
                 <div class="tabs">
                     <button class="tab-btn active">Overview</button>
                     <button class="tab-btn">Search Internships</button>
@@ -66,8 +66,8 @@
                 <div class="profile-main">
                     <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop" alt="User" class="avatar">
                     <div class="profile-info">
-                        <h2>Emma Rodriguez</h2>
-                        <span>emma.rodriguez@university.edu</span>
+                        <h2>{{ Auth::user()->nombre ?? 'Estudiante' }}</h2>
+                        <span>{{ Auth::user()->correo ?? 'correo@universidad.edu' }}</span>
                     </div>
                 </div>
                 <div class="profile-details">
