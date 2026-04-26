@@ -13,18 +13,17 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $table = 'usuarios';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'phone_number',
-        'university_id',
-        'country',
-        'password',
+        'nombre',
+        'correo',
+        'contrasena',
     ];
 
     /**
@@ -33,7 +32,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $hidden = [
-        'password',
+        'contrasena',
         'remember_token',
     ];
 
@@ -46,7 +45,12 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'contrasena' => 'hashed',
         ];
+    }
+
+    public function getAuthPassword()
+    {
+        return $this->contrasena;
     }
 }
