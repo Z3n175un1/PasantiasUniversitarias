@@ -162,25 +162,25 @@
                 <div>
                     <h4 class="font-bold mb-6 italic text-blue-400">Para Estudiantes</h4>
                     <ul class="space-y-4 text-slate-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Explorar Pasantías</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Cómo funciona</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Historias de éxito</a></li>
+                        <li><a href="/offers" class="hover:text-white transition-colors">Explorar Pasantías</a></li>
+                        <li><a href="/comufunciona" class="hover:text-white transition-colors">Cómo funciona</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Historias de éxito</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-bold mb-6 italic text-blue-400">Para Empresas</h4>
                     <ul class="space-y-4 text-slate-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Publicar Ofertas</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Encontrar Talento</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Precios</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Publicar Ofertas</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Encontrar Talento</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Precios</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-bold mb-6 italic text-blue-400">Compañía</h4>
                     <ul class="space-y-4 text-slate-400">
-                        <li><a href="#" class="hover:text-white transition-colors">Nosotros</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Contacto</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Privacidad</a></li>
+                        <li><a href="/acerca" class="hover:text-white transition-colors">Nosotros</a></li>
+                        <li><a href="/contacto" class="hover:text-white transition-colors">Contacto</a></li>
+                        <li><a href="/priva" class="hover:text-white transition-colors">Privacidad</a></li>
                     </ul>
                 </div>
             </div>
