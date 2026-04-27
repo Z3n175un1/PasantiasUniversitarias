@@ -184,7 +184,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="pt-12 text-center text-slate-500 text-sm">
+            <div class="pt-2 text-center text-slate-500 text-sm">
                 <p>&copy; 2026 UWorkFlow. Todos los derechos reservados.</p>
             </div>
         </div>

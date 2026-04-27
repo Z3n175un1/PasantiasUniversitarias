@@ -11,11 +11,11 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
+<body class="bg-slate-50 min-h-screen">
     <x-nav-bar />
 
 <main class="flex-1 flex items-center justify-center p-6">
-    <div class="w-full max-w-lg">
+    <div class="w-[50v] max-w-lg">
         <!-- Brand -->
         <div class="text-center mb-10">
             <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-2xl shadow-xl shadow-blue-100 mb-4">
@@ -28,7 +28,7 @@
         <div class="bg-white p-6 md:p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100">
             
             <!-- Role Selector -->
-            <div class="bg-slate-50 p-1.5 rounded-2xl flex mb-8">
+            <div class="">
                 @php $isCompany = request('role') === 'company'; @endphp
                 <!-- <a href="?role=student" class="flex-1 py-3 px-4 rounded-xl text-sm text-center transition-all font-semibold {{ !$isCompany ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-400 hover:text-slate-600' }}">
                     <i data-lucide="user" class="inline-block w-4 h-4 mr-2 -mt-1"></i> Estudiante
@@ -38,7 +38,7 @@
                 </a> -->
             </div>
 
-            <form method="POST" action="{{ route('register') }}" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form method="POST" action="{{ route('register') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 @csrf
                 <input type="hidden" name="role" value="{{ request('role', 'student') }}">
 
@@ -94,12 +94,12 @@
                            class="block w-full px-4 py-4 bg-slate-50 border-transparent rounded-2xl text-slate-900 text-sm focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all">
                     <x-input-error :messages="$errors->get('birth_date')" class="mt-2 text-xs" />
                 </div>
-                <!-- Career ID -->
+                <!-- Career -->
                 <div class="md:col-span-1">
-                    <label for="career_id" class="block text-sm font-bold text-slate-700 mb-2">ID de Carrera</label>
-                    <input id="career_id" type="number" name="career_id" value="{{ old('career_id', 1) }}" required min="1" max="5" 
-                           class="block w-full px-4 py-4 bg-slate-50 border-transparent rounded-2xl text-slate-900 text-sm focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all" placeholder="1-5">
-                    <x-input-error :messages="$errors->get('career_id')" class="mt-2 text-xs" />
+                    <label for="career" class="block text-sm font-bold text-slate-700 mb-2">Nombre de Carrera</label>
+                    <input id="career" type="text" name="career" value="{{ old('career') }}"   
+                           class="block w-full px-4 py-4 bg-slate-50 border-transparent rounded-2xl text-slate-900 text-sm focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all" placeholder="Ing. de Software">
+                    <x-input-error :messages="$errors->get('career')" class="mt-2 text-xs" />
                 </div>
                 @endif
 
@@ -125,6 +125,10 @@
                         </div>
                         <input id="password" type="password" name="password" required autocomplete="new-password"
                                class="block w-full pl-12 pr-4 py-4 bg-slate-50 border-transparent rounded-2xl text-slate-900 text-sm focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all" placeholder="••••••••">
+
+                        <div class="absolute inset-y-0 right-0 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </div> 
                     </div>
                     <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs" />
                 </div>
