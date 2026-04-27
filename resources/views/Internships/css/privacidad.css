@@ -1,0 +1,113 @@
+/* --- Estilos para privacidad.css --- */
+
+.legal-container {
+    display: flex;
+    padding: 80px 8%;
+    gap: 50px;
+    background-color: #fff;
+    min-height: 70vh;
+}
+
+/* Sidebar de navegación interna */
+.legal-sidebar {
+    flex: 1;
+    max-width: 250px;
+}
+
+.sidebar-box {
+    position: sticky;
+    top: 40px;
+    background: #f8faff;
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #eef2f6;
+}
+
+.sidebar-box h4 {
+    margin-bottom: 15px;
+    color: #0d1b2a;
+    font-size: 1.1rem;
+}
+
+.sidebar-box ul {
+    list-style: none;
+}
+
+.sidebar-box ul li {
+    margin-bottom: 12px;
+}
+
+.sidebar-box ul li a {
+    text-decoration: none;
+    color: #666;
+    font-size: 0.95rem;
+    transition: 0.3s;
+}
+
+.sidebar-box ul li a:hover {
+    color: #2b6df2;
+}
+
+/* Contenido del texto legal */
+.legal-content {
+    flex: 3;
+    max-width: 800px;
+}
+
+.legal-content h1 {
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    color: #0d121f;
+}
+
+.last-updated {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 40px;
+    font-style: italic;
+}
+
+.legal-content section {
+    margin-bottom: 40px;
+}
+
+.legal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #2b6df2;
+}
+
+.legal-content p {
+    color: #444;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    font-size: 1.05rem;
+}
+
+.legal-content ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.legal-content ul li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+/* Responsividad */
+@media (max-width: 968px) {
+    .legal-container {
+        flex-direction: column;
+        padding: 40px 8%;
+    }
+
+    .legal-sidebar {
+        max-width: 100%;
+    }
+
+    .sidebar-box {
+        position: relative;
+        top: 0;
+    }
+}

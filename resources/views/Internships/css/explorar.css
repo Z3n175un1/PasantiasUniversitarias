@@ -1,0 +1,150 @@
+/* --- Estilos basados en tu captura con estilo InternConnect --- */
+
+.explore-container {
+    display: flex;
+    padding: 40px 8%;
+    gap: 30px;
+    background-color: white; /* Estilo limpio */
+    min-height: 100vh;
+}
+
+/* SIDEBAR FILTROS */
+.filters-sidebar {
+    flex: 1;
+    max-width: 280px;
+}
+
+.filters-sidebar label {
+    display: block;
+    font-weight: 700; /* Estilo negrita de la captura */
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+}
+
+.filter-group {
+    margin-bottom: 30px;
+}
+
+.filter-group input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: #fcfcfc;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: #444;
+    cursor: pointer;
+}
+
+.checkbox-item input {
+    margin-top: 4px;
+    width: 18px;
+    height: 18px;
+}
+
+/* SECCION RESULTADOS */
+.results-section {
+    flex: 3;
+}
+
+.results-count {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+/* TARJETAS ESTILO CAPTURA */
+.job-card-wide {
+    background: white;
+    border: 1px solid #eef0f5;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+    transition: 0.2s;
+}
+
+.job-card-wide:hover {
+    border-color: #2b6df2;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.card-main-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.company-logo-box img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+.title-meta h3 {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+}
+
+.meta-text {
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.brand-name {
+    color: #2b6df2;
+    font-weight: 700;
+    margin-right: 8px;
+}
+
+.job-description {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Corta el texto a 2 líneas como en la imagen */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* TAGS ESTILO CAPTURA */
+.card-footer-tags {
+    display: flex;
+    gap: 10px;
+}
+
+.tag-blue {
+    background: #dbeafe;
+    color: #2b6df2;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.tag-purple {
+    background: #f3e8ff;
+    color: #7c3aed;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.w-100 { width: 100%; }
+
+/* Mobile */
+@media (max-width: 900px) {
+    .explore-container { flex-direction: column; }
+    .filters-sidebar { max-width: 100%; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+}

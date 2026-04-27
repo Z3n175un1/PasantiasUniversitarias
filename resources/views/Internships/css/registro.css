@@ -1,0 +1,188 @@
+:root {
+    --primary-blue: #2563eb;
+    --text-dark: #0f172a;
+    --text-gray: #64748b;
+    --bg-light: #f8fafc;
+    --input-fill: #f1f5f9;
+    --white: #ffffff;
+    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 440px; /* Un poco más ancho para registro */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--primary-blue);
+    font-weight: 700;
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+h1 {
+    font-size: 28px;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+}
+
+header p {
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+/* Selector de Roles */
+.role-selector {
+    background: var(--input-fill);
+    padding: 4px;
+    border-radius: 12px;
+    display: flex;
+    margin-bottom: 24px;
+}
+
+.role-btn {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-gray);
+    background: transparent;
+    cursor: pointer;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.role-btn.active {
+    background: var(--white);
+    color: var(--text-dark);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* Inputs */
+.input-group { margin-bottom: 18px; }
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+}
+
+.input-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-field i {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    color: #94a3b8;
+}
+
+.input-field input {
+    width: 100%;
+    padding: 12px 12px 12px 42px;
+    background: var(--input-fill);
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.input-field input:focus {
+    border-color: var(--primary-blue);
+    background: var(--white);
+}
+
+/* Extras y Checkbox */
+.form-extras {
+    margin-bottom: 24px;
+    font-size: 13px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--text-gray);
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.terms-text { margin-top: -2px; }
+
+.link-blue {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-submit {
+    width: 100%;
+    background: #000;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-submit:hover { opacity: 0.85; }
+
+.card-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+}
+
+.card-footer a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
