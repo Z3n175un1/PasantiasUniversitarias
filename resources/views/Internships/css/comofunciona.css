@@ -1,0 +1,71 @@
+/* Estilos específicos para páginas de información */
+
+.page-header {
+    text-align: center;
+    padding: 80px 8% 40px;
+    background-color: var(--light-bg);
+}
+
+.page-header h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.page-header p {
+    color: var(--text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.2rem;
+}
+
+/* Grid de pasos mejorado */
+.steps-grid {
+    flex: 1.5;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.step-num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: rgba(255,255,255,0.2);
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.step-num-blue {
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: var(--primary-blue);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-bottom: 15px;
+}
+
+.steps-grid h3 {
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+.steps-grid p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+/* Ajustes de Responsividad */
+@media (max-width: 968px) {
+    .section-students, .section-companies {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .steps-grid {
+        width: 100%;
+    }
+}
