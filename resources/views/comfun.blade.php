@@ -4,23 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cómo Funciona | InternConnect</title>
-    <link rel="stylesheet" href="../css/styleindex.css">
-    <link rel="stylesheet" href="../css/comofunciona.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body>
-
-    <header class="navbar">
-        <div class="logo">
-            <span class="icon-grad">🎓</span> <strong>InternConnect</strong>
-        </div>
-        <nav>
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="login.html" class="btn-login">Login</a>
-            <a href="registro.html" class="btn-register">Registro</a>
-        </nav>
-    </header>
-
+<body class="bg-slate-50 min-h-screen w-screen">
+    <x-nav-bar />
     <section class="page-header">
         <h1>Transparencia en cada <span class="highlight">paso</span></h1>
         <p>Descubre cómo InternConnect simplifica la conexión entre el talento emergente y las empresas líderes.</p>

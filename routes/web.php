@@ -7,13 +7,6 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ApplicationController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/registro/tipo-cuenta', function () {
-    return view('acctype');
-})->name('account.type');
 
 Route::get('/dashboard', function () {
     return view('dash_est');
@@ -29,9 +22,9 @@ Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
 Route::get('/offers/{offer}', [OfferController::class, 'show'])->name('offers.show');
 Route::view('/terminos-y-condiciones', 'terminos-cond')->name('terms');
 
-Route::get('/sobrenosotros', function () {
+Route::get('/about', function () {
     return view('acerca');
-})->name('acerca');
+})->name('about');
 
 Route::get('/contacto', function () {
     return view('contacto');
@@ -57,12 +50,44 @@ Route::middleware('auth')->group(function () {
     Route::resource('applications', ApplicationController::class);
 });
 
-Route::middleware(['auth', 'admin'])
-    ->prefix('admin')
-    ->group(function () {
-        Route::get('/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
-    });
+// Route::middleware(['auth', 'admin'])
+//     ->prefix('admin')
+//     ->group(function () {
+// Public routes
+Route::view('/', 'welcome')->name('home');
+Route::view('/registro/tipo-cuenta', 'acctype')->name('account.type');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::view('/dashboard', 'dash_est')->name('dashboard');
+    // Alias for student dashboard
+    Route::get('/student/dashboard', function () {
+        return redirect()->route('dashboard');
+    })->name('student.dashboard');
+});
+
+Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
+Route::get('/offers/{offer}', [OfferController::class, 'show'])->name('offers.show');
+Route::view('/terminos-y-condiciones', 'terminos-cond')->name('terms');
+Route::view('/sobrenosotros', 'acerca')->name('acerca');
+Route::view('/contacto', 'contacto')->name('contacto');
+Route::view('/privacidad', 'priva')->name('priva');
+Route::view('/comufunciona', 'comfun')->name('comfun');
+
+// Authenticated routes
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('offers', OfferController::class)->except(['index', 'show']);
+    Route::resource('companies', CompanyController::class);
+    Route::resource('students', StudentController::class);
+    Route::resource('applications', ApplicationController::class);
+});
+
+// Admin routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
+});
 
 require __DIR__.'/auth.php';

@@ -4,23 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Política de Privacidad | InternConnect</title>
-    <link rel="stylesheet" href="../css/styleindex.css">
     <link rel="stylesheet" href="../css/privacidad.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-
-    <header class="navbar">
-        <div class="logo">
-            <span class="icon-grad">🎓</span> <strong>InternConnect</strong>
-        </div>
-        <nav>
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="login.html" class="btn-login">Login</a>
-            <a href="registro.html" class="btn-register">Registro</a>
-        </nav>
-    </header>
-
+<body class="bg-slate-50 min-h-screen w-screen">
+    <x-nav-bar />
     <main class="legal-container">
         <aside class="legal-sidebar">
             <div class="sidebar-box">

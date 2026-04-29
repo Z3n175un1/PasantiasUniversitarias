@@ -3,50 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nosotros | InternConnect</title>
-    <link rel="stylesheet" href="../css/styleindex.css">
-    <link rel="stylesheet" href="../css/sobrenosotros.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Sobre Nosotros | {{ config('app.name') }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
 </head>
-<body>
+<body class="bg-teal-100 via-indigo-500 to-sky-100 min-h-screen w-screen py-20">
+    <x-nav-bar />
+        <main class="container mx-auto py-10 ">
+    <!--Seccion de misión-->    
+            <section>       
+                <div class="bg-sky-500 pt-30 pb-30 pl-10 pr-10 mb-50 rounded-full">
+                    <p class="text-white text-4xl font-bold text-">Misión</p>
+                </div>
+                    <div>
+                        En UWorkFlow, creemos que el talento no tiene fronteras. Nacimos para eliminar las barreras entre los estudiantes brillantes y las empresas que están cambiando el mundo.
+                    </div>
+            </section>
 
-    <header class="navbar">
-        <div class="logo">
-            <span class="icon-grad">🎓</span> <strong>InternConnect</strong>
-        </div>
-        <nav>
-            <a href="index.html" class="nav-link">Home</a>
-            <a href="login.html" class="btn-login">Login</a>
-            <a href="registro.html" class="btn-register">Registro</a>
-        </nav>
-    </header>
-
-    <section class="about-hero">
-        <div class="about-hero-content">
-            <h1>Nuestra misión es <span class="highlight">impulsar carreras</span></h1>
-            <p>En InternConnect, creemos que el talento no tiene fronteras. Nacimos para eliminar las barreras entre los estudiantes brillantes y las empresas que están cambiando el mundo.</p>
-        </div>
-    </section>
-
-    <section class="features">
-        <div class="feature-card">
-            <div class="f-icon blue-bg">🎯</div>
-            <h3>Nuestra Visión</h3>
+    <section class="flex items-center justify-center 
+    w-full 
+    bg-teal-400 
+    py-20 my-10 
+    rounded-full mx-20">
+<!--Seccion de vision-->
+        <div class="bg-sky-600 w-full">
+            <h3>Nuestra <b>Visión</b></h3>
             <p>Ser la plataforma líder global que define el estándar de las pasantías profesionales, priorizando el aprendizaje real.</p>
         </div>
-        <div class="feature-card">
+<!--Seccion de Compromiso-->
+        <div class="flex flex-items-left bg-teal-400 py-20 my-10 rounded-full mx-20">
             <div class="f-icon blue-bg">🤝</div>
             <h3>Compromiso</h3>
             <p>Nos comprometemos a mantener un ecosistema seguro, verificado y justo para ambas partes.</p>
         </div>
-        <div class="feature-card">
-            <div class="f-icon blue-bg">💡</div>
-            <h3>Innovación</h3>
+        <div class="flex flex-items-left bg-teal-400 py-20 my-10 rounded-full mx-20">
+            <h3><b>Innovación</b></h3>
             <p>Utilizamos tecnología de vanguardia para que el "match" entre empresa y estudiante sea perfecto.</p>
         </div>
     </section>
 
-    <section class="section-students">
+    <section class="flex items-center justify-center 
+    w-full 
+    bg-slate-200 
+    py-20 my-10 
+    rounded-full mx-20">
         <div class="students-content">
             <span class="big-icon">🌍</span>
             <h2>Por qué existimos</h2>
@@ -70,32 +74,48 @@
             <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800" alt="Nuestro Equipo" class="about-img">
         </div>
     </section>
-
-    <footer class="footer">
-        <div class="footer-grid">
-            <div class="footer-brand">
-                <div class="logo-white">🎓 InternConnect</div>
-                <p>Conectando estudiantes y empresas para experiencias de pasantía significativas.</p>
+</main>
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white pt-24 pb-12">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid md:grid-cols-4 gap-12 pb-16 border-b border-slate-800">
+                <div class="col-span-1 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-6">
+                        <x-application-logo class="w-8 h-8" />
+                        <span class="text-xl font-bold">UWorkFlow</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-6">
+                        Conectando el talento del mañana con las oportunidades de hoy.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 italic text-blue-400">Para Estudiantes</h4>
+                    <ul class="space-y-4 text-slate-400">
+                        <li><a href="/offers" class="hover:text-white transition-colors">Explorar Pasantías</a></li>
+                        <li><a href="/comufunciona" class="hover:text-white transition-colors">Cómo funciona</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Historias de éxito</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 italic text-blue-400">Para Empresas</h4>
+                    <ul class="space-y-4 text-slate-400">
+                        <li><a href="/" class="hover:text-white transition-colors">Publicar Ofertas</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Encontrar Talento</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Precios</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-6 italic text-blue-400">Compañía</h4>
+                    <ul class="space-y-4 text-slate-400">
+                        <li><a href="/about" class="hover:text-white transition-colors">Nosotros</a></li>
+                        <li><a href="/contacto" class="hover:text-white transition-colors">Contacto</a></li>
+                        <li><a href="/priva" class="hover:text-white transition-colors">Privacidad</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="footer-links">
-                <h4>Para Estudiantes</h4>
-                <a href="explorar.html">Explorar Pasantías</a>
-                <a href="comufunciona.html">Cómo Funciona</a>
+            <div class="pt-2 text-center text-slate-500 text-sm">
+                <p>&copy; 2026 UWorkFlow. Todos los derechos reservados.</p>
             </div>
-            <div class="footer-links">
-                <h4>Para Empresas</h4>
-                <a href="login.html">Publicar Oportunidades</a>
-                <a href="login.html">Encontrar Talento</a>
-            </div>
-            <div class="footer-links">
-                <h4>Compañía</h4>
-                <a href="sobrenosotros.html">Sobre Nosotros</a>
-                <a href="contacto.html">Contacto</a>
-                <a href="privacidad.html">Política de Privacidad</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            © 2026 InternConnect. Todos los derechos reservados.
         </div>
     </footer>
 

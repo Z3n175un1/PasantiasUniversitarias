@@ -178,7 +178,7 @@
                 <div>
                     <h4 class="font-bold mb-6 italic text-blue-400">Compañía</h4>
                     <ul class="space-y-4 text-slate-400">
-                        <li><a href="/acerca" class="hover:text-white transition-colors">Nosotros</a></li>
+                        <li><a href="/about" class="hover:text-white transition-colors">Nosotros</a></li>
                         <li><a href="/contacto" class="hover:text-white transition-colors">Contacto</a></li>
                         <li><a href="/priva" class="hover:text-white transition-colors">Privacidad</a></li>
                     </ul>

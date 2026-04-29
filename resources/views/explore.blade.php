@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="../css/explorar.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
-
+<body class="bg-slate-50 min-h-screen w-screen">
+    <x-nav-bar />
     <header class="navbar">
         <div class="logo">
             <span class="icon-grad">🎓</span> <strong>InternConnect</strong>
