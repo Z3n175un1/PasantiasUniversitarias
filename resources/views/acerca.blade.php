@@ -42,7 +42,6 @@
         </div>
         <div class="flex flex-items-left bg-teal-400 py-20 my-10 rounded-full mx-20">
             <h3><b>Innovación</b></h3>
-            <p>Utilizamos tecnología de vanguardia para que el "match" entre empresa y estudiante sea perfecto.</p>
         </div>
     </section>
 
