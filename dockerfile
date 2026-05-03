@@ -2,9 +2,9 @@
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN pnpm install
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # --- ETAPA 2: Aplicación final (PHP) ---
 FROM php:8.2-cli-alpine
