@@ -28,6 +28,7 @@
   "homepage": "https://github.com/Z3n175un1/PasantiasUniversitarias#readme",
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/postcss": "^4.2.4",
     "autoprefixer": "^10.5.0",
     "laravel-vite-plugin": "^3.1.0",
     "postcss": "^8.5.13",
