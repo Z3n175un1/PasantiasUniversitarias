@@ -16,7 +16,7 @@ class adminseeder extends Seeder
     {
         DB::table('users')->insert([
             'name' => 'Adridmin',
-            'email' => [EMAIL_ADDRESS],
+            'email' => 'selenagomez@pornhub.com',
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
@@ -25,7 +25,7 @@ class adminseeder extends Seeder
         ]);
         DB::table('users')->insert([
             'name' => 'Fabridmin',
-            'email' => [EMAIL_ADDRESS],
+            'email' => 'miakhalifa@pornhub.com',
             'email_verified_at' => now(),
             'created_at' => now(),
             'updated_at' => now(),
