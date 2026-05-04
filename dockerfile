@@ -76,7 +76,8 @@ ENV APP_ENV=production \
 
 EXPOSE 10000
 
-CMD php artisan package:discover --ansi && \
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
     php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
