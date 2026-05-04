@@ -1,28 +1,51 @@
-# --- ETAPA 1: Frontend (pnpm) ---
+# ---------- ETAPA 1: Frontend (pnpm) ----------
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 
+# Activar pnpm correctamente
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
+# Solo dependencias primero (mejor cache)
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
-COPY . .
+# Copiar solo lo necesario para build (evita invalidar cache)
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.* ./
+COPY tailwind.config.* ./
+COPY postcss.config.* ./
+
 RUN pnpm run build
 
 
-# --- ETAPA 2: PHP ---
+# ---------- ETAPA 2: Vendor (Composer optimizado) ----------
+FROM composer:2 AS vendor
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --no-interaction \
+    --no-progress \
+    --optimize-autoloader
+
+
+# ---------- ETAPA 3: PHP runtime ----------
 FROM php:8.2-cli-alpine
 
+WORKDIR /app
+
+# Instalar solo lo necesario (menos peso)
 RUN apk add --no-cache \
-    git \
-    unzip \
     libpq-dev \
     libzip-dev \
     libpng-dev \
     oniguruma-dev \
     icu-dev
 
+# Extensiones PHP
 RUN docker-php-ext-install \
     pdo_mysql \
     pdo_pgsql \
@@ -31,32 +54,41 @@ RUN docker-php-ext-install \
     intl \
     opcache
 
+# OPcache afinado para producción
 RUN { \
+    echo 'opcache.enable=1'; \
     echo 'opcache.memory_consumption=128'; \
-    echo 'opcache.interned_strings_buffer=8'; \
-    echo 'opcache.max_accelerated_files=4000'; \
-    echo 'opcache.revalidate_freq=0'; \
-    echo 'opcache.fast_shutdown=1'; \
-    echo 'opcache.enable_cli=1'; \
-    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
+    echo 'opcache.interned_strings_buffer=16'; \
+    echo 'opcache.max_accelerated_files=10000'; \
+    echo 'opcache.validate_timestamps=0'; \
+    echo 'opcache.jit=tracing'; \
+    echo 'opcache.jit_buffer_size=64M'; \
+} > /usr/local/etc/php/conf.d/opcache.ini
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copiar vendor ya optimizado
+COPY --from=vendor /app/vendor ./vendor
 
-WORKDIR /app
-
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --optimize-autoloader
-
+# Copiar app (sin node_modules ni basura si usas .dockerignore)
 COPY . .
-RUN rm -f public/hot
 
+# Copiar assets compilados
 COPY --from=frontend-builder /app/public/build ./public/build
 
-RUN chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+# Limpieza Laravel
+RUN rm -f public/hot
+
+# Permisos seguros
+RUN mkdir -p storage bootstrap/cache && \
+    chown -R www-data:www-data storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
+
+# Variables recomendadas
+ENV APP_ENV=production \
+    APP_DEBUG=false
 
 EXPOSE 10000
 
+# Startup más robusto
 CMD php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
