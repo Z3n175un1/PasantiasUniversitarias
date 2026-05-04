@@ -10,7 +10,7 @@
         <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Home</a>
         <a href="{{ route('offers.index') }}" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Pasantías</a>
         <a href="#" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Empresas</a>
-        <a href="#" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Noticias</a>
+        <a href="{{ route('notices') }}" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Noticias</a>
     </div>
 
     <div class="flex items-center gap-4">

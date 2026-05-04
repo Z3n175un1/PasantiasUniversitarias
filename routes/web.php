@@ -26,6 +26,10 @@ Route::get('/about', function () {
     return view('acerca');
 })->name('about');
 
+Route::get('/notices', function(){
+    return view('notices'); 
+})->name('notices');
+
 Route::get('/contacto', function () {
     return view('contacto');
 })->name('contacto');
