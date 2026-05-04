@@ -14,6 +14,6 @@ class Offer extends Model
         'carrera'
     ];
     public function ofertas():belongsTo{
-        return ofertas;
+        return $this->belongsTo(offers::class, 'ofertas_id');
     }
 }
