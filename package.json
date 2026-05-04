@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "20": "^1.0.0",
+    "@tailwindcss/vite": "^4.2.4",
     "alpinejs": "^3.15.12",
     "axios": "^1.16.0"
   }
