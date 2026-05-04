@@ -49,36 +49,34 @@ RUN docker-php-ext-install \
     intl \
     opcache
 
+# OPcache (sin romper ENV dinámico)
 RUN { \
     echo 'opcache.enable=1'; \
     echo 'opcache.memory_consumption=128'; \
     echo 'opcache.interned_strings_buffer=16'; \
     echo 'opcache.max_accelerated_files=10000'; \
-    echo 'opcache.validate_timestamps=0'; \
+    echo 'opcache.validate_timestamps=1'; \
 } > /usr/local/etc/php/conf.d/opcache.ini
 
-# Copiar vendor
+# Copiar dependencias PHP
 COPY --from=vendor /app/vendor ./vendor
 
-# Copiar app completa
+# Copiar app
 COPY . .
 
 # Copiar build frontend
 COPY --from=frontend-builder /app/public/build ./public/build
 
-# Laravel fix
+# Limpieza + permisos
 RUN rm -f public/hot && \
     mkdir -p storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
+# Variables seguras por defecto (Render puede sobrescribir)
 ENV APP_ENV=production \
     APP_DEBUG=false
 
 EXPOSE 10000
 
-CMD php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache && \
-    php -S 0.0.0.0:10000 -t public
+# 🚀 IMPORTANTE: sin cachear config (para no romper ENV de Render)
+CMD php artisan serve --host=0.0.0.0 --port=10000
