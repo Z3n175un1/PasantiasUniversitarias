@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name', 'UWorkFlow') }} - Nuestra Historia</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+<link rel="icon" type="image/x-icon" href="{{ asset('uworkflow-logo.ico') }}?v=1.0">    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-[#F8FAFC] min-h-screen font-['Plus_Jakarta_Sans'] text-slate-900 overflow-x-hidden">
     <x-nav-bar />
@@ -156,4 +155,4 @@
     </footer>
 </body>
 </html>
-
+

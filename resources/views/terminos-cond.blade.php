@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('Términos y Condiciones') }}</title>
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('uworkflow-logo.ico') }}">
     <style>
         body {
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;

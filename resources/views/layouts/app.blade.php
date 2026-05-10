@@ -12,7 +12,7 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Favicon -->
-        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+        <link rel="icon" type="image/x-icon" href="{{ asset('uworkflow-logo.ico') }}?v=1.0">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

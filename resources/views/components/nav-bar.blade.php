@@ -1,15 +1,14 @@
 <!-- Top Banner -->
 <div class="bg-indigo-600 text-white py-2 px-4 text-center text-xs font-semibold tracking-wide">
-    <span class="opacity-90">🚀 ¡Nueva convocatoria de pasantías 2026 abierta!</span>
+    <span class="opacity-90">¡Nueva convocatoria de pasantías 2026 abierta!</span>
     <a href="/busqueda" class="ml-2 underline hover:text-indigo-100 transition-colors">Explorar ahora</a>
 </div>
 
-<nav class="bg-white border-b border-gray-100 py-4 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
+<nav class="bg-white border-b border-gray-100 py-0 px-6 md:px-12 flex justify-between items-center sticky top-0 z-50">
     <div class="flex items-center gap-2">
         <a href="/" class="flex items-center">
-            <x-application-logo class="w-10 h-10 text-indigo-600" />
+            <img src="{{ asset('uworkflow-banner.ico') }}" alt="UWorkFlow Logo" class="w-48 h-auto object-contain">
         </a>
-        <span class="text-xl font-bold text-slate-900 tracking-tight">UWorkFlow</span>
     </div>
 
     <div class="hidden md:flex items-center gap-8">
