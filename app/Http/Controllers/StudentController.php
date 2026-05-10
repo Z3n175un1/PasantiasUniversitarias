@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Offer;
+use App\Models\Student;
+use Illuminate\Support\Facades\Auth;
+
 class StudentController extends Controller
 {
     /**
@@ -11,8 +15,25 @@ class StudentController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $student = Student::with(['career.faculty'])->where('usuario_id', $user->id)->first();
+
+        // Fetch recommended offers (e.g., same career as student)
+        $recommendedOffers = Offer::with(['company', 'career'])
+
+            ->when($student && $student->carrera_id, function($query) use ($student) {
+                return $query->where('carrera_id', $student->carrera_id);
+            })
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('dash_est', [
+            'student' => $student,
+            'offers' => $recommendedOffers
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.

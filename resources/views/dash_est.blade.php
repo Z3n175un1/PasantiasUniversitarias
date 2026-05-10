@@ -8,6 +8,16 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
+    @if(session('success'))
+        <div class="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if(session('info'))
+        <div class="fixed top-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+            {{ session('info') }}
+        </div>
+    @endif
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
         <aside class="w-64 bg-white border-r border-gray-200 flex flex-col justify-between py-6 px-4">
@@ -37,7 +47,7 @@
             </div>
             <div class="border-t border-gray-200 pt-5">
                 <div class="user-pill">
-                    <strong class="block text-sm">{{ Auth::user()->nombre ?? 'Estudiante' }}</strong>
+                    <strong class="block text-sm">{{ Auth::user()->nombre }} {{ $student->apellidos ?? '' }}</strong>
                     <span class="text-xs text-gray-500">Estudiante</span>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
@@ -66,28 +76,32 @@
             <!-- Profile Card -->
             <section class="bg-white border border-gray-200 rounded-2xl p-6 max-w-4xl mx-auto mb-10">
                 <div class="flex items-center gap-4 pb-6 border-b border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop" alt="User" class="w-14 h-14 rounded-full object-cover">
+                    <img src="{{ $student->foto_url ?? 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop' }}" alt="User" class="w-14 h-14 rounded-full object-cover">
                     <div class="profile-info">
-                        <h2 class="text-lg">{{ Auth::user()->nombre ?? 'Estudiante' }}</h2>
-                        <span class="text-gray-500 text-sm">{{ Auth::user()->correo ?? 'correo@universidad.edu' }}</span>
+                        <h2 class="text-lg">{{ Auth::user()->nombre }} {{ $student->apellidos ?? '' }}</h2>
+                        <span class="text-gray-500 text-sm">{{ Auth::user()->correo }}</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-5 py-6">
                     <div class="detail-box">
                         <label class="block text-xs text-gray-400 mb-1">Career</label>
-                        <strong class="text-base">Computer Science</strong>
+                        <strong class="text-base">{{ $student->career->nombre ?? 'N/A' }}</strong>
                     </div>
                     <div class="detail-box">
-                        <label class="block text-xs text-gray-400 mb-1">University</label>
-                        <strong class="text-base">Stanford University</strong>
+                        <label class="block text-xs text-gray-400 mb-1">Faculty</label>
+                        <strong class="text-base">{{ $student->career->faculty->nombre ?? 'N/A' }}</strong>
                     </div>
                     <div class="detail-box">
-                        <label class="block text-xs text-gray-400 mb-1">GPA</label>
-                        <strong class="text-base">3.8/4.0</strong>
+                        <label class="block text-xs text-gray-400 mb-1">CI</label>
+                        <strong class="text-base">{{ $student->ci ?? 'N/A' }}</strong>
                     </div>
                     <div class="detail-box">
                         <label class="block text-xs text-gray-400 mb-1">CV Status</label>
-                        <span class="bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-md text-xs font-semibold">Uploaded</span>
+                        @if($student && $student->cv)
+                            <span class="bg-green-50 text-green-600 border border-green-200 px-2 py-0.5 rounded-md text-xs font-semibold">Uploaded</span>
+                        @else
+                            <span class="bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-md text-xs font-semibold">Not Uploaded</span>
+                        @endif
                     </div>
                 </div>
                 <div class="border-t border-gray-200 pt-5">
@@ -108,95 +122,45 @@
                     <p class="text-gray-500 text-sm">Best matches based on your profile</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-4xl mx-auto">
-                    <!-- Job Card 1 -->
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col">
-                        <div class="flex justify-between mb-4">
-                            <span class="bg-yellow-100 text-yellow-600 text-xs font-bold px-2 py-1 rounded">Best Match</span>
-                            <span class="bg-purple-100 text-purple-600 text-xs font-bold px-2 py-1 rounded">Hybrid</span>
-                        </div>
-                        <h4 class="text-base font-semibold mb-2">Frontend Developer Intern</h4>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-md">🏢</div>
-                            <div>
-                                <strong class="text-sm">TechCorp</strong>
-                                <span class="text-xs text-gray-500">Solutions</span>
+                    @forelse($offers as $offer)
+                        <div class="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col">
+                            <div class="flex justify-between mb-4">
+                                <span class="bg-yellow-100 text-yellow-600 text-xs font-bold px-2 py-1 rounded">Best Match</span>
+                                <span class="bg-purple-100 text-purple-600 text-xs font-bold px-2 py-1 rounded">{{ $offer->tipo }}</span>
                             </div>
-                        </div>
-                        <p class="text-sm text-gray-500 leading-relaxed mb-4">Join our team to build modern web applications using React and TypeScri...</p>
-                        <div class="text-xs text-gray-600 flex flex-col gap-1 mb-4">
-                            <div>📍 San Francisco, CA</div>
-                            <div>🕒 3 months</div>
-                            <div>📁 Software Development</div>
-                        </div>
-                        <div class="border-t border-gray-200 pt-3 mb-5 flex flex-wrap gap-1">
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">React</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">TypeScript</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">HTML/CSS</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">+1 more</span>
-                        </div>
-                        <button class="w-full py-2.5 bg-gray-400 text-white font-semibold cursor-not-allowed rounded">Applied</button>
-                    </div>
-
-                    <!-- Job Card 2 -->
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col">
-                        <div class="flex justify-between mb-4">
-                            <span class="bg-yellow-100 text-yellow-600 text-xs font-bold px-2 py-1 rounded">Best Match</span>
-                            <span class="bg-green-100 text-green-600 text-xs font-bold px-2 py-1 rounded">Remote</span>
-                        </div>
-                        <h4 class="text-base font-semibold mb-2">Data Science Intern</h4>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-md">📊</div>
-                            <div>
-                                <strong class="text-sm">DataViz Inc</strong>
-                                <span class="text-xs text-gray-500">Analytics</span>
+                            <h4 class="text-base font-semibold mb-2">{{ $offer->titulo }}</h4>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-md">🏢</div>
+                                <div>
+                                    <strong class="text-sm">{{ $offer->company->nombre ?? 'Unknown' }}</strong>
+                                    <span class="text-xs text-gray-500">{{ $offer->company->industria ?? 'Solutions' }}</span>
+                                </div>
                             </div>
-                        </div>
-                        <p class="text-sm text-gray-500 leading-relaxed mb-4">Work with our data team to analyze large datasets and create insightful...</p>
-                        <div class="text-xs text-gray-600 flex flex-col gap-1 mb-4">
-                            <div>📍 Remote</div>
-                            <div>🕒 6 months</div>
-                            <div>📁 Data Science</div>
-                        </div>
-                        <div class="border-t border-gray-200 pt-3 mb-5 flex flex-wrap gap-1">
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">Python</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">SQL</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">Statistics</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">+1 more</span>
-                        </div>
-                        <button class="w-full py-2.5 bg-gray-400 text-white font-semibold cursor-not-allowed rounded">Applied</button>
-                    </div>
-
-                    <!-- Job Card 3 -->
-                    <div class="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col">
-                        <div class="flex justify-between mb-4">
-                            <span class="bg-yellow-100 text-yellow-600 text-xs font-bold px-2 py-1 rounded">Best Match</span>
-                            <span class="bg-blue-100 text-blue-600 text-xs font-bold px-2 py-1 rounded">On-site</span>
-                        </div>
-                        <h4 class="text-base font-semibold mb-2">Backend Engineer Intern</h4>
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="w-9 h-9 bg-gray-200 flex items-center justify-center rounded-md">🏢</div>
-                            <div>
-                                <strong class="text-sm">TechCorp</strong>
-                                <span class="text-xs text-gray-500">Solutions</span>
+                            <p class="text-sm text-gray-500 leading-relaxed mb-4">{{ Str::limit($offer->requisitos, 100) }}</p>
+                            <div class="text-xs text-gray-600 flex flex-col gap-1 mb-4">
+                                <div>📍 {{ $offer->company->ubicacion ?? 'N/A' }}</div>
+                                <div>🕒 {{ \Carbon\Carbon::parse($offer->fecha_inicio)->diffInMonths($offer->fecha_fin) }} months</div>
+                                <div>📁 {{ $offer->career->nombre ?? 'Software Development' }}</div>
                             </div>
+                            <div class="border-t border-gray-200 pt-3 mb-5 flex flex-wrap gap-1">
+                                @php
+                                    $tags = explode(',', $offer->requisitos); // Dummy split for now
+                                @endphp
+                                @foreach(array_slice($tags, 0, 3) as $tag)
+                                    <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">{{ trim($tag) }}</span>
+                                @endforeach
+                            </div>
+                            <form action="{{ route('applications.store') }}" method="POST" class="mt-auto">
+                                @csrf
+                                <input type="hidden" name="offer_id" value="{{ $offer->id }}">
+                                <button type="submit" class="w-full py-2.5 bg-black text-white font-semibold cursor-pointer rounded">Apply Now</button>
+                            </form>
                         </div>
-                        <p class="text-sm text-gray-500 leading-relaxed mb-4">Develop and maintain server-side applications. Experience with cloud...</p>
-                        <div class="text-xs text-gray-600 flex flex-col gap-1 mb-4">
-                            <div>📍 New York, NY</div>
-                            <div>🕒 4 months</div>
-                            <div>📁 Software Development</div>
+                    @empty
+                        <div class="col-span-full py-10 text-center text-gray-500">
+                            No recommended offers found at the moment.
                         </div>
-                        <div class="border-t border-gray-200 pt-3 mb-5 flex flex-wrap gap-1">
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">Java</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">Spring Boot</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">SQL</span>
-                            <span class="bg-gray-200 px-2 py-1 rounded text-xs font-medium text-gray-600">+1 more</span>
-                        </div>
-                        <form action="{{ Route::has('internships.apply') ? route('internships.apply', 1) : '#' }}" method="POST" class="mt-4">
-                            @csrf
-                            <button type="submit" class="w-full py-2.5 bg-black text-white font-semibold cursor-pointer rounded">Apply Now</button>
-                        </form>
-                    </div>
+                    @endforelse
                 </div>
             </section>
         </main>

@@ -57,4 +57,10 @@ class User extends Authenticatable
     {
         return $this->contrasena;
     }
+
+    public function student()
+    {
+        return $this->hasOne(Student::class, 'usuario_id');
+    }
 }
+

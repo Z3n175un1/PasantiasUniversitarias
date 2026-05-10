@@ -23,4 +23,15 @@ class Student extends Model
     {
         return $this->belongsTo(User::class, 'usuario_id');
     }
+
+    public function career(): BelongsTo
+    {
+        return $this->belongsTo(Career::class, 'carrera_id');
+    }
+
+    public function applications()
+    {
+        return $this->hasMany(Application::class, 'estudiante_id');
+    }
 }
+

@@ -8,9 +8,7 @@ use App\Http\Controllers\ApplicationController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get('/dashboard', function () {
-    return view('dash_est');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [StudentController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 // Alias to match route names in the view
@@ -69,7 +67,7 @@ Route::view('/', 'welcome')->name('home');
 Route::view('/registro/tipo-cuenta', 'acctype')->name('account.type');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('/dashboard', 'dash_est')->name('dashboard');
+    Route::get('/dashboard', [StudentController::class, 'index'])->name('dashboard');
     // Alias for student dashboard
     Route::get('/student/dashboard', function () {
         return redirect()->route('dashboard');
