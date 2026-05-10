@@ -8,8 +8,7 @@
 
     <div class="hidden md:flex items-center gap-8">
         <a href="/" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Home</a>
-        <a href="{{ route('offers.index') }}" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Pasantías</a>
-        <a href="#" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Empresas</a>
+        <a href="/busqueda" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Pasantías</a>
         <a href="/notices" class="text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors">Noticias</a>
     </div>
 

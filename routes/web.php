@@ -28,6 +28,10 @@ Route::view('/terminos-y-condiciones', 'terminos-cond')->name('terms');
 Route::get('/about', function () {
     return view('acerca');
 })->name('about');
+Route::get('/busqueda', function () {
+    return view('busqueda');
+})->name('busqueda');
+
 
 Route::get('/notices', function(){
     return view('notices'); 
