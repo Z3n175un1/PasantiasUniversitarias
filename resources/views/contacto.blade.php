@@ -81,8 +81,7 @@
             <div class="grid md:grid-cols-4 gap-12 pb-12 border-b border-slate-800">
                 <div class="col-span-1 md:col-span-1">
                     <div class="flex items-center gap-2 mb-6">
-                        <x-application-logo class="w-8 h-8" />
-                        <span class="text-xl font-bold">UWorkFlow</span>
+                        <x-application-logo-white class="w-32 h-12" />
                     </div>
                     <p class="text-slate-400 leading-relaxed mb-6">
                         Conectando el talento del mañana con las oportunidades de hoy.

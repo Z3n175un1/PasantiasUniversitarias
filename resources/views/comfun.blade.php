@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cómo Funciona | InternConnect</title>
+    <title>Cómo Funciona | {{ config('app.name', 'UWorkFlow') }}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('uworkflow-logo.ico') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -13,7 +13,7 @@
     <x-nav-bar />
     <section class="page-header">
         <h1>Transparencia en cada <span class="highlight">paso</span></h1>
-        <p>Descubre cómo InternConnect simplifica la conexión entre el talento emergente y las empresas líderes.</p>
+        <p>Descubre cómo {{ config('app.name', 'UWorkFlow') }} simplifica la conexión entre el talento emergente y las empresas líderes.</p>
     </section>
 
     <section class="section-students">
@@ -69,7 +69,9 @@
     <footer class="footer">
         <div class="footer-grid">
             <div class="footer-brand">
-                <div class="logo-white">🎓 InternConnect</div>
+                <div class="mb-4">
+                    <x-application-logo-white class="w-32 h-12" />
+                </div>
                 <p>Conectando estudiantes y empresas para experiencias de pasantía significativas.</p>
             </div>
             <div class="footer-links">
@@ -90,7 +92,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            © 2026 InternConnect. Todos los derechos reservados.
+            © 2026 {{ config('app.name', 'UWorkFlow') }}. Todos los derechos reservados.
         </div>
     </footer>
 

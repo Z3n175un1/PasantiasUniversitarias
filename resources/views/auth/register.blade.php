@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - {{config('appname')}}</title>
+    <title>Registro - UWorkFlow</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="shortcut icon" href="{{ asset('uworkflow-logo.ico') }}">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>

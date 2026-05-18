@@ -145,7 +145,8 @@
         <p>El uso continuado de la Plataforma después del registro o del primer acceso implica la aceptación plena, voluntaria e irrevocable de todas las disposiciones contenidas en este instrumento legal. Se recomienda al Usuario imprimir o conservar una copia digital para su referencia.</p>
 
         <p><strong>Para consultas o notificaciones judiciales/extrajudiciales:</strong><br>
-        Correo electrónico: [EMAIL_ADDRESS]<br>
+        Correo electrónico: 
+        uworkflow@contacto.com.bo<br>
         </p>
 
         <div class="footer-note">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Política de Privacidad | InternConnect</title>
+    <title>Política de Privacidad | {{ config('app.name', 'UWorkFlow') }}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('uworkflow-logo.ico') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -30,7 +30,7 @@
 
             <section id="recoleccion">
                 <h2>1. Recolección de Datos</h2>
-                <p>En InternConnect, recolectamos información personal que tú nos proporcionas voluntariamente al registrarte, como tu nombre, dirección de correo electrónico, historial académico y experiencia laboral.</p>
+                <p>En {{ config('app.name', 'UWorkFlow') }}, recolectamos información personal que tú nos proporcionas voluntariamente al registrarte, como tu nombre, dirección de correo electrónico, historial académico y experiencia laboral.</p>
                 <p>También recopilamos automáticamente ciertos datos técnicos cuando visitas nuestra plataforma, incluyendo tu dirección IP y el tipo de dispositivo que utilizas.</p>
             </section>
 
@@ -59,7 +59,9 @@
     <footer class="footer">
         <div class="footer-grid">
             <div class="footer-brand">
-                <div class="logo-white">🎓 InternConnect</div>
+                <div class="mb-4">
+                    <x-application-logo-white class="w-32 h-12" />
+                </div>
                 <p>Conectando estudiantes y empresas para experiencias de pasantía significativas.</p>
             </div>
             <div class="footer-links">
@@ -80,7 +82,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            © 2026 InternConnect. Todos los derechos reservados.
+            © 2026 {{ config('app.name', 'UWorkFlow') }}. Todos los derechos reservados.
         </div>
     </footer>
 
