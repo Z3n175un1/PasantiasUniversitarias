@@ -1,5 +1,6 @@
 <?php
 
+//dependencias de controladores
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\CompanyController;
@@ -7,10 +8,10 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ApplicationController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('/dashboard', [StudentController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-
-
+//ruta de dashboard para estudiantes autenticados
+Route::get('/dashboard', function () {
+    return view('dash_est');
+})->middleware(['auth', 'verified'])->name('dashboard');
 // Alias to match route names in the view
 Route::get('/student/dashboard', function () {
     return redirect()->route('dashboard');
