@@ -14,23 +14,53 @@ class adminseeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->insert([
-            'name' => 'Adridmin',
+        User::factory()->create([
+            'name' => 'AdridMini',
             'email' => 'selenagomez@pornhub.com',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'phone_number' => '12345678',
+            'university_id' => '123',
+            'country' => 'Bolivia',
             'password' => Hash::make('adridmin123'),
-            'role' => 'admin'
         ]);
-        DB::table('users')->insert([
-            'name' => 'Fabridmin',
+        User::factory()->create([
+            'name' => 'FabriMini',
             'email' => 'miakhalifa@pornhub.com',
-            'email_verified_at' => now(),
-            'created_at' => now(),
-            'updated_at' => now(),
+            'phone_number' => '12345678',
+            'university_id' => '123',
+            'country' => 'Bolivia',
             'password' => Hash::make('fabri123'),
-            'role' => 'admin'
+        ]);
+        User::factory()->create([
+            'name' => 'AdridMini',
+            'email' => 'selenagomez@pornhub.com',
+            'phone_number' => '12345678',
+            'university_id' => '123',
+            'country' => 'Bolivia',
+            'password' => Hash::make('adridmin123'),
+        ]);
+        User::factory()->create([
+            'name' => 'FabriMini',
+            'email' => 'miakhalifa@pornhub.com',
+            'phone_number' => '12345678',
+            'university_id' => '123',
+            'country' => 'Bolivia',
+            'password' => Hash::make('fabri123'),
+        ]);
+        User::factory()->create([
+            'name' => 'OrlandoMini',
+            'email' => 'orlandomin123@pornhub.com',
+            'phone_number' => '12345678',
+            'university_id' => '123',
+            'country' => 'Bolivia',
+            'password' => Hash::make('orlando123'),
+        ]);
+        User::factory()->create([
+            'name' => 'Sanchino',
+            'email' => 'sanchino@pornhub.com',
+            'phone_number' => '12345678',
+            'university_id' => '123',
+            'country' => 'Bolivia',
+            'password' => Hash::make('sanchino123'),
         ]);
     }
 }

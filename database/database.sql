@@ -1,202 +1,221 @@
+/*Nueva Base de datos actualizada y re-editada en fecha mayo 2026*/
 
--- 1. MÓDULO DE SEGURIDAD Y ACCESOS
-CREATE TABLE Roles (
-    id_rol INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_rol VARCHAR(50) NOT NULL UNIQUE,
+/*
+
+              ╱▏┈┈┈┈┈┈   ▕╲▕╲┈┈┈
+             ▏▏┈┈┈┈┈┈    ▏▔▔╲┈┈
+            ▏ ╲┈┈┈┈┈┈┈┈┈┈╱┈┈▔┈▔╲┈
+            ╲┃ ▔▔▔▔▔▔╯╯  ╰┳━━▀
+            ┈┃╯╯╯╯╯╯╯╯╯╯╯╯    ╱┃┈┈┈
+            ┈┃┏━━┳┳━━━━━━━┫┣━━┳┃┈┈┈
+            ┈┃┃  ┃┃┈┈┈┈┈┈┈┃┃  ┃┃┈┈┈
+            ┈┗┛  ┗┛┈┈┈┈┈┈┈┗┛  ┗┛┈┈┈
+                < Z3N175UN1 >
+                   GITHUB
+
+*/
+-- =================================================================================
+-- CREACION DE BASE DE DATOS
+-- =================================================================================
+
+CREATE SCHEMA IF NOT EXISTS global;
+SET search_path TO global;
+
+-- =================================================================================
+-- CREACIÓN DE TABLAS INDEPENDIENTES (Sin Foreign Keys)
+-- =================================================================================
+
+CREATE TABLE Rol (
+    id_rol SERIAL PRIMARY KEY,
+    nombre_rol VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Carrera (
+    id_carrera SERIAL PRIMARY KEY,
+    nombre_carrera VARCHAR(100) NOT NULL,
+    area VARCHAR(50),
+    tipo_carrera VARCHAR(30)
+);
+
+CREATE TABLE Ubicacion (
+    id_ubicacion SERIAL PRIMARY KEY,
+    ciudad VARCHAR(50),
+    localidad VARCHAR(50),
+    direccion VARCHAR(150),
+    es_sede BOOLEAN DEFAULT FALSE,
+    nombre_sede VARCHAR(50)
+);
+
+CREATE TABLE Rubro (
+    id_rubro SERIAL PRIMARY KEY,
+    nombre_rubro VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Habilidad (
+    id_habilidad SERIAL PRIMARY KEY,
+    nombre_habilidad VARCHAR(50) NOT NULL,
+    tipo_habilidad VARCHAR(30)
+);
+
+CREATE TABLE Reporte (
+    id_reporte SERIAL PRIMARY KEY,
+    fecha_reporte DATE NOT NULL,
+    total_estudiantes INTEGER DEFAULT 0,
+    total_empresas INTEGER DEFAULT 0,
+    nuevas_postulaciones INTEGER DEFAULT 0
+);
+
+-- =================================================================================
+-- CREACIÓN DE TABLAS CON DEPENDENCIAS (Con Foreign Keys)
+-- =================================================================================
+
+CREATE TABLE Usuario (
+    id_usuario SERIAL PRIMARY KEY,
+    id_rol INTEGER NOT NULL REFERENCES Rol(id_rol) ON DELETE RESTRICT,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    contrasena_hash VARCHAR(255) NOT NULL,
+    activo BOOLEAN DEFAULT TRUE,
+    intentos_fallidos INTEGER DEFAULT 0,
+    eula_aceptada BOOLEAN DEFAULT FALSE,
+    fecha_creacion DATE DEFAULT CURRENT_DATE
+);
+
+CREATE TABLE Estudiante (
+    id_estudiante SERIAL PRIMARY KEY,
+    id_usuario INTEGER NOT NULL REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
+    id_carrera INTEGER NOT NULL REFERENCES Carrera(id_carrera) ON DELETE RESTRICT,
+    ci VARCHAR(12) UNIQUE NOT NULL,
+    email_institucional VARCHAR(100) UNIQUE,
+    fecha_nacimiento DATE
+);
+
+CREATE TABLE Empresa (
+    id_empresa SERIAL PRIMARY KEY,
+    id_usuario INTEGER NOT NULL REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
+    nombre_empresa VARCHAR(100) NOT NULL,
+    id_rubro INTEGER NOT NULL REFERENCES Rubro(id_rubro) ON DELETE RESTRICT,
+    id_ubicacion INTEGER NOT NULL REFERENCES Ubicacion(id_ubicacion) ON DELETE RESTRICT,
     descripcion TEXT
 );
 
-CREATE TABLE Permisos (
-    id_permiso INT AUTO_INCREMENT PRIMARY KEY,
-    descripcion_accion VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE Pasantia (
+    id_pasantia SERIAL PRIMARY KEY,
+    id_empresa INTEGER NOT NULL REFERENCES Empresa(id_empresa) ON DELETE CASCADE,
+    id_ubicacion INTEGER NOT NULL REFERENCES Ubicacion(id_ubicacion) ON DELETE RESTRICT,
+    titulo VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    area VARCHAR(50),
+    fecha_publicacion DATE DEFAULT CURRENT_DATE,
+    fecha_cierre DATE,
+    activa BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE Usuarios (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    id_rol INT NOT NULL,
-    email VARCHAR(150) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    two_fa_enabled BOOLEAN DEFAULT FALSE,
-    last_login TIMESTAMP NULL,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_rol) REFERENCES Roles(id_rol)
+-- Tablas intermedias (Muchos a Muchos)
+CREATE TABLE Pasantia_Habilidad (
+    id_pasantia INTEGER NOT NULL REFERENCES Pasantia(id_pasantia) ON DELETE CASCADE,
+    id_habilidad INTEGER NOT NULL REFERENCES Habilidad(id_habilidad) ON DELETE CASCADE,
+    PRIMARY KEY (id_pasantia, id_habilidad)
 );
 
-CREATE TABLE Rol_Permiso (
-    id_rol INT NOT NULL,
-    id_permiso INT NOT NULL,
-    PRIMARY KEY (id_rol, id_permiso),
-    FOREIGN KEY (id_rol) REFERENCES Roles(id_rol) ON DELETE CASCADE,
-    FOREIGN KEY (id_permiso) REFERENCES Permisos(id_permiso) ON DELETE CASCADE
+CREATE TABLE Estudiante_Habilidad (
+    id_estudiante INTEGER NOT NULL REFERENCES Estudiante(id_estudiante) ON DELETE CASCADE,
+    id_habilidad INTEGER NOT NULL REFERENCES Habilidad(id_habilidad) ON DELETE CASCADE,
+    PRIMARY KEY (id_estudiante, id_habilidad)
 );
 
-CREATE TABLE Auditoria_Logs (
-    id_log INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT,
-    accion VARCHAR(255) NOT NULL,
-    tabla_afectada VARCHAR(50),
-    fecha_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    ip_origen VARCHAR(45),
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE SET NULL
+CREATE TABLE Postulacion (
+    id_postulacion SERIAL PRIMARY KEY,
+    id_estudiante INTEGER NOT NULL REFERENCES Estudiante(id_estudiante) ON DELETE CASCADE,
+    id_pasantia INTEGER NOT NULL REFERENCES Pasantia(id_pasantia) ON DELETE CASCADE,
+    fecha_postulacion DATE DEFAULT CURRENT_DATE,
+    estado VARCHAR(20) DEFAULT 'Pendiente'
 );
 
--- 2. MÓDULO ACADÉMICO
-CREATE TABLE Facultades (
-    id_facultad INT AUTO_INCREMENT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL UNIQUE
+CREATE TABLE Documento (
+    id_documento SERIAL PRIMARY KEY,
+    id_estudiante INTEGER NOT NULL REFERENCES Estudiante(id_estudiante) ON DELETE CASCADE,
+    tipo_documento VARCHAR(30),
+    archivo_nombre VARCHAR(255) NOT NULL,
+    archivo_hash VARCHAR(255) NOT NULL,
+    extension VARCHAR(10),
+    fecha_subida DATE DEFAULT CURRENT_DATE,
+    encriptado BOOLEAN DEFAULT FALSE
 );
 
-CREATE TABLE Carreras (
-    id_carrera INT AUTO_INCREMENT PRIMARY KEY,
-    id_facultad INT NOT NULL,
-    nombre VARCHAR(100) NOT NULL,
-    FOREIGN KEY (id_facultad) REFERENCES Facultades(id_facultad)
+CREATE TABLE Ticket (
+    id_ticket SERIAL PRIMARY KEY,
+    id_usuario INTEGER NOT NULL REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
+    titulo VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    tipo_ticket VARCHAR(30),
+    prioridad INTEGER CHECK (prioridad BETWEEN 1 AND 5),
+    revisado BOOLEAN DEFAULT FALSE,
+    fecha_creacion DATE DEFAULT CURRENT_DATE
 );
 
-CREATE TABLE Habilidades (
-    id_habilidad INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_skill VARCHAR(50) NOT NULL UNIQUE
+CREATE TABLE Accion (
+    id_accion SERIAL PRIMARY KEY,
+    id_usuario INTEGER REFERENCES Usuario(id_usuario) ON DELETE SET NULL,
+    tipo_accion VARCHAR(50),
+    descripcion TEXT,
+    fecha_accion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    direccion_ip VARCHAR(45)
 );
 
-CREATE TABLE Estudiantes (
-    id_estudiante INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT NOT NULL UNIQUE,
-    id_carrera INT NOT NULL,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    matricula VARCHAR(20) NOT NULL UNIQUE,
-    promedio_academico DECIMAL(4,2),
-    estado_seguro_medico VARCHAR(50),
-    cv_url VARCHAR(255),
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE,
-    FOREIGN KEY (id_carrera) REFERENCES Carreras(id_carrera)
-);
+-- =================================================================================
+-- CREACIÓN DE ÍNDICES (INDEXES)
+-- =================================================================================
+-- Los índices mejoran drásticamente la velocidad de búsqueda en las consultas más comunes.
 
-CREATE TABLE Estudiante_Habilidades (
-    id_estudiante INT NOT NULL,
-    id_habilidad INT NOT NULL,
-    nivel_dominio ENUM('Básico', 'Intermedio', 'Avanzado'),
-    PRIMARY KEY (id_estudiante, id_habilidad),
-    FOREIGN KEY (id_estudiante) REFERENCES Estudiantes(id_estudiante) ON DELETE CASCADE,
-    FOREIGN KEY (id_habilidad) REFERENCES Habilidades(id_habilidad) ON DELETE CASCADE
-);
+-- Índices para claves foráneas (Mejora los JOINs)
+CREATE INDEX idx_usuario_rol ON Usuario(id_rol);
+CREATE INDEX idx_estudiante_usuario ON Estudiante(id_usuario);
+CREATE INDEX idx_empresa_usuario ON Empresa(id_usuario);
+CREATE INDEX idx_pasantia_empresa ON Pasantia(id_empresa);
+CREATE INDEX idx_postulacion_estudiante ON Postulacion(id_estudiante);
+CREATE INDEX idx_postulacion_pasantia ON Postulacion(id_pasantia);
+CREATE INDEX idx_accion_usuario ON Accion(id_usuario);
 
--- 3. MÓDULO CORPORATIVO Y LEGAL
-CREATE TABLE Empresas (
-    id_empresa INT AUTO_INCREMENT PRIMARY KEY,
-    id_usuario INT NOT NULL UNIQUE,
-    razon_social VARCHAR(150) NOT NULL,
-    nit_rut VARCHAR(50) NOT NULL UNIQUE,
-    sector_industrial VARCHAR(100),
-    verificada BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) ON DELETE CASCADE
-);
+-- Índices para campos de búsqueda frecuente
+CREATE INDEX idx_usuario_email ON Usuario(email);
+CREATE INDEX idx_pasantia_activa ON Pasantia(activa);
+CREATE INDEX idx_postulacion_estado ON Postulacion(estado);
 
-CREATE TABLE Sucursales (
-    id_sucursal INT AUTO_INCREMENT PRIMARY KEY,
-    id_empresa INT NOT NULL,
-    ciudad VARCHAR(100) NOT NULL,
-    direccion TEXT NOT NULL,
-    telefono_contacto VARCHAR(20),
-    FOREIGN KEY (id_empresa) REFERENCES Empresas(id_empresa) ON DELETE CASCADE
-);
+-- =================================================================================
+-- CREACIÓN DE FUNCIONES Y TRIGGERS (DISPARADORES)
+-- =================================================================================
 
-CREATE TABLE Convenios_Legales (
-    id_convenio INT AUTO_INCREMENT PRIMARY KEY,
-    id_empresa INT NOT NULL,
-    codigo_resolucion VARCHAR(50) UNIQUE NOT NULL,
-    fecha_inicio DATE NOT NULL,
-    fecha_fin DATE NOT NULL,
-    url_pdf_convenio VARCHAR(255),
-    estado_convenio ENUM('Activo', 'Vencido', 'Suspendido') DEFAULT 'Activo',
-    FOREIGN KEY (id_empresa) REFERENCES Empresas(id_empresa),
-    CONSTRAINT chk_fechas_convenio CHECK (fecha_fin > fecha_inicio)
-);
+-- TRIGGER 1: Validación lógica en la tabla Pasantia
+-- Asegura que la fecha de cierre de una pasantía no sea anterior a su publicación
+CREATE OR REPLACE FUNCTION validar_fechas_pasantia()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.fecha_cierre < NEW.fecha_publicacion THEN
+        RAISE EXCEPTION 'La fecha de cierre no puede ser anterior a la fecha de publicación';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
--- 4. MÓDULO DE RECLUTAMIENTO
-CREATE TABLE Ofertas_Pasantia (
-    id_oferta INT AUTO_INCREMENT PRIMARY KEY,
-    id_empresa INT NOT NULL,
-    id_sucursal INT NOT NULL,
-    titulo VARCHAR(150) NOT NULL,
-    descripcion_puesto TEXT NOT NULL,
-    requisitos TEXT,
-    cupos_disponibles INT NOT NULL DEFAULT 1,
-    es_remunerada BOOLEAN DEFAULT FALSE,
-    monto_remuneracion DECIMAL(10,2) DEFAULT 0.00,
-    estado_oferta ENUM('Borrador', 'Abierta', 'Cerrada') DEFAULT 'Abierta',
-    fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_empresa) REFERENCES Empresas(id_empresa),
-    FOREIGN KEY (id_sucursal) REFERENCES Sucursales(id_sucursal)
-);
+CREATE TRIGGER trg_validar_fechas_pasantia
+BEFORE INSERT OR UPDATE ON Pasantia
+FOR EACH ROW
+EXECUTE FUNCTION validar_fechas_pasantia();
 
-CREATE TABLE Oferta_Habilidades (
-    id_oferta INT NOT NULL,
-    id_habilidad INT NOT NULL,
-    es_obligatorio BOOLEAN DEFAULT TRUE,
-    PRIMARY KEY (id_oferta, id_habilidad),
-    FOREIGN KEY (id_oferta) REFERENCES Ofertas_Pasantia(id_oferta) ON DELETE CASCADE,
-    FOREIGN KEY (id_habilidad) REFERENCES Habilidades(id_habilidad) ON DELETE CASCADE
-);
+-- TRIGGER 2: Auditoría/Seguridad en la tabla Usuario
+-- Si un usuario supera los 3 intentos fallidos, desactiva automáticamente su cuenta
+CREATE OR REPLACE FUNCTION bloquear_usuario_intentos()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.intentos_fallidos >= 3 THEN
+        NEW.activo := FALSE;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-CREATE TABLE Postulaciones (
-    id_postulacion INT AUTO_INCREMENT PRIMARY KEY,
-    id_estudiante INT NOT NULL,
-    id_oferta INT NOT NULL,
-    fecha_postulacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    estado_postulacion ENUM('Recibida', 'En Revision', 'Entrevista', 'Aceptada', 'Rechazada') DEFAULT 'Recibida',
-    comentarios_reclutador TEXT,
-    FOREIGN KEY (id_estudiante) REFERENCES Estudiantes(id_estudiante),
-    FOREIGN KEY (id_oferta) REFERENCES Ofertas_Pasantia(id_oferta)
-);
-
--- 5. MÓDULO DE EJECUCIÓN Y TRAZABILIDAD
-CREATE TABLE Pasantias_Oficiales (
-    id_pasantia INT AUTO_INCREMENT PRIMARY KEY,
-    id_postulacion INT NOT NULL UNIQUE,
-    id_tutor_universidad INT NOT NULL,
-    id_supervisor_empresa INT NOT NULL,
-    fecha_inicio_real DATE NOT NULL,
-    fecha_fin_estimada DATE NOT NULL,
-    estado_pasantia ENUM('Iniciada', 'En Curso', 'Finalizada', 'Suspendida', 'Cancelada') DEFAULT 'Iniciada',
-    FOREIGN KEY (id_postulacion) REFERENCES Postulaciones(id_postulacion),
-    FOREIGN KEY (id_tutor_universidad) REFERENCES Usuarios(id_usuario),
-    FOREIGN KEY (id_supervisor_empresa) REFERENCES Usuarios(id_usuario)
-);
-
-CREATE TABLE Bitacoras_Seguimiento (
-    id_bitacora INT AUTO_INCREMENT PRIMARY KEY,
-    id_pasantia INT NOT NULL,
-    semana_numero INT NOT NULL,
-    actividades_realizadas TEXT NOT NULL,
-    horas_totales_semana DECIMAL(4,2) NOT NULL,
-    estado_aprobacion ENUM('Pendiente', 'Aprobado_Empresa', 'Aprobado_Tutor', 'Rechazado') DEFAULT 'Pendiente',
-    fecha_entrega TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_pasantia) REFERENCES Pasantias_Oficiales(id_pasantia) ON DELETE CASCADE
-);
-
-CREATE TABLE Evaluaciones (
-    id_evaluacion INT AUTO_INCREMENT PRIMARY KEY,
-    id_pasantia INT NOT NULL,
-    tipo_evaluador ENUM('Empresa', 'Universidad') NOT NULL,
-    puntaje_tecnico INT CHECK (puntaje_tecnico BETWEEN 1 AND 10),
-    puntaje_blando INT CHECK (puntaje_blando BETWEEN 1 AND 10),
-    comentarios_adicionales TEXT,
-    fecha_evaluacion DATE NOT NULL,
-    FOREIGN KEY (id_pasantia) REFERENCES Pasantias_Oficiales(id_pasantia) ON DELETE CASCADE
-);
-
-CREATE TABLE Documentos_Expediente (
-    id_documento INT AUTO_INCREMENT PRIMARY KEY,
-    id_pasantia INT NOT NULL,
-    tipo_documento VARCHAR(100) NOT NULL, -- Ej: 'Seguro Contra Accidentes', 'Informe Final', 'Carta Aceptacion'
-    url_archivo VARCHAR(255) NOT NULL,
-    fecha_subida TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_pasantia) REFERENCES Pasantias_Oficiales(id_pasantia) ON DELETE CASCADE
-);
-
--- Índices sugeridos para optimizar búsquedas frecuentes
-CREATE INDEX idx_usuarios_email ON Usuarios(email);
-CREATE INDEX idx_estudiantes_matricula ON Estudiantes(matricula);
-CREATE INDEX idx_ofertas_estado ON Ofertas_Pasantia(estado_oferta);
-CREATE INDEX idx_postulaciones_estado ON Postulaciones(estado_postulacion);
+CREATE TRIGGER trg_bloquear_usuario_intentos
+BEFORE UPDATE ON Usuario
+FOR EACH ROW
+WHEN (NEW.intentos_fallidos IS DISTINCT FROM OLD.intentos_fallidos)
+EXECUTE FUNCTION bloquear_usuario_intentos();

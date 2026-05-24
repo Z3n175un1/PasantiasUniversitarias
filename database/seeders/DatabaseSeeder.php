@@ -2,25 +2,25 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // Crear un usuario de prueba simple
-        User::factory()->create([
-            'name' => 'Administrador',
-            'email' => 'admin@admin.com',
-            'phone_number' => '12345678',
-            'university_id' => '123',
-            'country' => 'Bolivia',
-            'password' => Hash::make('password'),
-        ]);
+        \App\Models\Rol::factory(10)->create();
+        \App\Models\Carrera::factory(10)->create();
+        \App\Models\Ubicacion::factory(10)->create();
+        \App\Models\Rubro::factory(10)->create();
+        \App\Models\Habilidad::factory(10)->create();
+        \App\Models\Reporte::factory(10)->create();
+        \App\Models\Usuario::factory(10)->create();
+        \App\Models\Estudiante::factory(10)->create();
+        \App\Models\Empresa::factory(10)->create();
+        \App\Models\Pasantia::factory(10)->create();
+        \App\Models\Postulacion::factory(10)->create();
+        \App\Models\Documento::factory(10)->create();
+        \App\Models\Ticket::factory(10)->create();
+        \App\Models\Accion::factory(10)->create();
     }
 }
