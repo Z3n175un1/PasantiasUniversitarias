@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,30 +10,52 @@
     <!-- Importar Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        body {
+            font-family: 'Inter', sans-serif;
         }
-        .animate-float { animation: float 4s infinite ease-in-out; }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-float {
+            animation: float 4s infinite ease-in-out;
+        }
 
         @keyframes progressLoad {
-            from { width: 0%; }
-            to { width: 87%; }
+            from {
+                width: 0%;
+            }
+
+            to {
+                width: 87%;
+            }
         }
-        .animate-progress { animation: progressLoad 2s ease-out forwards; }
+
+        .animate-progress {
+            animation: progressLoad 2s ease-out forwards;
+        }
 
         /* Estilos para la animación del logo (sacados del login) */
         .logo-container:hover .logo-icon {
             transform: rotate(12deg) scale(1.1);
             background-color: #2b6df2;
         }
+
         .logo-icon {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
     </style>
 </head>
+
 <body class="bg-white overflow-x-hidden text-[#1a1a1a]">
 
     <!-- HEADER / NAVBAR -->
@@ -45,23 +68,23 @@
                 Conecta tu futuro con la <span class="text-[#2b6df2]">Pasantía Perfecta</span>
             </h1>
             <p class="text-[#666] text-lg leading-relaxed max-w-xl">
-                Cerrar la brecha entre estudiantes ambiciosos y empresas pensantes. Encuentra oportunidades de pasantía significativas o descubre el mejor talento para tu organización.
+                Cerrar la brecha entre estudiantes ambiciosos y empresas pensantes. Encuentra oportunidades de pasantía
+                significativas o descubre el mejor talento para tu organización.
             </p>
             <div class="flex gap-4 pt-4">
                 <a href="{{ route('explora') }}"
-   class="bg-[#0d121f] text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg active:scale-95 flex items-center gap-2 inline-flex">
-    Buscar Pasantías
-    <i data-lucide="search" class="w-5 h-5"></i>
-</a>
-                <a href="{{ route('login') }}"
-   class="bg-white border border-[#eee] px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition active:scale-95 text-[#1a1a1a] inline-block">
-   Publicar Pasantía
-</a>
+                    class="bg-[#0d121f] text-white px-8 py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg active:scale-95 flex items-center gap-2 inline-flex">
+                    Buscar Pasantías
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </a>
+
             </div>
         </div>
         <div class="flex-1 relative animate-float flex justify-center lg:justify-end">
-            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800" alt="Students working" class="w-full max-w-[550px] rounded-[32px] shadow-2xl border-4 border-white">
-            <div class="absolute bottom-8 -left-8 bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_15px_40px_rgba(0,0,0,0.1)] border border-gray-100">
+            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800"
+                alt="Students working" class="w-full max-w-[550px] rounded-[32px] shadow-2xl border-4 border-white">
+            <div
+                class="absolute bottom-8 -left-8 bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_15px_40px_rgba(0,0,0,0.1)] border border-gray-100">
                 <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100">
                     <div class="w-6 h-6 border-2 border-[#2b6df2] rounded-full border-t-transparent animate-spin"></div>
                 </div>
@@ -79,59 +102,79 @@
     <!-- FEATURES -->
     <section class="grid grid-cols-1 md:grid-cols-3 py-24 px-[8%] gap-10 bg-white">
         <!-- Feature 1 -->
-        <div class="bg-white p-10 rounded-[24px] border border-[#f0f0f0] shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 group">
-            <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#eef4ff] mb-6 group-hover:scale-110 transition-transform shadow-inner border border-blue-100">
+        <div
+            class="bg-white p-10 rounded-[24px] border border-[#f0f0f0] shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 group">
+            <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#eef4ff] mb-6 group-hover:scale-110 transition-transform shadow-inner border border-blue-100">
                 <i data-lucide="brain-circuit" class="w-7 h-7 text-[#2b6df2]"></i>
             </div>
             <h3 class="text-2xl font-bold mb-4 text-[#0d1b2a] tracking-tight">Matching Inteligente</h3>
-            <p class="text-[#666] leading-relaxed text-base">Nuestro algoritmo inteligente combina estudiantes con las oportunidades de pasantía más relevantes basadas en habilidades, intereses y objetivos profesionales.</p>
+            <p class="text-[#666] leading-relaxed text-base">Nuestro algoritmo inteligente combina estudiantes con las
+                oportunidades de pasantía más relevantes basadas en habilidades, intereses y objetivos profesionales.
+            </p>
         </div>
         <!-- Feature 2 -->
-        <div class="bg-white p-10 rounded-[24px] border border-[#f0f0f0] shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 group">
-            <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#eef4ff] mb-6 group-hover:scale-110 transition-transform shadow-inner border border-blue-100">
+        <div
+            class="bg-white p-10 rounded-[24px] border border-[#f0f0f0] shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 group">
+            <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#eef4ff] mb-6 group-hover:scale-110 transition-transform shadow-inner border border-blue-100">
                 <i data-lucide="building-2" class="w-7 h-7 text-[#2b6df2]"></i>
             </div>
             <h3 class="text-2xl font-bold mb-4 text-[#0d1b2a] tracking-tight">Empresas Verificadas</h3>
-            <p class="text-[#666] leading-relaxed text-base">Trabaja con confianza sabiendo que todas las empresas están verificadas y comprometidas a proporcionar experiencias de aprendizaje valiosas.</p>
+            <p class="text-[#666] leading-relaxed text-base">Trabaja con confianza sabiendo que todas las empresas están
+                verificadas y comprometidas a proporcionar experiencias de aprendizaje valiosas.</p>
         </div>
         <!-- Feature 3 -->
-        <div class="bg-white p-10 rounded-[24px] border border-[#f0f0f0] shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 group">
-            <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#eef4ff] mb-6 group-hover:scale-110 transition-transform shadow-inner border border-blue-100">
+        <div
+            class="bg-white p-10 rounded-[24px] border border-[#f0f0f0] shadow-sm hover:shadow-xl hover:border-blue-100 transition-all duration-300 group">
+            <div
+                class="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#eef4ff] mb-6 group-hover:scale-110 transition-transform shadow-inner border border-blue-100">
                 <i data-lucide="layout-dashboard" class="w-7 h-7 text-[#2b6df2]"></i>
             </div>
             <h3 class="text-2xl font-bold mb-4 text-[#0d1b2a] tracking-tight">Gestión Simplificada</h3>
-            <p class="text-[#666] leading-relaxed text-base">El proceso de gestión de aplicaciones es intuitivo y sencillo, permitiéndote encontrar la coincidencia perfecta de manera eficiente.</p>
+            <p class="text-[#666] leading-relaxed text-base">El proceso de gestión de aplicaciones es intuitivo y
+                sencillo, permitiéndote encontrar la coincidencia perfecta de manera eficiente.</p>
         </div>
     </section>
 
     <!-- SECTION STUDENTS -->
-    <section class="bg-[#2b6df2] py-24 px-[8%] flex flex-col lg:flex-row items-center gap-16 text-white rounded-[40px] my-10 mx-[4%] shadow-2xl shadow-blue-500/20">
+    <section
+        class="bg-[#2b6df2] py-24 px-[8%] flex flex-col lg:flex-row items-center gap-16 text-white rounded-[40px] my-10 mx-[4%] shadow-2xl shadow-blue-500/20">
         <div class="flex-1 space-y-6">
-            <div class="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
+            <div
+                class="w-16 h-16 bg-white/15 rounded-2xl flex items-center justify-center mb-6 border border-white/20 shadow-xl">
                 <i data-lucide="user-check" class="w-8 h-8 text-white"></i>
             </div>
             <h2 class="text-4xl lg:text-5xl font-bold mb-6 tracking-tight">Para Estudiantes</h2>
             <ul class="mb-10 space-y-4 text-lg text-blue-50 opacity-95">
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> Explorar cientos de oportunidades de pasantía</li>
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> Matching con posiciones que se ajusten a tu perfil</li>
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> Seguimiento de aplicaciones en tiempo real</li>
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i> Construir tu red profesional</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                    Explorar cientos de oportunidades de pasantía</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                    Matching con posiciones que se ajusten a tu perfil</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                    Seguimiento de aplicaciones en tiempo real</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-white"></i>
+                    Construir tu red profesional</li>
             </ul>
             <a href="login"
-   class="bg-white text-[#2b6df2] px-10 py-4 rounded-xl font-bold hover:bg-blue-50 transition shadow-lg active:scale-95 text-lg inline-block">
-   Comenzar como estudiante
-</a>
+                class="bg-white text-[#2b6df2] px-10 py-4 rounded-xl font-bold hover:bg-blue-50 transition shadow-lg active:scale-95 text-lg inline-block">
+                Comenzar como estudiante
+            </a>
         </div>
-        <div class="flex-1 w-full bg-white/10 p-10 rounded-[32px] flex flex-col gap-6 border border-white/20 shadow-inner">
-            <div class="bg-white/15 p-7 rounded-2xl transform transition hover:scale-[1.03] hover:bg-white/20 cursor-pointer border border-white/10 space-y-2">
+        <div
+            class="flex-1 w-full bg-white/10 p-10 rounded-[32px] flex flex-col gap-6 border border-white/20 shadow-inner">
+            <div
+                class="bg-white/15 p-7 rounded-2xl transform transition hover:scale-[1.03] hover:bg-white/20 cursor-pointer border border-white/10 space-y-2">
                 <span class="text-sm font-semibold opacity-80 block uppercase tracking-wider">Paso 1</span>
                 <h3 class="text-2xl font-bold text-white">Crear perfil</h3>
             </div>
-            <div class="bg-white/15 p-7 rounded-2xl transform transition hover:scale-[1.03] hover:bg-white/20 cursor-pointer border border-white/10 space-y-2">
+            <div
+                class="bg-white/15 p-7 rounded-2xl transform transition hover:scale-[1.03] hover:bg-white/20 cursor-pointer border border-white/10 space-y-2">
                 <span class="text-sm font-semibold opacity-80 block uppercase tracking-wider">Paso 2</span>
                 <h3 class="text-2xl font-bold text-white">Buscar y aplicar</h3>
             </div>
-            <div class="bg-white/15 p-7 rounded-2xl transform transition hover:scale-[1.03] hover:bg-white/20 cursor-pointer border border-white/10 space-y-2">
+            <div
+                class="bg-white/15 p-7 rounded-2xl transform transition hover:scale-[1.03] hover:bg-white/20 cursor-pointer border border-white/10 space-y-2">
                 <span class="text-sm font-semibold opacity-80 block uppercase tracking-wider">Paso 3</span>
                 <h3 class="text-2xl font-bold text-white">Comenzar la pasantía</h3>
             </div>
@@ -140,43 +183,53 @@
 
     <!-- SECTION COMPANIES -->
     <section class="bg-[#fcfcfc] py-24 px-[8%] flex flex-col lg:flex-row items-center gap-16">
-        <div class="flex-1 w-full bg-[#f8f8f8] p-10 rounded-[32px] flex flex-col gap-6 order-2 lg:order-1 border border-gray-100 shadow-inner">
-            <div class="bg-white p-7 rounded-2xl border border-[#eee] shadow-sm transform transition hover:scale-[1.03] hover:shadow-lg hover:border-gray-200 cursor-pointer space-y-2">
+        <div
+            class="flex-1 w-full bg-[#f8f8f8] p-10 rounded-[32px] flex flex-col gap-6 order-2 lg:order-1 border border-gray-100 shadow-inner">
+            <div
+                class="bg-white p-7 rounded-2xl border border-[#eee] shadow-sm transform transition hover:scale-[1.03] hover:shadow-lg hover:border-gray-200 cursor-pointer space-y-2">
                 <span class="text-[#888] text-sm font-semibold block uppercase tracking-wider">Paso 1</span>
                 <h3 class="text-2xl font-bold text-[#0d121f]">Publicar oportunidades</h3>
             </div>
-            <div class="bg-white p-7 rounded-2xl border border-[#eee] shadow-sm transform transition hover:scale-[1.03] hover:shadow-lg hover:border-gray-200 cursor-pointer space-y-2">
+            <div
+                class="bg-white p-7 rounded-2xl border border-[#eee] shadow-sm transform transition hover:scale-[1.03] hover:shadow-lg hover:border-gray-200 cursor-pointer space-y-2">
                 <span class="text-[#888] text-sm font-semibold block uppercase tracking-wider">Paso 2</span>
                 <h3 class="text-2xl font-bold text-[#0d121f]">Revisar candidatos</h3>
             </div>
-            <div class="bg-white p-7 rounded-2xl border border-[#eee] shadow-sm transform transition hover:scale-[1.03] hover:shadow-lg hover:border-gray-200 cursor-pointer space-y-2">
+            <div
+                class="bg-white p-7 rounded-2xl border border-[#eee] shadow-sm transform transition hover:scale-[1.03] hover:shadow-lg hover:border-gray-200 cursor-pointer space-y-2">
                 <span class="text-[#888] text-sm font-semibold block uppercase tracking-wider">Paso 3</span>
                 <h3 class="text-2xl font-bold text-[#0d121f]">Contratar talento</h3>
             </div>
         </div>
         <div class="flex-1 order-1 lg:order-2 space-y-6">
-            <div class="w-16 h-16 bg-[#2b6df2]/10 rounded-2xl flex items-center justify-center mb-6 border border-blue-100 shadow-md">
+            <div
+                class="w-16 h-16 bg-[#2b6df2]/10 rounded-2xl flex items-center justify-center mb-6 border border-blue-100 shadow-md">
                 <i data-lucide="briefcase" class="w-8 h-8 text-[#2b6df2]"></i>
             </div>
             <h2 class="text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-[#0d121f]">Para Empresas</h2>
             <ul class="mb-10 space-y-4 text-lg text-[#555]">
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i> Acceso a pool de estudiantes talentosos</li>
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i> Recomendaciones inteligentes de candidatos</li>
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i> Gestión de aplicaciones optimizada</li>
-                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i> Construir tu futuro equipo de trabajo</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i>
+                    Acceso a pool de estudiantes talentosos</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i>
+                    Recomendaciones inteligentes de candidatos</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i>
+                    Gestión de aplicaciones optimizada</li>
+                <li class="flex items-center gap-3"><i data-lucide="check-circle-2" class="w-5 h-5 text-[#2b6df2]"></i>
+                    Construir tu futuro equipo de trabajo</li>
             </ul>
-           <a href="login"
-   class="bg-[#0d121f] text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg active:scale-95 text-lg inline-block">
-   Comenzar como Empresa
-</a>
+            <a href="login"
+                class="bg-[#0d121f] text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-800 transition shadow-lg active:scale-95 text-lg inline-block">
+                Comenzar como Empresa
+            </a>
         </div>
     </section>
 
-    
+
     <!-- Inicializar Lucide Icons -->
     @include('components.footer')
     <script>
         lucide.createIcons();
     </script>
 </body>
+
 </html>

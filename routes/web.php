@@ -1,10 +1,10 @@
 <?php
 
-// use App\Http\Controllers\ProfileController;
-// use App\Http\Controllers\OfferController;
-// use App\Http\Controllers\CompanyController;
-// use App\Http\Controllers\StudentController;
-// use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OfferController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\ApplicationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
