@@ -139,7 +139,6 @@
                                             <p class="text-xs text-slate-400">{{ $usuario->correo }}</p>
                                         </div>
                                     </div>
-                                    <span class="text-xs text-slate-400">{{ $usuario->creado_en->diffForHumans() }}</span>
                                 </div>
                             @endforeach
                         </div>
