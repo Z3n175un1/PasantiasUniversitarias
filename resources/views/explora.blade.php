@@ -43,20 +43,7 @@
 </head>
 <body class="bg-white overflow-x-hidden text-[#1a1a1a]">
 
-    <header class="flex justify-between items-center py-4 px-[8%] bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
-        <a href="index" class="flex items-center gap-2.5 group logo-container cursor-pointer">
-            <div class="w-10 h-10 bg-[#0d121f] rounded-xl flex items-center justify-center logo-icon shadow-sm">
-                <i data-lucide="graduation-cap" class="text-white w-6 h-6"></i>
-            </div>
-            <span class="text-2xl font-extrabold tracking-tighter text-[#0d121f]">InternConnect</span>
-        </a>
-        
-        <nav class="flex items-center gap-6">
-            <a href="index" class="text-[#2b6df2] font-semibold hover:text-[#2b6df2] transition">Home</a>
-            <a href="login" class="px-5 py-2.5 border border-[#ddd] rounded-xl text-[#1a1a1a] font-medium hover:bg-gray-50 transition">Login</a>
-            <a href="registro" class="px-6 py-2.5 bg-[#0d121f] text-white rounded-xl font-semibold hover:bg-slate-800 transition shadow-md active:scale-95">Registro</a>
-        </nav>
-    </header>
+    @include('components.navbar')
 
     <main class="min-h-screen bg-[#f8fafc]">
         <section class="pt-12 pb-20 px-[8%] search-gradient relative overflow-hidden">
@@ -171,6 +158,7 @@
                         </div>
                     </div>
 
+                                        @if(isset($ofertas) && $ofertas->isEmpty())
                     <div id="empty-state" class="bg-white border border-slate-100 rounded-[2rem] p-12 text-center shadow-sm">
                         <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                             <i data-lucide="database-zap" class="w-8 h-8"></i>
@@ -178,11 +166,11 @@
                         <h3 class="text-lg font-bold text-slate-800 mb-1">Sin conexión transaccional</h3>
                         <p class="text-sm text-slate-500 max-w-md mx-auto">No se encontraron ofertas cargadas en este país. Interactúa con la barra de filtros de la izquierda para simular el comportamiento del sistema.</p>
                     </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden" id="postings-grid">
-                        
+                    @else
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="postings-grid">
+                        @foreach($ofertas as $oferta)
                         <div class="job-card card-neo bg-white p-7 rounded-[2rem] flex flex-col justify-between" 
-                             data-title="Pasante de Inteligencia Artificial" data-company="DataFlow Solutions" data-dept="Santa Cruz" data-area="Ingeniería" data-modality="Presencial">
+                             data-title="{{ $oferta->titulo }}" data-company="{{ $oferta->perfilEmpresa->nombre_empresa ?? 'Empresa' }}" data-dept="{{ $oferta->ubicacion->ciudad ?? 'Ciudad' }}" data-area="{{ 'Área' }}" data-modality="Presencial">
                             <div>
                                 <div class="flex justify-between items-start mb-6">
                                     <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
@@ -191,120 +179,39 @@
                                     <span class="px-3 py-1 bg-blue-50 text-blue-700 font-extrabold rounded-full text-xs">96% Match</span>
                                 </div>
                                 <div class="space-y-2 mb-6">
-                                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight card-title">Pasante de Inteligencia Artificial</h3>
-                                    <p class="text-sm font-bold text-blue-600">DataFlow Solutions • <span class="card-dept">Santa Cruz</span></p>
-                                    <span class="inline-block mt-1 px-2.5 py-0.5 bg-purple-50 text-purple-700 rounded-md text-xs font-bold">Presencial</span>
+                                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight card-title">{{ $oferta->titulo }}</h3>
+                                    <p class="text-sm font-bold text-blue-600">{{ $oferta->perfilEmpresa->nombre_empresa ?? 'Empresa Anónima' }}</p>
+                                    <p class="text-sm text-slate-500 line-clamp-2 mt-2">{{ Str::limit($oferta->descripcion, 90) }}</p>
                                 </div>
-                            </div>
-                            <div class="flex items-center justify-between pt-6 border-t border-slate-50">
-                                <span class="text-xs font-semibold text-slate-400">Hace 2 horas</span>
-                                <button class="px-6 py-3 bg-[#0d121f] text-white rounded-xl text-sm font-bold">Ver detalles</button>
-                            </div>
-                        </div>
-
-                        <div class="job-card card-neo bg-white p-7 rounded-[2rem] flex flex-col justify-between" 
-                             data-title="Desarrollador Fullstack Junior" data-company="SoftBol" data-dept="La Paz" data-area="Ingeniería" data-modality="Remoto">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-                                        <i data-lucide="globe" class="w-8 h-8 text-blue-500"></i>
+                                
+                                <div class="flex flex-wrap gap-2 mb-6">
+                                    <div class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg text-xs font-semibold text-slate-600">
+                                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                                        <span>{{ $oferta->ubicacion->ciudad ?? 'Remoto' }}</span>
                                     </div>
-                                    <span class="px-3 py-1 bg-blue-50 text-blue-700 font-extrabold rounded-full text-xs">88% Match</span>
-                                </div>
-                                <div class="space-y-2 mb-6">
-                                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight card-title">Desarrollador Fullstack Junior</h3>
-                                    <p class="text-sm font-bold text-blue-600">SoftBol • <span class="card-dept">La Paz</span></p>
-                                    <span class="inline-block mt-1 px-2.5 py-0.5 bg-green-50 text-green-700 rounded-md text-xs font-bold">Virtual / Remoto</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between pt-6 border-t border-slate-50">
-                                <span class="text-xs font-semibold text-slate-400">Ayer</span>
-                                <button class="px-6 py-3 bg-[#0d121f] text-white rounded-xl text-sm font-bold">Ver detalles</button>
-                            </div>
-                        </div>
-
-                        <div class="job-card card-neo bg-white p-7 rounded-[2rem] flex flex-col justify-between" 
-                             data-title="Diseñador UI/UX de Plataformas" data-company="CreativosBo" data-dept="Cochabamba" data-area="Diseño" data-modality="Remoto">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-                                        <i data-lucide="palette" class="w-8 h-8 text-pink-500"></i>
+                                    <div class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg text-xs font-semibold text-slate-600">
+                                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                                        <span>Presencial</span>
                                     </div>
-                                    <span class="px-3 py-1 bg-blue-50 text-blue-700 font-extrabold rounded-full text-xs">82% Match</span>
-                                </div>
-                                <div class="space-y-2 mb-6">
-                                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight card-title">Diseñador UI/UX de Plataformas</h3>
-                                    <p class="text-sm font-bold text-blue-600">CreativosBo • <span class="card-dept">Cochabamba</span></p>
-                                    <span class="inline-block mt-1 px-2.5 py-0.5 bg-green-50 text-green-700 rounded-md text-xs font-bold">Virtual / Remoto</span>
                                 </div>
                             </div>
-                            <div class="flex items-center justify-between pt-6 border-t border-slate-50">
-                                <span class="text-xs font-semibold text-slate-400">Hace 3 días</span>
-                                <button class="px-6 py-3 bg-[#0d121f] text-white rounded-xl text-sm font-bold">Ver detalles</button>
+                            
+                            <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                                <span class="text-xs font-bold text-slate-400">{{ $oferta->fecha_inicio ? \Carbon\Carbon::parse($oferta->fecha_inicio)->diffForHumans() : 'Reciente' }}</span>
+                                <button class="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors shadow-md shadow-slate-200">
+                                    Postular
+                                </button>
                             </div>
                         </div>
-
-                        <div class="job-card card-neo bg-white p-7 rounded-[2rem] flex flex-col justify-between" 
-                             data-title="Asistente de Auditoría Financiera" data-company="Consultores Asociados" data-dept="Tarija" data-area="Negocios" data-modality="Presencial">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-                                        <i data-lucide="trending-up" class="w-8 h-8 text-emerald-500"></i>
-                                    </div>
-                                    <span class="px-3 py-1 bg-blue-50 text-blue-700 font-extrabold rounded-full text-xs">79% Match</span>
-                                </div>
-                                <div class="space-y-2 mb-6">
-                                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight card-title">Asistente de Auditoría Financiera</h3>
-                                    <p class="text-sm font-bold text-blue-600">Consultores Asociados • <span class="card-dept">Tarija</span></p>
-                                    <span class="inline-block mt-1 px-2.5 py-0.5 bg-purple-50 text-purple-700 rounded-md text-xs font-bold">Presencial</span>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between pt-6 border-t border-slate-50">
-                                <span class="text-xs font-semibold text-slate-400">Hace 1 semana</span>
-                                <button class="px-6 py-3 bg-[#0d121f] text-white rounded-xl text-sm font-bold">Ver detalles</button>
-                            </div>
-                        </div>
-
+                        @endforeach
                     </div>
+                    @endif
                 </div>
-
             </div>
-        </section>
+        </div>
     </main>
 
-    <footer class="bg-[#0d121f] text-white pt-24 pb-12 px-[8%] rounded-t-[40px]">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-16 border-b border-gray-800">
-            <div class="footer-brand space-y-4">
-                <a href="index" class="flex items-center gap-2.5 group logo-container cursor-pointer">
-                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center logo-icon border border-white/10">
-                        <i data-lucide="graduation-cap" class="text-white w-6 h-6"></i>
-                    </div>
-                    <span class="text-2xl font-extrabold tracking-tighter text-white">InternConnect</span>
-                </a>
-                <p class="text-[#aaa] max-w-[280px] text-sm leading-relaxed">Conectando estudiantes y empresas para experiencias de pasantía significativas y de alto impacto.</p>
-            </div>
-            <div class="flex flex-col gap-3.5">
-                <h4 class="font-bold mb-3 text-lg text-white/90">Para Estudiantes</h4>
-                <a href="explora" class="text-[#aaa] hover:text-[#2b6df2] transition text-sm">Explorar Pasantías</a>
-                <a href="comofunciona" class="text-[#aaa] hover:text-[#2b6df2] transition text-sm">Cómo Funciona</a>
-            </div>
-            <div class="flex flex-col gap-3.5">
-                <h4 class="font-bold mb-3 text-lg text-white/90">Para Empresas</h4>
-                <a href="login" class="text-[#aaa] hover:text-[#2b6df2] transition text-sm">Publicar Oportunidades</a>
-                <a href="login" class="text-[#aaa] hover:text-[#2b6df2] transition text-sm">Encontrar Talento</a>
-            </div>
-            <div class="flex flex-col gap-3.5">
-                <h4 class="font-bold mb-3 text-lg text-white/90">Compañía</h4>
-                <a href="sobrenosotros" class="text-[#aaa] hover:text-[#2b6df2] transition text-sm">Sobre Nosotros</a>
-                <a href="contacto" class="text-[#aaa] hover:text-[#2b6df2] transition text-sm">Contacto</a>
-                <a href="privacidad" class="text-[#aaa] hover:text-[#2b6df2] transition text-sm">Política de Privacidad</a>
-            </div>
-        </div>
-        <div class="text-center pt-12 text-[#666] text-sm">
-            © 2026 InternConnect. Todos los derechos reservados. Desarrollado con pasión en Bolivia.
-        </div>
-    </footer>
-
+    @include('components.footer')
     <script>
         // Inicializar Iconos de Lucide
         lucide.createIcons();

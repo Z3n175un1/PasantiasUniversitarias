@@ -1,103 +1,114 @@
 <?php
 
-//dependencias de controladores
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\OfferController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\StudentController;
-use App\Http\Controllers\ApplicationController;
+// use App\Http\Controllers\ProfileController;
+// use App\Http\Controllers\OfferController;
+// use App\Http\Controllers\CompanyController;
+// use App\Http\Controllers\StudentController;
+// use App\Http\Controllers\ApplicationController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Models\OfertaPasantia;
+use App\Models\Usuario;
+use App\Models\PerfilEmpresa;
+use App\Models\PerfilEstudiante;
+use App\Models\Postulacion;
 
-//ruta de dashboard para estudiantes autenticados
-Route::get('/dashboard', function () {
-    return view('dash_est');
-})->middleware(['auth', 'verified'])->name('dashboard');
-// Alias to match route names in the view
-Route::get('/student/dashboard', function () {
-    return redirect()->route('dashboard');
-})->name('student.dashboard');
+// Public routes for viewing pages
+Route::get('/', function () {
+    return view('welcome');
+})->name('index');
 
+Route::get('/explora', function () {
+    $ofertas = OfertaPasantia::with(['ubicacion', 'perfilEmpresa'])->get();
+    return view('explora', compact('ofertas'));
+})->name('explora');
 
+Route::get('/comofunciona', function () {
+    return view('comofunciona');
+})->name('comofunciona');
 
-// Public routes for viewing offers
-Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
-Route::get('/offers/{offer}', [OfferController::class, 'show'])->name('offers.show');
-Route::view('/terminos-y-condiciones', 'terminos-cond')->name('terms');
-
-Route::get('/about', function () {
-    return view('acerca');
-})->name('about');
-Route::get('/busqueda', function () {
-    return view('busqueda');
-})->name('busqueda');
-
-
-Route::get('/notices', function(){
-    return view('notices'); 
-})->name('notices');
+Route::get('/sobrenosotros', function () {
+    return view('sobrenosotros');
+})->name('sobrenosotros');
 
 Route::get('/contacto', function () {
     return view('contacto');
 })->name('contacto');
 
 Route::get('/privacidad', function () {
-    return view('priva');
-})->name('priva');
+    return view('privacidad');
+})->name('privacidad');
 
-Route::get('/comufunciona', function () {
-    return view('comfun');
-})->name('comfun');
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([
+        'correo' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
+
+    if (Auth::attempt(['correo' => $credentials['correo'], 'password' => $credentials['password']])) {
+        $request->session()->regenerate();
+        $user = Auth::user();
+        if ($user->rol_id == 3)
+            return redirect()->route('dashboard.admin');
+        if ($user->rol_id == 2)
+            return redirect()->route('dashboard.company');
+        return redirect()->route('dashboard.student');
+    }
+
+    return back()->withErrors([
+        'correo' => 'Las credenciales no coinciden en nuestro sistema.',
+    ]);
+})->name('login.post');
+
+Route::post('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');
+})->name('logout');
+
+Route::get('/registro', function () {
+    return view('auth.registro');
+})->name('registro');
+
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/dashboard/admin', function () {
+        if (Auth::user()->rol_id != 3)
+            return abort(403);
+        $stats = [
+            'usuarios' => Usuario::count(),
+            'empresas' => PerfilEmpresa::count(),
+            'estudiantes' => PerfilEstudiante::count(),
+            'ofertas' => \App\Models\OfertaPasantia::count(),
+            'postulaciones' => Postulacion::count(),
+            'ultimos_usuarios' => Usuario::latest('creado_en')->take(10)->get()
+        ];
+        return view('dashboards.dashboard_admin', compact('stats'));
+    })->name('dashboard.admin');
 
-    // System management routes
-    Route::resource('offers', OfferController::class)->except(['index', 'show']);
-    Route::resource('companies', CompanyController::class);
-    Route::resource('students', StudentController::class);
-    Route::resource('applications', ApplicationController::class);
+    Route::get('/dashboard/company', function () {
+        if (Auth::user()->rol_id != 2)
+            return abort(403);
+        $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->first() ?? PerfilEmpresa::find(1);
+        $ofertas = \App\Models\OfertaPasantia::where('perfil_empresa_id', $empresa->id)->get();
+        return view('dashboards.dashboard_company', compact('empresa', 'ofertas'));
+    })->name('dashboard.company');
+
+    Route::get('/dashboard/student', function () {
+        if (Auth::user()->rol_id != 1)
+            return abort(403);
+        $estudiante = PerfilEstudiante::where('usuario_id', Auth::id())->first() ?? PerfilEstudiante::find(1);
+        $postulaciones = Postulacion::where('perfil_estudiante_id', $estudiante->id)->get();
+        return view('dashboards.dashboard_student', compact('estudiante', 'postulaciones'));
+    })->name('dashboard.student');
 });
 
-// Route::middleware(['auth', 'admin'])
-//     ->prefix('admin')
-//     ->group(function () {
-// Public routes
-Route::view('/', 'welcome')->name('home');
-Route::view('/registro/tipo-cuenta', 'acctype')->name('account.type');
-
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [StudentController::class, 'index'])->name('dashboard');
-    // Alias for student dashboard
-    Route::get('/student/dashboard', function () {
-        return redirect()->route('dashboard');
-    })->name('student.dashboard');
-});
-
-Route::get('/offers', [OfferController::class, 'index'])->name('offers.index');
-Route::get('/offers/{offer}', [OfferController::class, 'show'])->name('offers.show');
-Route::view('/terminos-y-condiciones', 'terminos-cond')->name('terms');
-Route::view('/sobrenosotros', 'acerca')->name('acerca');
-Route::view('/contacto', 'contacto')->name('contacto');
-Route::view('/privacidad', 'priva')->name('priva');
-Route::view('/comufunciona', 'comfun')->name('comfun');
-
-// Authenticated routes
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::resource('offers', OfferController::class)->except(['index', 'show']);
-    Route::resource('companies', CompanyController::class);
-    Route::resource('students', StudentController::class);
-    Route::resource('applications', ApplicationController::class);
-});
-
-// Admin routes
-Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::view('/dashboard', 'admin.dashboard')->name('admin.dashboard');
-});
-
-require __DIR__.'/auth.php';
+// Auth routes (fallback if they exists, though views were deleted)
+require __DIR__ . '/auth.php';

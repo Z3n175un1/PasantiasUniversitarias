@@ -36,21 +36,7 @@
 <body class="bg-white text-[#1a1a1a] overflow-x-hidden">
 
     <!-- NAVBAR (Actualizado con el nuevo logo animado) -->
-    <header class="flex justify-between items-center py-4 px-[8%] bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
-        <!-- NUEVO LOGO ANIMADO -->
-        <a href="index" class="flex items-center gap-2.5 group logo-container cursor-pointer">
-            <div class="w-10 h-10 bg-[#0d121f] rounded-xl flex items-center justify-center logo-icon shadow-sm">
-                <i data-lucide="graduation-cap" class="text-white w-6 h-6"></i>
-            </div>
-            <span class="text-2xl font-extrabold tracking-tighter text-[#0d121f]">InternConnect</span>
-        </a>
-        
-        <nav class="flex items-center gap-6">
-            <a href="index" class="text-[#666] font-medium hover:text-[#2b6df2] transition">Home</a>
-            <a href="login" class="px-5 py-2.5 border border-[#ddd] rounded-xl text-[#1a1a1a] font-medium hover:bg-gray-50 transition">Login</a>
-            <a href="registro" class="px-6 py-2.5 bg-[#0d121f] text-white rounded-xl font-semibold hover:bg-slate-800 transition shadow-md active:scale-95">Registro</a>
-        </nav>
-    </header>
+    @include('components.navbar')
 
     <!-- ABOUT HERO -->
     <section class="relative py-24 px-[8%] overflow-hidden bg-[#0d121f] text-white">
@@ -138,45 +124,7 @@
     </section>
 
     <!-- FOOTER (Actualizado con el nuevo logo animado) -->
-    <footer class="bg-[#0d121f] text-white pt-20 pb-10 px-[8%]">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 border-b border-[#222] pb-16">
-            <div class="footer-brand space-y-4">
-                <!-- NUEVO LOGO EN EL FOOTER -->
-                <a href="index" class="flex items-center gap-2.5 group logo-container cursor-pointer">
-                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center logo-icon border border-white/10">
-                        <i data-lucide="graduation-cap" class="text-white w-6 h-6"></i>
-                    </div>
-                    <span class="text-2xl font-extrabold tracking-tighter text-white">InternConnect</span>
-                </a>
-                <p class="text-[#888] leading-relaxed text-sm max-w-[280px]">Conectando estudiantes y empresas para experiencias de pasantía significativas.</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-6 text-sm uppercase tracking-widest text-[#2b6df2]">Para Estudiantes</h4>
-                <nav class="flex flex-col gap-4 text-sm text-[#888]">
-                    <a href="explora" class="hover:text-white transition">Explorar Pasantías</a>
-                    <a href="comufunciona" class="hover:text-white transition">Cómo Funciona</a>
-                </nav>
-            </div>
-            <div>
-                <h4 class="font-bold mb-6 text-sm uppercase tracking-widest text-[#2b6df2]">Para Empresas</h4>
-                <nav class="flex flex-col gap-4 text-sm text-[#888]">
-                    <a href="login" class="hover:text-white transition">Publicar Oportunidades</a>
-                    <a href="login" class="hover:text-white transition">Encontrar Talento</a>
-                </nav>
-            </div>
-            <div>
-                <h4 class="font-bold mb-6 text-sm uppercase tracking-widest text-[#2b6df2]">Compañía</h4>
-                <nav class="flex flex-col gap-4 text-sm text-[#888]">
-                    <a href="sobrenosotros" class="hover:text-white transition font-medium text-white">Sobre Nosotros</a>
-                    <a href="contacto" class="hover:text-white transition">Contacto</a>
-                    <a href="privacidad" class="hover:text-white transition">Política de Privacidad</a>
-                </nav>
-            </div>
-        </div>
-        <div class="text-center pt-10 text-[#555] text-xs uppercase tracking-[0.2em]">
-            © 2026 InternConnect. Todos los derechos reservados.
-        </div>
-    </footer>
+    @include('components.footer')
 
     <!-- Inicializar Lucide Icons -->
     <script>

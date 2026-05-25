@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run(): void
-    {
-        DB::statement(<<<EOT
+        public function run(): void
+        {
+                DB::statement(<<<EOT
 INSERT INTO "roles" ("id", "nombre", "descripcion") VALUES (1, 'estudiante', 'Estudiante universitario'),
 (2, 'empresa', 'Empresa registrada'),
 (3, 'administrador', 'Administrador del sistema');
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "ubicaciones" ("id", "ciudad", "region", "pais", "codigo_pais") VALUES (1, 'La Paz', 'La Paz', 'Bolivia', 'BO'),
 (2, 'El Alto', 'La Paz', 'Bolivia', 'BO'),
 (3, 'Santa Cruz', 'Santa Cruz', 'Bolivia', 'BO'),
@@ -32,8 +32,8 @@ INSERT INTO "ubicaciones" ("id", "ciudad", "region", "pais", "codigo_pais") VALU
 (14, 'Quillacollo', 'Cochabamba', 'Bolivia', 'BO'),
 (15, 'Yacuiba', 'Tarija', 'Bolivia', 'BO');
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "tipos_documento" ("id", "nombre", "descripcion") VALUES (1, 'curriculum', 'Hoja de vida'),
 (2, 'certificado', 'Certificado académico'),
 (3, 'carta_presentacion', 'Carta laboral'),
@@ -50,24 +50,24 @@ INSERT INTO "tipos_documento" ("id", "nombre", "descripcion") VALUES (1, 'curric
 (14, 'seminario', 'Seminario'),
 (15, 'diploma', 'Diploma');
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "estados_postulacion" ("id", "nombre", "descripcion", "es_terminal") VALUES (1, 'enviada', 'Postulación enviada', 0),
 (2, 'revisada', 'Postulación revisada', 0),
 (3, 'entrevista', 'Entrevista programada', 0),
 (4, 'aceptada', 'Aceptada', 1),
 (5, 'rechazada', 'Rechazada', 1);
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "estados_publicacion" ("id", "nombre", "descripcion") VALUES (1, 'borrador', 'Oferta en edición'),
 (2, 'abierta', 'Oferta activa'),
 (3, 'cerrada', 'Oferta cerrada'),
 (4, 'pausada', 'Oferta pausada'),
 (5, 'finalizada', 'Proceso finalizado');
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "habilidades" ("id", "nombre", "categoria", "descripcion", "activa") VALUES (1, 'Laravel', 'Backend', 'Framework PHP', 1),
 (2, 'MySQL', 'Base de Datos', 'Gestión BD', 1),
 (3, 'Python', 'Programación', 'Lenguaje Python', 1),
@@ -84,9 +84,9 @@ INSERT INTO "habilidades" ("id", "nombre", "categoria", "descripcion", "activa")
 (14, 'C#', 'Programación', '.NET', 1),
 (15, 'Redes', 'Infraestructura', 'Networking', 1);
 EOT
-);
-        DB::statement(<<<EOT
-INSERT INTO "usuarios" ("id", "rol_id", "nombre", "correo", "contrasena_hash", "activo", "creado_en") VALUES (1, 3, 'Santiago Tabera', 'santiago@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
+                );
+                DB::statement(<<<EOT
+INSERT INTO "usuarios" ("id", "rol_id", "nombre", "correo", "contrasena_hash", "activo", "creado_en") VALUES (1, 3, 'Admin', 'admin@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
 (2, 3, 'Orlando Mercado', 'orlando@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
 (3, 3, 'Adrian Molina', 'adrian@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
 (4, 3, 'Fabricio Herrera', 'fabricio@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
@@ -107,16 +107,16 @@ INSERT INTO "usuarios" ("id", "rol_id", "nombre", "correo", "contrasena_hash", "
 (19, 2, 'Datec', 'rrhh@datec.com.bo', 'hash', 1, '2026-05-21 22:10:23'),
 (20, 2, 'Jatun Code', 'contacto@jatuncode.bo', 'hash', 1, '2026-05-21 22:10:23');
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "perfiles_empresa" ("id", "usuario_id", "nombre_empresa", "industria", "sitio_web", "verificada") VALUES (1, 16, 'Jalasoft', 'Software', 'https://jalasoft.com', 1),
 (2, 17, 'Tigo Bolivia', 'Telecomunicaciones', 'https://tigo.com.bo', 1),
 (3, 18, 'Banco Mercantil', 'Finanzas', 'https://bm.com.bo', 1),
 (4, 19, 'Datec', 'Tecnología', 'https://datec.com.bo', 1),
 (5, 20, 'Jatun Code', 'Software', 'https://jatuncode.bo', 1);
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "perfiles_estudiante" ("id", "usuario_id", "universidad", "carrera", "anio_graduacion", "biografia") VALUES (1, 5, 'UMSA', 'Ingeniería de Sistemas', '2026', 'Backend developer'),
 (2, 6, 'UPB', 'Ingeniería Informática', '2025', 'IA y datos'),
 (3, 7, 'UMSS', 'Ingeniería de Sistemas', '2026', 'Fullstack developer'),
@@ -129,8 +129,8 @@ INSERT INTO "perfiles_estudiante" ("id", "usuario_id", "universidad", "carrera",
 (10, 14, 'UCB', 'Diseño Gráfico', '2027', 'Diseño web'),
 (11, 15, 'EMI', 'Ciberseguridad', '2026', 'Seguridad informática');
 EOT
-);
-        DB::statement(<<<EOT
+                );
+                DB::statement(<<<EOT
 INSERT INTO "ofertas_pasantia" ("id", "perfil_empresa_id", "ubicacion_id", "estado_publicacion_id", "titulo", "descripcion", "fecha_inicio", "fecha_fin") VALUES (1, 1, 1, 2, 'Backend Laravel', 'Pasantía backend', '2026-06-01', '2026-12-01'),
 (2, 2, 3, 2, 'Frontend React', 'Frontend web', '2026-06-01', '2026-11-01'),
 (3, 3, 4, 2, 'Analista BI', 'Power BI y Excel', '2026-07-01', '2026-12-30'),
@@ -147,6 +147,6 @@ INSERT INTO "ofertas_pasantia" ("id", "perfil_empresa_id", "ubicacion_id", "esta
 (14, 4, 14, 2, 'Marketing BI', 'Power BI', '2026-06-01', '2026-12-01'),
 (15, 5, 15, 2, 'Fullstack Developer', 'Laravel y React', '2026-06-01', '2026-12-01');
 EOT
-);
-    }
+                );
+        }
 }

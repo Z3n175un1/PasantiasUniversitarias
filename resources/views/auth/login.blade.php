@@ -34,17 +34,21 @@
                 </div>
             </header>
 
-            <form class="space-y-6" id="login-form">
+            <form action="{{ route('login.post') }}" method="POST" class="space-y-6" id="login-form">
+                @csrf
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-gray-700 ml-1">Correo Electrónico</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#2b6df2] transition-colors">
                             <i data-lucide="mail" class="w-5 h-5"></i>
                         </div>
-                        <input type="email" id="email" 
+                        <input type="email" id="email" name="correo"
                                class="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:bg-white focus:border-[#2b6df2] focus:ring-4 focus:ring-blue-50 transition-all font-medium text-sm" 
-                               placeholder="nombre@ejemplo.com" required>
+                               placeholder="nombre@ejemplo.com" required value="{{ old('correo') }}">
                     </div>
+                    @error('correo')
+                        <div class="text-red-500 text-xs font-bold ml-2">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="space-y-2">
@@ -53,7 +57,7 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-[#2b6df2] transition-colors">
                             <i data-lucide="lock" class="w-5 h-5"></i>
                         </div>
-                        <input type="password" id="password" 
+                        <input type="password" id="password" name="password"
                                class="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:bg-white focus:border-[#2b6df2] focus:ring-4 focus:ring-blue-50 transition-all font-medium text-sm" 
                                placeholder="••••••••" required>
                     </div>
