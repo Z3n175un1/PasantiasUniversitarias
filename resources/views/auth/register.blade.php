@@ -4,7 +4,7 @@
 
 @section('content')
     {{-- Directo: action="/register" --}}
-    <form method="POST" action="/register" class="space-y-8" novalidate>
+    <form method="POST" action="{{ url('/register') }}" class="space-y-8" novalidate>
         @csrf
         <input type="hidden" name="role" value="{{ $rol }}">
 

@@ -39,9 +39,7 @@
 </head>
 
 <body class="bg-soft min-h-screen flex items-center justify-center px-4 py-12">
-
     <div class="w-full max-w-[800px] fade-in">
-
         <div class="flex justify-center mb-6">
             <a href="{{ url('/') }}"
                 class="flex items-center gap-2 group text-gray-400 hover:text-black transition-colors text-xs font-bold uppercase tracking-wider">
@@ -62,7 +60,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
-
             {{-- Tarjeta: Estudiante --}}
             <a href="{{ route('register', ['rol' => 'student']) }}"
                 class="group text-left bg-white p-8 rounded-[2rem] border border-gray-200 shadow-[0_15px_30px_rgba(0,0,0,0.02)] hover:border-[#2b6df2] hover:shadow-[0_20px_40px_rgba(43,109,242,0.06)] transition-all duration-300 flex flex-col justify-between h-[260px]">
@@ -100,12 +97,10 @@
                     </p>
                 </div>
             </a>
-
         </div>
     </div>
 
     <script>lucide.createIcons();</script>
-
 </body>
 
 </html>

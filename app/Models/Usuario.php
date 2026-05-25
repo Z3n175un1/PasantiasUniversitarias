@@ -11,12 +11,16 @@ class Usuario extends Authenticatable
 
     protected $table = 'usuarios';
 
+    // DESACTIVAR TIMESTAMPS
+    public $timestamps = false;
+
     protected $fillable = [
         'rol_id',
         'nombre',
         'correo',
         'contrasena_hash',
         'activo',
+        'creado_en', // Tu tabla usa 'creado_en', no 'created_at'
     ];
 
     protected $hidden = [
@@ -26,40 +30,30 @@ class Usuario extends Authenticatable
 
     protected $casts = [
         'activo' => 'boolean',
-        'creado_en' => 'datetime',
     ];
 
-    // Esto es lo que faltaba - decirle a Laravel que use 'correo' como email
-    public function getEmailForPasswordReset()
-    {
-        return $this->correo;
-    }
-
-    // Para que Auth::attempt() funcione con 'correo'
+    // Para que Auth funcione con tu BD
     public function getAuthPassword()
     {
         return $this->contrasena_hash;
     }
 
-    // Relación con Rol
+    // Relaciones
     public function rol()
     {
         return $this->belongsTo(Rol::class, 'rol_id');
     }
 
-    // Relación con PerfilEstudiante
     public function perfilEstudiante()
     {
         return $this->hasOne(PerfilEstudiante::class, 'usuario_id');
     }
 
-    // Relación con PerfilEmpresa
     public function perfilEmpresa()
     {
         return $this->hasOne(PerfilEmpresa::class, 'usuario_id');
     }
 
-    // Métodos helper para roles
     public function esEstudiante()
     {
         return $this->rol_id == 1;

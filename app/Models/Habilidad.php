@@ -8,13 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Habilidad extends Model
 {
     use HasFactory;
+
     protected $table = 'habilidades';
     public $timestamps = false;
     protected $guarded = [];
-    public function perfilEmpresa() { return $this->belongsTo(PerfilEmpresa::class, 'perfil_empresa_id'); }
-    public function ubicacion() { return $this->belongsTo(Ubicacion::class, 'ubicacion_id'); }
-    public function ofertasPasantias() { return $this->hasMany(OfertaPasantia::class, 'perfil_empresa_id'); }
-    public function postulaciones() { return $this->hasMany(Postulacion::class, 'perfil_estudiante_id'); }
-    public function ofertaPasantia() { return $this->belongsTo(OfertaPasantia::class, 'oferta_pasantia_id'); }
 
+    // Relación con RequisitosHabilidadOferta
+    public function requisitosHabilidad()
+    {
+        return $this->hasMany(RequisitoHabilidadOferta::class, 'habilidad_id');
+    }
 }

@@ -17,17 +17,45 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
-    // Datos del usuario
-    $id = 1;
-    $rol_id = 3;
-    $nombre = "prueba";
-    $correo = "prueba@edu.bo";
-    $activo = 1;
-    $creado_en = "2026-05-11 09:23:00";
-
-    // Contraseña segura
-    $contrasena = "123456789";
-    $contrasena_hash = password_hash($contrasena, PASSWORD_BCRYPT);
+    // Lista de usuarios
+    $usuarios = [
+        [
+            'id' => 2,
+            'rol_id' => 3,
+            'nombre' => 'Jalasoft Admin',
+            'correo' => 'admin@jalasoft.com',
+            'contrasena' => '123456789',
+            'activo' => 1,
+            'creado_en' => '2026-05-11 09:23:00'
+        ],
+        [
+            'id' => 3,
+            'rol_id' => 3,
+            'nombre' => 'Tigo Admin',
+            'correo' => 'admin@tigo.com.bo',
+            'contrasena' => '123456789',
+            'activo' => 1,
+            'creado_en' => '2026-05-11 09:23:00'
+        ],
+        [
+            'id' => 4,
+            'rol_id' => 3,
+            'nombre' => 'Datec Admin',
+            'correo' => 'admin@datec.com.bo',
+            'contrasena' => '123456789',
+            'activo' => 1,
+            'creado_en' => '2026-05-11 09:23:00'
+        ],
+        [
+            'id' => 5,
+            'rol_id' => 3,
+            'nombre' => 'Jatun Code Admin',
+            'correo' => 'admin@jatuncode.bo',
+            'contrasena' => '123456789',
+            'activo' => 1,
+            'creado_en' => '2026-05-11 09:23:00'
+        ]
+    ];
 
     // SQL preparado
     $sql = "
@@ -56,22 +84,31 @@ try {
     // Preparar consulta
     $stmt = $pdo->prepare($sql);
 
-    // Ejecutar
-    $stmt->execute([
-        ':id' => $id,
-        ':rol_id' => $rol_id,
-        ':nombre' => $nombre,
-        ':correo' => $correo,
-        ':contrasena_hash' => $contrasena_hash,
-        ':activo' => $activo,
-        ':creado_en' => $creado_en
-    ]);
+    // Insertar usuarios
+    foreach ($usuarios as $usuario) {
 
-    echo "Usuario insertado correctamente.";
-    echo "BORRADO INMEDIATE DE USUARIOS DE LA BASE DE DATOS";
+        // Hash seguro
+        $contrasena_hash = password_hash(
+            $usuario['contrasena'],
+            PASSWORD_BCRYPT
+        );
+
+        $stmt->execute([
+            ':id' => $usuario['id'],
+            ':rol_id' => $usuario['rol_id'],
+            ':nombre' => $usuario['nombre'],
+            ':correo' => $usuario['correo'],
+            ':contrasena_hash' => $contrasena_hash,
+            ':activo' => $usuario['activo'],
+            ':creado_en' => $usuario['creado_en']
+        ]);
+
+        echo "Usuario {$usuario['nombre']} insertado correctamente.<br>";
+    }
 
 } catch (PDOException $e) {
 
     echo "Error de conexión o inserción: " . $e->getMessage();
 
 }
+?>
