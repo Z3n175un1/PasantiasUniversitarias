@@ -1,39 +1,82 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro | InternConnect</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; letter-spacing: -0.02em; }
-        .bg-soft { background-color: #fcfcfd; }
-        .input-focus:focus { border-color: #2b6df2; box-shadow: 0 0 0 4px rgba(43,109,242,0.1); }
-        .role-active { color: #2b6df2 !important; font-weight: 700; border-bottom-color: #2b6df2 !important; }
-        
-        /* Clases de validación explícitas en tiempo real */
-        .error-input { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
-        .success-input { border-color: #10b981 !important; background-color: #f0fdf4 !important; }
-        .success-input:focus { box-shadow: 0 0 0 4px rgba(16,185,129,0.1) !important; border-color: #10b981 !important; }
+        body {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.02em;
+        }
 
-        .req-item { transition: all 0.2s ease; }
-        
+        .bg-soft {
+            background-color: #fcfcfd;
+        }
+
+        .input-focus:focus {
+            border-color: #2b6df2;
+            box-shadow: 0 0 0 4px rgba(43, 109, 242, 0.1);
+        }
+
+        .role-active {
+            color: #2b6df2 !important;
+            font-weight: 700;
+            border-bottom-color: #2b6df2 !important;
+        }
+
+        /* Clases de validación explícitas en tiempo real */
+        .error-input {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .success-input {
+            border-color: #10b981 !important;
+            background-color: #f0fdf4 !important;
+        }
+
+        .success-input:focus {
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1) !important;
+            border-color: #10b981 !important;
+        }
+
+        .req-item {
+            transition: all 0.2s ease;
+        }
+
         /* Animaciones de transición */
-        .fade-in { animation: fadeIn 0.4s ease forwards; }
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
+
 <body class="bg-soft min-h-screen flex items-center justify-center p-4 py-12">
 
     <div id="step-selector" class="w-full max-w-[800px] fade-in">
         <div class="flex justify-center mb-6">
-            <a href="index.html" class="flex items-center gap-2 group text-gray-400 hover:text-black transition-colors text-xs font-bold uppercase tracking-wider">
-                <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-0.5"></i> Volver al inicio
+            <a href="index.html"
+                class="flex items-center gap-2 group text-gray-400 hover:text-black transition-colors text-xs font-bold uppercase tracking-wider">
+                <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-0.5"></i>
+                Volver al inicio
             </a>
         </div>
 
@@ -42,36 +85,44 @@
                 <div class="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg">
                     <i data-lucide="layers" class="text-white w-6 h-6"></i>
                 </div>
-                <span class="text-2xl font-bold tracking-tight text-black">InternConnect</span>
+                <span class="text-2xl font-bold tracking-tight text-black">UWorkFlow</span>
             </div>
             <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Bienvenido, ¿cómo deseas unirte?</h1>
             <p class="text-gray-500 text-sm mt-1">Selecciona tu perfil de usuario para configurar tu cuenta.</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
-            <button onclick="selectInitialRole('student')" class="group text-left bg-white p-8 rounded-[2rem] border border-gray-200 shadow-[0_15px_30px_rgba(0,0,0,0.02)] hover:border-[#2b6df2] hover:shadow-[0_20px_40px_rgba(43,109,242,0.06)] transition-all duration-300 flex flex-col justify-between h-[260px]">
-                <div class="w-14 h-14 bg-blue-50 text-[#2b6df2] rounded-2xl flex items-center justify-center transition-colors group-hover:bg-[#2b6df2] group-hover:text-white duration-300">
+            <button onclick="selectInitialRole('student')"
+                class="group text-left bg-white p-8 rounded-[2rem] border border-gray-200 shadow-[0_15px_30px_rgba(0,0,0,0.02)] hover:border-[#2b6df2] hover:shadow-[0_20px_40px_rgba(43,109,242,0.06)] transition-all duration-300 flex flex-col justify-between h-[260px]">
+                <div
+                    class="w-14 h-14 bg-blue-50 text-[#2b6df2] rounded-2xl flex items-center justify-center transition-colors group-hover:bg-[#2b6df2] group-hover:text-white duration-300">
                     <i data-lucide="graduation-cap" class="w-7 h-7"></i>
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
-                        Soy Estudiante 
-                        <i data-lucide="arrow-right" class="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#2b6df2]"></i>
+                        Soy Estudiante
+                        <i data-lucide="arrow-right"
+                            class="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#2b6df2]"></i>
                     </h3>
-                    <p class="text-sm text-gray-500 font-medium leading-relaxed">Busco pasantías, convenios institucionales y mi primera experiencia laboral en Bolivia.</p>
+                    <p class="text-sm text-gray-500 font-medium leading-relaxed">Busco pasantías, convenios
+                        institucionales y mi primera experiencia laboral en Bolivia.</p>
                 </div>
             </button>
 
-            <button onclick="selectInitialRole('company')" class="group text-left bg-white p-8 rounded-[2rem] border border-gray-200 shadow-[0_15px_30px_rgba(0,0,0,0.02)] hover:border-[#2b6df2] hover:shadow-[0_20px_40px_rgba(43,109,242,0.06)] transition-all duration-300 flex flex-col justify-between h-[260px]">
-                <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center transition-colors group-hover:bg-[#2b6df2] group-hover:text-white duration-300">
+            <button onclick="selectInitialRole('company')"
+                class="group text-left bg-white p-8 rounded-[2rem] border border-gray-200 shadow-[0_15px_30px_rgba(0,0,0,0.02)] hover:border-[#2b6df2] hover:shadow-[0_20px_40px_rgba(43,109,242,0.06)] transition-all duration-300 flex flex-col justify-between h-[260px]">
+                <div
+                    class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center transition-colors group-hover:bg-[#2b6df2] group-hover:text-white duration-300">
                     <i data-lucide="building-2" class="w-7 h-7"></i>
                 </div>
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 mb-1 flex items-center gap-2">
                         Soy Empresa / Reclutador
-                        <i data-lucide="arrow-right" class="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#2b6df2]"></i>
+                        <i data-lucide="arrow-right"
+                            class="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-[#2b6df2]"></i>
                     </h3>
-                    <p class="text-sm text-gray-500 font-medium leading-relaxed">Quiero publicar vacantes, gestionar postulantes y firmar convenios con universidades.</p>
+                    <p class="text-sm text-gray-500 font-medium leading-relaxed">Quiero publicar vacantes, gestionar
+                        postulantes y firmar convenios con universidades.</p>
                 </div>
             </button>
         </div>
@@ -79,25 +130,29 @@
 
     <main id="form-container" class="w-full max-w-[700px] hidden fade-in">
         <div class="flex justify-center mb-10">
-            <button onclick="backToSelector()" class="flex items-center gap-2 group text-gray-400 hover:text-black transition-colors text-xs font-bold uppercase tracking-wider">
+            <button onclick="backToSelector()"
+                class="flex items-center gap-2 group text-gray-400 hover:text-black transition-colors text-xs font-bold uppercase tracking-wider">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a selección
             </button>
         </div>
 
-        <section class="bg-white rounded-[2rem] border border-gray-200 shadow-[0_20px_50px_rgba(0,0,0,0.04)] overflow-hidden">
-            
+        <section
+            class="bg-white rounded-[2rem] border border-gray-200 shadow-[0_20px_50px_rgba(0,0,0,0.04)] overflow-hidden">
+
             <div class="flex border-b border-gray-100 bg-gray-50/50">
-                <button type="button" onclick="setRole('student')" id="tab-student" class="flex-1 py-5 text-sm font-medium text-gray-400 border-b-2 border-transparent role-active transition-all">
+                <button type="button" onclick="setRole('student')" id="tab-student"
+                    class="flex-1 py-5 text-sm font-medium text-gray-400 border-b-2 border-transparent role-active transition-all">
                     Estudiante
                 </button>
-                <button type="button" onclick="setRole('company')" id="tab-company" class="flex-1 py-5 text-sm font-medium text-gray-400 border-b-2 border-transparent transition-all">
+                <button type="button" onclick="setRole('company')" id="tab-company"
+                    class="flex-1 py-5 text-sm font-medium text-gray-400 border-b-2 border-transparent transition-all">
                     Empresa
                 </button>
             </div>
 
             <div class="p-8 md:p-12">
                 <form id="reg-form" class="space-y-8" onsubmit="return validateFinal(event)">
-                    
+
                     <div id="form-header">
                         <h1 class="text-2xl font-extrabold text-gray-900 mb-1">Crea tu cuenta personal</h1>
                         <p class="text-gray-500 text-sm">Completa tus datos para empezar.</p>
@@ -107,28 +162,40 @@
 
                     <div class="pt-8 border-t border-gray-100 space-y-6">
                         <div class="space-y-1.5">
-                            <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Correo Electrónico</label>
+                            <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Correo
+                                Electrónico</label>
                             <div class="relative">
-                                <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                                <input type="email" name="email" required class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium transition-all" placeholder="usuario@ejemplo.com">
+                                <i data-lucide="mail"
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                                <input type="email" name="email" required
+                                    class="w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium transition-all"
+                                    placeholder="usuario@ejemplo.com">
                             </div>
                         </div>
-                        
+
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="space-y-1.5">
-                                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Contraseña</label>
+                                <label
+                                    class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Contraseña</label>
                                 <div class="relative">
-                                    <input type="password" id="pass" required class="w-full pl-4 pr-11 py-3.5 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium transition-all" placeholder="Escribe tu contraseña" oninput="checkPasswordStrength(this.value)">
-                                    <button type="button" onclick="togglePassword('pass', 'eye-icon-1')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none">
+                                    <input type="password" id="pass" required
+                                        class="w-full pl-4 pr-11 py-3.5 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium transition-all"
+                                        placeholder="Escribe tu contraseña" oninput="checkPasswordStrength(this.value)">
+                                    <button type="button" onclick="togglePassword('pass', 'eye-icon-1')"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none">
                                         <i id="eye-icon-1" data-lucide="eye" class="w-5 h-5"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="space-y-1.5">
-                                <label class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Confirmar</label>
+                                <label
+                                    class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Confirmar</label>
                                 <div class="relative">
-                                    <input type="password" id="confirm_pass" required class="w-full pl-4 pr-11 py-3.5 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium transition-all" placeholder="Repite contraseña" oninput="checkPasswordMatch()">
-                                    <button type="button" onclick="togglePassword('confirm_pass', 'eye-icon-2')" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none">
+                                    <input type="password" id="confirm_pass" required
+                                        class="w-full pl-4 pr-11 py-3.5 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium transition-all"
+                                        placeholder="Repite contraseña" oninput="checkPasswordMatch()">
+                                    <button type="button" onclick="togglePassword('confirm_pass', 'eye-icon-2')"
+                                        class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none">
                                         <i id="eye-icon-2" data-lucide="eye" class="w-5 h-5"></i>
                                     </button>
                                 </div>
@@ -138,32 +205,46 @@
                         <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 space-y-3">
                             <div class="flex items-center justify-between">
                                 <span class="text-xs font-semibold text-gray-500">Seguridad de la contraseña:</span>
-                                <span id="strength-label" class="text-xs font-bold text-gray-400 transition-colors duration-200">Vacía</span>
+                                <span id="strength-label"
+                                    class="text-xs font-bold text-gray-400 transition-colors duration-200">Vacía</span>
                             </div>
                             <div class="grid grid-cols-4 gap-1.5">
-                                <div id="bar-1" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300"></div>
-                                <div id="bar-2" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300"></div>
-                                <div id="bar-3" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300"></div>
-                                <div id="bar-4" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300"></div>
+                                <div id="bar-1" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300">
+                                </div>
+                                <div id="bar-2" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300">
+                                </div>
+                                <div id="bar-3" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300">
+                                </div>
+                                <div id="bar-4" class="h-1.5 rounded-full bg-gray-200 transition-all duration-300">
+                                </div>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
                                 <div id="req-length" class="req-item flex items-center gap-2 text-gray-400 font-medium">
-                                    <span id="ico-length" class="flex items-center text-gray-300"><i data-lucide="circle" class="w-3.5 h-3.5 stroke-[3]"></i></span> Mínimo 8 caracteres
+                                    <span id="ico-length" class="flex items-center text-gray-300"><i
+                                            data-lucide="circle" class="w-3.5 h-3.5 stroke-[3]"></i></span> Mínimo 8
+                                    caracteres
                                 </div>
                                 <div id="req-number" class="req-item flex items-center gap-2 text-gray-400 font-medium">
-                                    <span id="ico-number" class="flex items-center text-gray-300"><i data-lucide="circle" class="w-3.5 h-3.5 stroke-[3]"></i></span> Al menos un número (0-9)
+                                    <span id="ico-number" class="flex items-center text-gray-300"><i
+                                            data-lucide="circle" class="w-3.5 h-3.5 stroke-[3]"></i></span> Al menos un
+                                    número (0-9)
                                 </div>
                                 <div id="req-upper" class="req-item flex items-center gap-2 text-gray-400 font-medium">
-                                    <span id="ico-upper" class="flex items-center text-gray-300"><i data-lucide="circle" class="w-3.5 h-3.5 stroke-[3]"></i></span> Una letra mayúscula
+                                    <span id="ico-upper" class="flex items-center text-gray-300"><i data-lucide="circle"
+                                            class="w-3.5 h-3.5 stroke-[3]"></i></span> Una letra mayúscula
                                 </div>
-                                <div id="req-special" class="req-item flex items-center gap-2 text-gray-400 font-medium">
-                                    <span id="ico-special" class="flex items-center text-gray-300"><i data-lucide="circle" class="w-3.5 h-3.5 stroke-[3]"></i></span> Un carácter especial (@$!%*?&)
+                                <div id="req-special"
+                                    class="req-item flex items-center gap-2 text-gray-400 font-medium">
+                                    <span id="ico-special" class="flex items-center text-gray-300"><i
+                                            data-lucide="circle" class="w-3.5 h-3.5 stroke-[3]"></i></span> Un carácter
+                                    especial (@$!%*?&)
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-black text-white py-4.5 rounded-2xl font-bold text-sm hover:bg-gray-800 shadow-xl shadow-black/10 transition-all mt-4">
+                    <button type="submit"
+                        class="w-full bg-black text-white py-4.5 rounded-2xl font-bold text-sm hover:bg-gray-800 shadow-xl shadow-black/10 transition-all mt-4">
                         Finalizar Registro
                     </button>
                 </form>
@@ -280,7 +361,7 @@
         function updateRequirementState(rowId, iconWrapperId, isValid) {
             const row = document.getElementById(rowId);
             const wrapper = document.getElementById(iconWrapperId);
-            
+
             if (isValid) {
                 row.className = "req-item flex items-center gap-2 text-emerald-600 font-bold scale-[1.01]";
                 wrapper.className = "flex items-center text-emerald-500";
@@ -417,5 +498,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>

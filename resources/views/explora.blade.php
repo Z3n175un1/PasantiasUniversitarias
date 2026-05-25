@@ -1,20 +1,34 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UWorkFlow</title>
+    <link rel="icon" href="{{ asset('uworkflow-logo.ico') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        body {
+            font-family: 'Inter', sans-serif;
         }
-        .animate-float { animation: float 4s infinite ease-in-out; }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .animate-float {
+            animation: float 4s infinite ease-in-out;
+        }
 
         .card-neo {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -32,6 +46,7 @@
             transform: rotate(12deg) scale(1.1);
             background-color: #2b6df2;
         }
+
         .logo-icon {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -41,6 +56,7 @@
         }
     </style>
 </head>
+
 <body class="bg-white overflow-x-hidden text-[#1a1a1a]">
 
     @include('components.navbar')
@@ -49,39 +65,48 @@
         <section class="pt-12 pb-20 px-[8%] search-gradient relative overflow-hidden">
             <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-50"></div>
             <div class="max-w-4xl mx-auto text-center relative z-10">
-                <span class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-blue-600 uppercase bg-blue-50 rounded-full">Búsqueda Inteligente</span>
+                <span
+                    class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-blue-600 uppercase bg-blue-50 rounded-full">Búsqueda
+                    Inteligente</span>
                 <h1 class="text-4xl md:text-5xl font-black text-slate-900 mb-8 tracking-tight">
-                    Encuentra tu próximo <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">gran reto</span>
+                    Encuentra tu próximo <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">gran
+                        reto</span>
                 </h1>
-                
+
                 <div class="relative group">
                     <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                         <i data-lucide="search" class="w-6 h-6 text-slate-400"></i>
                     </div>
-                    <input type="text" id="search-input" placeholder="Buscar por título de pasantía o empresa..." 
-                           class="w-full pl-16 pr-32 py-5 bg-white border-2 border-slate-100 rounded-3xl outline-none focus:border-blue-400 focus:ring-8 focus:ring-blue-50 transition-all text-lg shadow-2xl shadow-slate-200/50 font-medium">
+                    <input type="text" id="search-input" placeholder="Buscar por título de pasantía o empresa..."
+                        class="w-full pl-16 pr-32 py-5 bg-white border-2 border-slate-100 rounded-3xl outline-none focus:border-blue-400 focus:ring-8 focus:ring-blue-50 transition-all text-lg shadow-2xl shadow-slate-200/50 font-medium">
                 </div>
             </div>
         </section>
 
         <section class="max-w-[1400px] mx-auto px-[8%] -mt-10 pb-20 relative z-20">
             <div class="flex flex-col lg:flex-row gap-8">
-                
+
                 <aside class="lg:w-80 space-y-6">
-                    <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/60 sticky top-28">
+                    <div
+                        class="bg-white p-6 rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/60 sticky top-28">
                         <div class="flex items-center justify-between mb-6">
                             <h3 class="font-bold text-slate-900 flex items-center gap-2 text-base">
                                 <i data-lucide="sliders-horizontal" class="w-4 h-4 text-blue-600"></i>
                                 Filtros de Búsqueda
                             </h3>
-                            <button id="btn-limpiar" class="text-xs font-bold text-blue-600 hover:underline">Limpiar</button>
+                            <button id="btn-limpiar"
+                                class="text-xs font-bold text-blue-600 hover:underline">Limpiar</button>
                         </div>
 
                         <div class="space-y-6">
                             <div class="space-y-2">
-                                <label class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Departamento (Bolivia)</label>
+                                <label
+                                    class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Departamento
+                                    (Bolivia)</label>
                                 <div class="relative">
-                                    <select id="select-departamento" class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all text-sm font-semibold appearance-none cursor-pointer">
+                                    <select id="select-departamento"
+                                        class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all text-sm font-semibold appearance-none cursor-pointer">
                                         <option value="Todos">Seleccionar departamento</option>
                                         <option value="Beni">Beni</option>
                                         <option value="Chuquisaca">Chuquisaca</option>
@@ -93,34 +118,42 @@
                                         <option value="Santa Cruz">Santa Cruz</option>
                                         <option value="Tarija">Tarija</option>
                                     </select>
-                                    <i data-lucide="chevron-down" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                                    <i data-lucide="chevron-down"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
                                 </div>
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Áreas de Estudio</label>
+                                <label class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Áreas
+                                    de Estudio</label>
                                 <div class="grid grid-cols-1 gap-1.5" id="area-container">
-                                    <button data-area="Ingeniería" class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
+                                    <button data-area="Ingeniería"
+                                        class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
                                         <span>Ingeniería y Tecnología</span>
                                         <i data-lucide="check" class="w-3.5 h-3.5 hidden"></i>
                                     </button>
-                                    <button data-area="Diseño" class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
+                                    <button data-area="Diseño"
+                                        class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
                                         <span>Diseño y Arte Digital</span>
                                         <i data-lucide="check" class="w-3.5 h-3.5 hidden"></i>
                                     </button>
-                                    <button data-area="Negocios" class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
+                                    <button data-area="Negocios"
+                                        class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
                                         <span>Negocios y Ciencias Económicas</span>
                                         <i data-lucide="check" class="w-3.5 h-3.5 hidden"></i>
                                     </button>
-                                    <button data-area="Salud" class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
+                                    <button data-area="Salud"
+                                        class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
                                         <span>Ciencias de la Salud</span>
                                         <i data-lucide="check" class="w-3.5 h-3.5 hidden"></i>
                                     </button>
-                                    <button data-area="Derecho" class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
+                                    <button data-area="Derecho"
+                                        class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
                                         <span>Derecho y Ciencias Políticas</span>
                                         <i data-lucide="check" class="w-3.5 h-3.5 hidden"></i>
                                     </button>
-                                    <button data-area="Humanidades" class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
+                                    <button data-area="Humanidades"
+                                        class="filter-area flex items-center justify-between px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-100 transition-all">
                                         <span>Humanidades y Comunicación</span>
                                         <i data-lucide="check" class="w-3.5 h-3.5 hidden"></i>
                                     </button>
@@ -128,18 +161,21 @@
                             </div>
 
                             <div class="space-y-2">
-                                <label class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Modalidad</label>
+                                <label
+                                    class="text-[11px] font-extrabold text-slate-400 uppercase tracking-wider">Modalidad</label>
                                 <div class="space-y-2.5">
                                     <label class="flex items-center gap-3 cursor-pointer group">
                                         <input type="checkbox" value="Remoto" class="filter-modalidad sr-only">
-                                        <div class="checkbox-visual w-5 h-5 border-2 border-slate-200 rounded-md flex items-center justify-center group-hover:border-blue-400 transition-all bg-white">
+                                        <div
+                                            class="checkbox-visual w-5 h-5 border-2 border-slate-200 rounded-md flex items-center justify-center group-hover:border-blue-400 transition-all bg-white">
                                             <div class="w-2.5 h-2.5 bg-blue-600 rounded-sm indicator hidden"></div>
                                         </div>
                                         <span class="text-sm font-semibold text-slate-600">Virtual / Remoto</span>
                                     </label>
                                     <label class="flex items-center gap-3 cursor-pointer group">
                                         <input type="checkbox" value="Presencial" class="filter-modalidad sr-only">
-                                        <div class="checkbox-visual w-5 h-5 border-2 border-slate-200 rounded-md flex items-center justify-center group-hover:border-blue-400 transition-all bg-white">
+                                        <div
+                                            class="checkbox-visual w-5 h-5 border-2 border-slate-200 rounded-md flex items-center justify-center group-hover:border-blue-400 transition-all bg-white">
                                             <div class="w-2.5 h-2.5 bg-blue-600 rounded-sm indicator hidden"></div>
                                         </div>
                                         <span class="text-sm font-semibold text-slate-600">Presencial</span>
@@ -154,61 +190,79 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                         <div>
                             <h2 class="text-xl font-bold text-slate-900">Panel de Resultados</h2>
-                            <p class="text-sm text-slate-500" id="results-counter">Aplica un filtro para iniciar la simulación</p>
+                            <p class="text-sm text-slate-500" id="results-counter">Aplica un filtro para iniciar la
+                                simulación</p>
                         </div>
                     </div>
 
-                                        @if(isset($ofertas) && $ofertas->isEmpty())
-                    <div id="empty-state" class="bg-white border border-slate-100 rounded-[2rem] p-12 text-center shadow-sm">
-                        <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <i data-lucide="database-zap" class="w-8 h-8"></i>
+                    @if(isset($ofertas) && $ofertas->isEmpty())
+                        <div id="empty-state"
+                            class="bg-white border border-slate-100 rounded-[2rem] p-12 text-center shadow-sm">
+                            <div
+                                class="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="database-zap" class="w-8 h-8"></i>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-800 mb-1">Sin conexión transaccional</h3>
+                            <p class="text-sm text-slate-500 max-w-md mx-auto">No se encontraron ofertas cargadas en este
+                                país. Interactúa con la barra de filtros de la izquierda para simular el comportamiento del
+                                sistema.</p>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-800 mb-1">Sin conexión transaccional</h3>
-                        <p class="text-sm text-slate-500 max-w-md mx-auto">No se encontraron ofertas cargadas en este país. Interactúa con la barra de filtros de la izquierda para simular el comportamiento del sistema.</p>
-                    </div>
                     @else
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="postings-grid">
-                        @foreach($ofertas as $oferta)
-                        <div class="job-card card-neo bg-white p-7 rounded-[2rem] flex flex-col justify-between" 
-                             data-title="{{ $oferta->titulo }}" data-company="{{ $oferta->perfilEmpresa->nombre_empresa ?? 'Empresa' }}" data-dept="{{ $oferta->ubicacion->ciudad ?? 'Ciudad' }}" data-area="{{ 'Área' }}" data-modality="Presencial">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-                                        <i data-lucide="database" class="w-8 h-8 text-indigo-600"></i>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="postings-grid">
+                            @foreach($ofertas as $oferta)
+                                <div class="job-card card-neo bg-white p-7 rounded-[2rem] flex flex-col justify-between"
+                                    data-title="{{ $oferta->titulo }}"
+                                    data-company="{{ $oferta->perfilEmpresa->nombre_empresa ?? 'Empresa' }}"
+                                    data-dept="{{ $oferta->ubicacion->ciudad ?? 'Ciudad' }}" data-area="{{ 'Área' }}"
+                                    data-modality="Presencial">
+                                    <div>
+                                        <div class="flex justify-between items-start mb-6">
+                                            <div
+                                                class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
+                                                <i data-lucide="database" class="w-8 h-8 text-indigo-600"></i>
+                                            </div>
+                                            <span
+                                                class="px-3 py-1 bg-blue-50 text-blue-700 font-extrabold rounded-full text-xs">96%
+                                                Match</span>
+                                        </div>
+                                        <div class="space-y-2 mb-6">
+                                            <h3 class="text-xl font-extrabold text-slate-900 tracking-tight card-title">
+                                                {{ $oferta->titulo }}</h3>
+                                            <p class="text-sm font-bold text-blue-600">
+                                                {{ $oferta->perfilEmpresa->nombre_empresa ?? 'Empresa Anónima' }}</p>
+                                            <p class="text-sm text-slate-500 line-clamp-2 mt-2">
+                                                {{ Str::limit($oferta->descripcion, 90) }}</p>
+                                        </div>
+
+                                        <div class="flex flex-wrap gap-2 mb-6">
+                                            <div
+                                                class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg text-xs font-semibold text-slate-600">
+                                                <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                                                <span>{{ $oferta->ubicacion->ciudad ?? 'Remoto' }}</span>
+                                            </div>
+                                            <div
+                                                class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg text-xs font-semibold text-slate-600">
+                                                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
+                                                <span>Presencial</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <span class="px-3 py-1 bg-blue-50 text-blue-700 font-extrabold rounded-full text-xs">96% Match</span>
-                                </div>
-                                <div class="space-y-2 mb-6">
-                                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight card-title">{{ $oferta->titulo }}</h3>
-                                    <p class="text-sm font-bold text-blue-600">{{ $oferta->perfilEmpresa->nombre_empresa ?? 'Empresa Anónima' }}</p>
-                                    <p class="text-sm text-slate-500 line-clamp-2 mt-2">{{ Str::limit($oferta->descripcion, 90) }}</p>
-                                </div>
-                                
-                                <div class="flex flex-wrap gap-2 mb-6">
-                                    <div class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg text-xs font-semibold text-slate-600">
-                                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
-                                        <span>{{ $oferta->ubicacion->ciudad ?? 'Remoto' }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-lg text-xs font-semibold text-slate-600">
-                                        <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-                                        <span>Presencial</span>
+
+                                    <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                                        <span
+                                            class="text-xs font-bold text-slate-400">{{ $oferta->fecha_inicio ? \Carbon\Carbon::parse($oferta->fecha_inicio)->diffForHumans() : 'Reciente' }}</span>
+                                        <button
+                                            class="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors shadow-md shadow-slate-200">
+                                            Postular
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-                                <span class="text-xs font-bold text-slate-400">{{ $oferta->fecha_inicio ? \Carbon\Carbon::parse($oferta->fecha_inicio)->diffForHumans() : 'Reciente' }}</span>
-                                <button class="px-5 py-2.5 bg-slate-900 text-white rounded-xl text-sm font-bold hover:bg-slate-800 transition-colors shadow-md shadow-slate-200">
-                                    Postular
-                                </button>
-                            </div>
+                            @endforeach
                         </div>
-                        @endforeach
-                    </div>
                     @endif
                 </div>
             </div>
-        </div>
+            </div>
     </main>
 
     @include('components.footer')
@@ -220,7 +274,7 @@
         const state = {
             search: '',
             departamento: 'Todos',
-            areas: [], 
+            areas: [],
             modalidades: [],
             hasInteracted: false // Bandera para saber si ya tocó algún filtro
         };
@@ -240,7 +294,7 @@
         function updateCheckboxUI() {
             checkboxesModality.forEach(cb => {
                 const indicator = cb.nextElementSibling.querySelector('.indicator');
-                if(cb.checked) {
+                if (cb.checked) {
                     indicator.classList.remove('hidden');
                     cb.nextElementSibling.classList.add('border-blue-600', 'bg-blue-50');
                 } else {
@@ -276,7 +330,7 @@
                 // Si no hay modalidades seleccionadas, no muestra ninguna
                 const matchModality = state.modalidades.length > 0 && state.modalidades.includes(modality);
 
-                if(matchSearch && matchDept && matchArea && matchModality) {
+                if (matchSearch && matchDept && matchArea && matchModality) {
                     card.classList.remove('hidden');
                     visibles++;
                 } else {
@@ -322,7 +376,7 @@
                 const areaValue = btn.getAttribute('data-area');
                 const iconCheck = btn.querySelector('[data-lucide="check"]');
 
-                if(state.areas.includes(areaValue)) {
+                if (state.areas.includes(areaValue)) {
                     state.areas = state.areas.filter(a => a !== areaValue);
                     btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-200');
                     btn.classList.add('bg-slate-50', 'text-slate-600');
@@ -342,8 +396,8 @@
             cb.addEventListener('change', () => {
                 registrarInteraccion();
                 const val = cb.value;
-                if(cb.checked) {
-                    if(!state.modalidades.includes(val)) state.modalidades.push(val);
+                if (cb.checked) {
+                    if (!state.modalidades.includes(val)) state.modalidades.push(val);
                 } else {
                     state.modalidades = state.modalidades.filter(m => m !== val);
                 }
@@ -362,7 +416,7 @@
 
             searchInput.value = '';
             selectDept.value = 'Todos';
-            
+
             areaButtons.forEach(btn => {
                 btn.classList.remove('bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-200');
                 btn.classList.add('bg-slate-50', 'text-slate-600');
@@ -375,5 +429,5 @@
         });
     </script>
 </body>
-</html>
 
+</html>
