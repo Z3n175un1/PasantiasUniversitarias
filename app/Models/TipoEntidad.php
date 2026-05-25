@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ubicacion extends Model
+class TipoEntidad extends Model
 {
     use HasFactory;
-    protected $table = 'ubicaciones';
+    protected $table = 'tipos_entidad';
     public $timestamps = false;
     protected $guarded = [];
 }

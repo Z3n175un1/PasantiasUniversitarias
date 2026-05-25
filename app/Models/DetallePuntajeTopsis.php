@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ubicacion extends Model
+class DetallePuntajeTopsis extends Model
 {
     use HasFactory;
-    protected $table = 'ubicaciones';
+    protected $table = 'detalle_puntaje_topsis';
     public $timestamps = false;
     protected $guarded = [];
 }

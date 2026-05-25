@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ubicacion extends Model
+class TipoDocumento extends Model
 {
     use HasFactory;
-    protected $table = 'ubicaciones';
+    protected $table = 'tipos_documento';
     public $timestamps = false;
     protected $guarded = [];
 }

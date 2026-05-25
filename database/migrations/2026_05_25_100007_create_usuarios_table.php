@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('usuarios', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('rol_id')->constrained('roles')->cascadeOnDelete();
+            $table->string('nombre', 150);
+            $table->string('correo', 255)->unique();
+            $table->string('contrasena_hash', 255);
+            $table->tinyInteger('activo')->default(1);
+            $table->timestamp('creado_en')->useCurrent();
+        });
+    }
+    public function down(): void
+    {
+        Schema::dropIfExists('usuarios');
+    }
+};

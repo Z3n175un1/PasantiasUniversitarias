@@ -4,9 +4,9 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class HabilidadFactory extends Factory
+class RequisitoHabilidadOfertaFactory extends Factory
 {
-    protected $model = \App\Models\Habilidad::class;
+    protected $model = \App\Models\RequisitoHabilidadOferta::class;
     public function definition(): array
     {
         return [
