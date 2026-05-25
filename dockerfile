@@ -3,30 +3,16 @@ FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app
 
-# Dependencias necesarias para algunos paquetes npm
-RUN apk add --no-cache libc6-compat
-
 # Activar pnpm
 RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
 
-# Copiar dependencias
-COPY package.json pnpm-lock.yaml ./
+# Copiar todo el proyecto
+COPY . .
 
-# Instalar dependencias
+# Instalar dependencias frontend
 RUN pnpm install --no-frozen-lockfile
 
-# Copiar frontend
-COPY resources ./resources
-COPY public ./public
-COPY vite.config.* ./
-COPY tailwind.config.* ./
-COPY postcss.config.* ./
-
-# Si usas js/ts:
-COPY jsconfig.json ./
-COPY tsconfig.json ./
-
-# Build frontend
+# Build Vite
 RUN pnpm run build
 
 
@@ -35,15 +21,16 @@ FROM composer:2 AS vendor
 
 WORKDIR /app
 
-COPY composer.json composer.lock ./
+# Copiar proyecto completo
+COPY . .
 
+# Instalar dependencias PHP
 RUN composer install \
     --no-dev \
     --prefer-dist \
     --no-interaction \
     --no-progress \
-    --optimize-autoloader \
-    --no-scripts
+    --optimize-autoloader
 
 
 # ---------- ETAPA 3: PHP ----------
@@ -51,6 +38,7 @@ FROM php:8.2-cli-alpine
 
 WORKDIR /app
 
+# Dependencias del sistema
 RUN apk add --no-cache \
     libpq-dev \
     libzip-dev \
@@ -60,6 +48,7 @@ RUN apk add --no-cache \
     unzip \
     git
 
+# Extensiones PHP
 RUN docker-php-ext-install \
     pdo_mysql \
     pdo_pgsql \
@@ -68,6 +57,7 @@ RUN docker-php-ext-install \
     intl \
     opcache
 
+# Configuración OPcache
 RUN { \
     echo 'opcache.enable=1'; \
     echo 'opcache.memory_consumption=128'; \
@@ -76,22 +66,25 @@ RUN { \
     echo 'opcache.validate_timestamps=0'; \
 } > /usr/local/etc/php/conf.d/opcache.ini
 
-# Copiar proyecto
+# Copiar aplicación
 COPY . .
 
-# Copiar vendor
+# Copiar vendor desde Composer
 COPY --from=vendor /app/vendor ./vendor
 
 # Copiar build frontend
 COPY --from=frontend-builder /app/public/build ./public/build
 
-# Permisos Laravel
+# Crear carpetas Laravel
 RUN mkdir -p storage bootstrap/cache && \
     chmod -R 775 storage bootstrap/cache
 
+# Variables entorno
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 
+# Puerto Render
 EXPOSE 10000
 
+# Comando inicio
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
