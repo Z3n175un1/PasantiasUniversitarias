@@ -64,7 +64,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
 
             {{-- Tarjeta: Estudiante --}}
-            <a href="{{ route('registro', ['rol' => 'student']) }}"
+            <a href="{{ route('register', ['rol' => 'student']) }}"
                 class="group text-left bg-white p-8 rounded-[2rem] border border-gray-200 shadow-[0_15px_30px_rgba(0,0,0,0.02)] hover:border-[#2b6df2] hover:shadow-[0_20px_40px_rgba(43,109,242,0.06)] transition-all duration-300 flex flex-col justify-between h-[260px]">
                 <div
                     class="w-14 h-14 bg-blue-50 text-[#2b6df2] rounded-2xl flex items-center justify-center transition-colors group-hover:bg-[#2b6df2] group-hover:text-white duration-300">
@@ -83,7 +83,7 @@
             </a>
 
             {{-- Tarjeta: Empresa --}}
-            <a href="{{ route('registro', ['rol' => 'company']) }}"
+            <a href="{{ route('register', ['rol' => 'company']) }}"
                 class="group text-left bg-white p-8 rounded-[2rem] border border-gray-200 shadow-[0_15px_30px_rgba(0,0,0,0.02)] hover:border-[#2b6df2] hover:shadow-[0_20px_40px_rgba(43,109,242,0.06)] transition-all duration-300 flex flex-col justify-between h-[260px]">
                 <div
                     class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center transition-colors group-hover:bg-[#2b6df2] group-hover:text-white duration-300">

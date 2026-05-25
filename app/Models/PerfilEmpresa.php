@@ -2,19 +2,35 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class PerfilEmpresa extends Model
 {
-    use HasFactory;
     protected $table = 'perfiles_empresa';
-    public $timestamps = false;
-    protected $guarded = [];
-    public function perfilEmpresa() { return $this->belongsTo(PerfilEmpresa::class, 'perfil_empresa_id'); }
-    public function ubicacion() { return $this->belongsTo(Ubicacion::class, 'ubicacion_id'); }
-    public function ofertasPasantias() { return $this->hasMany(OfertaPasantia::class, 'perfil_empresa_id'); }
-    public function postulaciones() { return $this->hasMany(Postulacion::class, 'perfil_estudiante_id'); }
-    public function ofertaPasantia() { return $this->belongsTo(OfertaPasantia::class, 'oferta_pasantia_id'); }
 
+    protected $fillable = [
+        'usuario_id',
+        'nombre_empresa',
+        'industria',
+        'sitio_web',
+        'verificada',
+    ];
+
+    protected $casts = [
+        'verificada' => 'boolean',
+    ];
+
+    public $timestamps = false;
+
+    // Relación con Usuario
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    // Relación con Ofertas
+    public function ofertas()
+    {
+        return $this->hasMany(OfertaPasantia::class, 'perfil_empresa_id');
+    }
 }

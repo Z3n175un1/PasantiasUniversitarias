@@ -2,26 +2,76 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class Usuario extends Authenticatable
 {
-    use HasFactory;
-    protected $table = 'usuarios';
-    public $timestamps = false;
-    protected $guarded = [];
+    use Notifiable;
 
-    // Custom auth names mapping
+    protected $table = 'usuarios';
+
+    protected $fillable = [
+        'rol_id',
+        'nombre',
+        'correo',
+        'contrasena_hash',
+        'activo',
+    ];
+
+    protected $hidden = [
+        'contrasena_hash',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'activo' => 'boolean',
+        'creado_en' => 'datetime',
+    ];
+
+    // Esto es lo que faltaba - decirle a Laravel que use 'correo' como email
+    public function getEmailForPasswordReset()
+    {
+        return $this->correo;
+    }
+
+    // Para que Auth::attempt() funcione con 'correo'
     public function getAuthPassword()
     {
         return $this->contrasena_hash;
     }
 
-    public function perfilEmpresa() { return $this->belongsTo(PerfilEmpresa::class, 'perfil_empresa_id'); }
-    public function ubicacion() { return $this->belongsTo(Ubicacion::class, 'ubicacion_id'); }
-    public function ofertasPasantias() { return $this->hasMany(OfertaPasantia::class, 'perfil_empresa_id'); }
-    public function postulaciones() { return $this->hasMany(Postulacion::class, 'perfil_estudiante_id'); }
-    public function ofertaPasantia() { return $this->belongsTo(OfertaPasantia::class, 'oferta_pasantia_id'); }
+    // Relación con Rol
+    public function rol()
+    {
+        return $this->belongsTo(Rol::class, 'rol_id');
+    }
 
+    // Relación con PerfilEstudiante
+    public function perfilEstudiante()
+    {
+        return $this->hasOne(PerfilEstudiante::class, 'usuario_id');
+    }
+
+    // Relación con PerfilEmpresa
+    public function perfilEmpresa()
+    {
+        return $this->hasOne(PerfilEmpresa::class, 'usuario_id');
+    }
+
+    // Métodos helper para roles
+    public function esEstudiante()
+    {
+        return $this->rol_id == 1;
+    }
+
+    public function esEmpresa()
+    {
+        return $this->rol_id == 2;
+    }
+
+    public function esAdministrador()
+    {
+        return $this->rol_id == 3;
+    }
 }

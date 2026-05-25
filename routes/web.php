@@ -8,13 +8,13 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Auth\RegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Models\OfertaPasantia;
 use App\Models\Usuario;
 use App\Models\PerfilEmpresa;
 use App\Models\PerfilEstudiante;
 use App\Models\Postulacion;
-use App\Models\Carrera;
 
 // ── Rutas públicas ────────────────────────────────────────────────────────────
 
@@ -43,40 +43,38 @@ Route::get('/privacidad', function () {
     return view('privacidad');
 })->name('privacidad');
 
-// ── Autenticación ─────────────────────────────────────────────────────────────
+// ── Login ─────────────────────────────────────────────────────────────────────
 
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
 Route::post('/login', function (Request $request) {
-    $credentials = $request->validate([
-        'correo' => ['required', 'email'],
-        'password' => ['required'],
+    $request->validate([
+        'correo' => 'required|email',
+        'password' => 'required'
     ]);
 
-    if (Auth::attempt(['correo' => $credentials['correo'], 'password' => $credentials['password']])) {
-        $request->session()->regenerate();
-        $user = Auth::user();
+    $usuario = Usuario::where('correo', $request->correo)->first();
 
-        if ($user->rol_id == 3)
-            return redirect()->route('dashboard.admin');
-        if ($user->rol_id == 2)
-            return redirect()->route('dashboard.company');
-        return redirect()->route('dashboard.student');
+    if ($usuario && Hash::check($request->password, $usuario->contrasena_hash)) {
+        Auth::login($usuario);
+        $request->session()->regenerate();
+
+        if ($usuario->rol_id == 3)
+            return redirect('/dashboard/admin');
+        if ($usuario->rol_id == 2)
+            return redirect('/dashboard/company');
+        return redirect('/dashboard/student');
     }
 
-    return back()->withErrors([
-        'correo' => 'Las credenciales no coinciden en nuestro sistema.',
-    ]);
-})->name('login.post');
+    return back()->withErrors(['correo' => 'Credenciales incorrectas'])->withInput();
+});
 
-Route::post('/logout', function (Request $request) {
+Route::post('/logout', function () {
     Auth::logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
     return redirect('/');
-})->name('logout');
+});
 
 // ── Registro ──────────────────────────────────────────────────────────────────
 
@@ -84,14 +82,15 @@ Route::get('/seleccion', function () {
     return view('auth.seleccion');
 })->name('seleccion');
 
-Route::get('/registro', function (Request $request) {
-    $rol = $request->query('rol', 'student');
-    return view('auth.registro', compact('rol'));
-})->name('registro');
+Route::get('/register/{rol}', function ($rol) {
+    if (!in_array($rol, ['student', 'company']))
+        abort(404);
+    return view('auth.register', compact('rol'));
+})->name('register');
 
-Route::post('/registro', [RegisterController::class, 'store'])->name('registro.store');
+Route::post('/register', [RegisterController::class, 'register']);
 
-// ── Dashboards (protegidos) ───────────────────────────────────────────────────
+// ── Dashboards ────────────────────────────────────────────────────────────────
 
 Route::middleware('auth')->group(function () {
 
@@ -110,19 +109,16 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard/company', function () {
         abort_if(Auth::user()->rol_id != 2, 403);
-        $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->first() ?? PerfilEmpresa::find(1);
+        $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->first();
         $ofertas = OfertaPasantia::where('perfil_empresa_id', $empresa->id)->get();
         return view('dashboards.dashboard_company', compact('empresa', 'ofertas'));
     })->name('dashboard.company');
 
     Route::get('/dashboard/student', function () {
         abort_if(Auth::user()->rol_id != 1, 403);
-        $estudiante = PerfilEstudiante::where('usuario_id', Auth::id())->first() ?? PerfilEstudiante::find(1);
+        $estudiante = PerfilEstudiante::where('usuario_id', Auth::id())->first();
         $postulaciones = Postulacion::where('perfil_estudiante_id', $estudiante->id)->get();
         return view('dashboards.dashboard_student', compact('estudiante', 'postulaciones'));
     })->name('dashboard.student');
 
 });
-
-// ── Fallback auth routes ──────────────────────────────────────────────────────
-require __DIR__ . '/auth.php';
