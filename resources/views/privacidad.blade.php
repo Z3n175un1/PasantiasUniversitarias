@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Política de Privacidad | InternConnect</title>
+    <title>Política de Privacidad | UWorkFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Importar Lucide Icons -->
@@ -58,7 +58,7 @@
                 
                 <section id="recoleccion" class="scroll-mt-32">
                     <h2 class="text-2xl font-bold mb-4 text-[#1a1a1a]">1. Recolección de Datos</h2>
-                    <p class="mb-4">En InternConnect, recolectamos información personal que tú nos proporcionas voluntariamente al registrarte, como tu nombre, dirección de correo electrónico, historial académico y experiencia laboral.</p>
+                    <p class="mb-4">En UWorkFlow, recolectamos información personal que tú nos proporcionas voluntariamente al registrarte, como tu nombre, dirección de correo electrónico, historial académico y experiencia laboral.</p>
                     <p>También recopilamos automáticamente ciertos datos técnicos cuando visitas nuestra plataforma, incluyendo tu dirección IP y el tipo de dispositivo que utilizas.</p>
                 </section>
 

@@ -36,6 +36,6 @@
         </div>
     </div>
     <div class="text-center pt-12 text-[#666] text-sm">
-        © 2026 InternConnect. Todos los derechos reservados. Desarrollado con pasión en Bolivia.
+        © 2026 UWorkFlow. Todos los derechos reservados. Desarrollado con pasión en Bolivia.
     </div>
 </footer>

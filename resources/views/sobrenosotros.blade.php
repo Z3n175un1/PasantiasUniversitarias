@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sobre Nosotros | InternConnect</title>
+    <title>Sobre Nosotros | UWorkFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Importar Lucide Icons -->
@@ -48,7 +48,7 @@
                 Nuestra misión es <span class="text-[#2b6df2]">impulsar carreras</span>
             </h1>
             <p class="text-xl text-gray-400 leading-relaxed max-w-2xl mx-auto">
-                En InternConnect, creemos que el talento no tiene fronteras. Nacimos para eliminar las barreras entre los estudiantes ambiciosos y las empresas que están cambiando Bolivia.
+                En UWorkFlow, creemos que el talento no tiene fronteras. Nacimos para eliminar las barreras entre los estudiantes ambiciosos y las empresas que están cambiando Bolivia.
             </p>
         </div>
     </section>

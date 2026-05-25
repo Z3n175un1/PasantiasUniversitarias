@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cómo Funciona | InternConnect</title>
+    <title>Cómo Funciona | UWorkFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Importar Lucide Icons -->
@@ -57,7 +57,7 @@
                 Transparencia en cada <span class="text-[#2b6df2]">paso</span>
             </h1>
             <p class="text-lg text-[#666] leading-relaxed max-w-2xl mx-auto">
-                Descubre cómo InternConnect simplifica la conexión entre el talento emergente de Bolivia y las empresas
+                Descubre cómo UWorkFlow simplifica la conexión entre el talento emergente de Bolivia y las empresas
                 líderes que impulsan el cambio.
             </p>
         </div>

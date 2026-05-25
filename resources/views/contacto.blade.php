@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contacto | InternConnect</title>
+    <title>Contacto | UWorkFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Importar Lucide Icons -->
@@ -61,7 +61,7 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-[#1a1a1a]">Email</h4>
-                        <p class="text-[#666]">soporte@internconnect.com</p>
+                        <p class="text-[#666]">[EMAIL_ADDRESS]</p>
                     </div>
                 </div>
 
