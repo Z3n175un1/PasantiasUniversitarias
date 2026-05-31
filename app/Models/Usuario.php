@@ -17,10 +17,12 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'rol_id',
         'nombre',
+        'ap_paterno',
+        'ap_materno',
         'correo',
         'contrasena_hash',
         'activo',
-        'creado_en', // Tu tabla usa 'creado_en', no 'created_at'
+        'creado_en',
     ];
 
     protected $hidden = [
@@ -30,6 +32,7 @@ class Usuario extends Authenticatable
 
     protected $casts = [
         'activo' => 'boolean',
+        'creado_en' => 'datetime',
     ];
 
     // Para que Auth funcione con tu BD
@@ -67,5 +70,15 @@ class Usuario extends Authenticatable
     public function esAdministrador()
     {
         return $this->rol_id == 3;
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->nombre;
+    }
+
+    public function getEmailAttribute()
+    {
+        return $this->correo;
     }
 }

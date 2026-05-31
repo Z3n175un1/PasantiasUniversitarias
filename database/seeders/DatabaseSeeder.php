@@ -86,26 +86,37 @@ INSERT INTO "habilidades" ("id", "nombre", "categoria", "descripcion", "activa")
 EOT
                 );
                 DB::statement(<<<EOT
-INSERT INTO "usuarios" ("id", "rol_id", "nombre", "correo", "contrasena_hash", "activo", "creado_en") VALUES (1, 3, 'Admin', 'admin@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
-(2, 3, 'Orlando Mercado', 'orlando@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
-(3, 3, 'Adrian Molina', 'adrian@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
-(4, 3, 'Fabricio Herrera', 'fabricio@pasantias.bo', 'hash', 1, '2026-05-21 22:10:23'),
-(5, 1, 'Juan Pérez', 'juan@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(6, 1, 'María Choque', 'maria@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(7, 1, 'Carlos Mamani', 'carlos@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(8, 1, 'Lucía Fernández', 'lucia@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(9, 1, 'Diego Quispe', 'diego@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(10, 1, 'Ana López', 'ana@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(11, 1, 'Kevin Rocha', 'kevin@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(12, 1, 'Paola Vargas', 'paola@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(13, 1, 'Miguel Flores', 'miguel@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(14, 1, 'Andrea Rojas', 'andrea@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(15, 1, 'José Condori', 'jose@gmail.com', 'hash', 1, '2026-05-21 22:10:23'),
-(16, 2, 'Jalasoft', 'rrhh@jalasoft.com', 'hash', 1, '2026-05-21 22:10:23'),
-(17, 2, 'Tigo Bolivia', 'talento@tigo.com.bo', 'hash', 1, '2026-05-21 22:10:23'),
-(18, 2, 'Banco Mercantil', 'rrhh@bm.com.bo', 'hash', 1, '2026-05-21 22:10:23'),
-(19, 2, 'Datec', 'rrhh@datec.com.bo', 'hash', 1, '2026-05-21 22:10:23'),
-(20, 2, 'Jatun Code', 'contacto@jatuncode.bo', 'hash', 1, '2026-05-21 22:10:23');
+INSERT INTO "tipos_entidad" ("id", "nombre", "descripcion") VALUES (1, 'usuario', 'Entidad de usuario'),
+(2, 'empresa', 'Entidad de empresa'),
+(3, 'estudiante', 'Entidad de estudiante'),
+(4, 'oferta', 'Entidad de oferta'),
+(5, 'postulacion', 'Entidad de postulación'),
+(6, 'login', 'Inicio de sesión'),
+(7, 'logout', 'Cierre de sesión');
+EOT
+                );
+                DB::statement(<<<'EOT'
+INSERT INTO "usuarios" ("id", "rol_id", "nombre", "correo", "contrasena_hash", "activo", "creado_en") VALUES (1, 3, 'Admin', 'admin@pasantias.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(2, 3, 'Orlando Mercado', 'orlando@pasantias.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(3, 3, 'Adrian Molina', 'adrian@pasantias.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(4, 3, 'Fabricio Herrera', 'fabricio@pasantias.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(21, 3, 'Super Admin', 'prueba@edu.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(5, 1, 'Juan Pérez', 'juan@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(6, 1, 'María Choque', 'maria@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(7, 1, 'Carlos Mamani', 'carlos@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(8, 1, 'Lucía Fernández', 'lucia@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(9, 1, 'Diego Quispe', 'diego@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(10, 1, 'Ana López', 'ana@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(11, 1, 'Kevin Rocha', 'kevin@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(12, 1, 'Paola Vargas', 'paola@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(13, 1, 'Miguel Flores', 'miguel@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(14, 1, 'Andrea Rojas', 'andrea@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(15, 1, 'José Condori', 'jose@gmail.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(16, 2, 'Jalasoft', 'rrhh@jalasoft.com', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(17, 2, 'Tigo Bolivia', 'talento@tigo.com.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(18, 2, 'Banco Mercantil', 'rrhh@bm.com.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(19, 2, 'Datec', 'rrhh@datec.com.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23'),
+(20, 2, 'Jatun Code', 'contacto@jatuncode.bo', '$2y$10$bIB2aOYC8hblin/.giln6O342AyvU6tj0YrXpU34jlC1KuNj8S44a', 1, '2026-05-21 22:10:23');
 EOT
                 );
                 DB::statement(<<<EOT
@@ -148,5 +159,7 @@ INSERT INTO "ofertas_pasantia" ("id", "perfil_empresa_id", "ubicacion_id", "esta
 (15, 5, 15, 2, 'Fullstack Developer', 'Laravel y React', '2026-06-01', '2026-12-01');
 EOT
                 );
+
+
         }
 }

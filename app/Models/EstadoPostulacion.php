@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TipoEntidad extends Model
+class EstadoPostulacion extends Model
 {
     use HasFactory;
-    protected $table = 'tipos_entidad';
+    protected $table = 'estados_postulacion';
     public $timestamps = false;
     protected $guarded = [];
 }

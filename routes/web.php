@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\LogController;
+use App\Models\RegistroAuditoria;
+use App\Models\TipoEntidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -41,7 +44,7 @@ Route::get('/privacidad', function () {
 // ── Login ─────────────────────────────────────────────────────────────────────
 
 Route::get('/login', function () {
-    return view('auth.login');
+    return view('autenticacion.login');
 })->name('login');
 
 Route::post('/login', function (Request $request) {
@@ -56,8 +59,16 @@ Route::post('/login', function (Request $request) {
         Auth::login($usuario);
         $request->session()->regenerate();
 
+        RegistroAuditoria::create([
+            'usuario_id' => $usuario->id,
+            'tipo_entidad_id' => 6,
+            'entidad_id' => $usuario->id,
+            'accion' => 'Inicio de sesión',
+            'creado_en' => now(),
+        ]);
+
         if ($usuario->rol_id == 3)
-            return redirect('/dashboard/admin');
+            return redirect('/admin/dashboard');
         if ($usuario->rol_id == 2)
             return redirect('/dashboard/company');
         return redirect('/dashboard/student');
@@ -67,26 +78,32 @@ Route::post('/login', function (Request $request) {
 });
 
 Route::post('/logout', function () {
+    if (Auth::check()) {
+        RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 7,
+            'entidad_id' => Auth::id(),
+            'accion' => 'Cierre de sesión',
+            'creado_en' => now(),
+        ]);
+    }
     Auth::logout();
     return redirect('/')->with('success', 'Has cerrado sesión correctamente.');
 })->name('logout');
 
 // ── Registro ──────────────────────────────────────────────────────────────────
 
-// Página de selección
 Route::get('/seleccion', function () {
-    return view('auth.seleccion');
+    return view('autenticacion.seleccion');
 })->name('seleccion');
 
-// MOSTRAR formulario (GET) - ¡ESTA FALTABA!
 Route::get('/register/{rol}', function ($rol) {
     if (!in_array($rol, ['student', 'company'])) {
         abort(404);
     }
-    return view('auth.register', compact('rol'));
+    return view('autenticacion.register', compact('rol'));
 })->name('register')->where('rol', 'student|company');
 
-// PROCESAR registro (POST) - Solo una vez
 Route::post('/register', function (Request $request) {
     $request->validate([
         'email' => 'required|email|unique:usuarios,correo',
@@ -97,18 +114,25 @@ Route::post('/register', function (Request $request) {
     $rolId = $request->role === 'student' ? 1 : 2;
 
     if ($request->role === 'student') {
-        $nombreCompleto = trim($request->full_name . ' ' . $request->paternal_surname . ' ' . $request->maternal_surname);
+        $data = [
+            'nombre' => trim($request->full_name),
+            'ap_paterno' => trim($request->paternal_surname),
+            'ap_materno' => trim($request->maternal_surname),
+        ];
     } else {
-        $nombreCompleto = trim($request->hr_name . ' ' . $request->hr_paternal . ' ' . $request->hr_maternal);
+        $data = [
+            'nombre' => trim($request->hr_name),
+            'ap_paterno' => trim($request->hr_paternal),
+            'ap_materno' => trim($request->hr_maternal),
+        ];
     }
 
-    $usuario = Usuario::create([
+    $usuario = Usuario::create(array_merge($data, [
         'rol_id' => $rolId,
-        'nombre' => $nombreCompleto,
         'correo' => $request->email,
         'contrasena_hash' => Hash::make($request->password),
         'activo' => true,
-    ]);
+    ]));
 
     if ($request->role === 'student') {
         PerfilEstudiante::create([
@@ -136,6 +160,38 @@ Route::post('/register', function (Request $request) {
     return redirect('/dashboard/student')->with('success', '¡Bienvenido estudiante!');
 });
 
+// ── Admin Panel (AdminLTE) ────────────────────────────────────────────────────
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // CRUD Usuarios
+    Route::get('/usuarios', [AdminController::class, 'usuarios'])->name('usuarios');
+    Route::get('/usuarios/crear', [AdminController::class, 'crearUsuario'])->name('usuarios.crear');
+    Route::post('/usuarios', [AdminController::class, 'guardarUsuario'])->name('usuarios.guardar');
+    Route::get('/usuarios/{id}/editar', [AdminController::class, 'editarUsuario'])->name('usuarios.editar');
+    Route::put('/usuarios/{id}', [AdminController::class, 'actualizarUsuario'])->name('usuarios.actualizar');
+    Route::delete('/usuarios/{id}', [AdminController::class, 'eliminarUsuario'])->name('usuarios.eliminar');
+    Route::patch('/usuarios/{id}/toggle', [AdminController::class, 'toggleUsuario'])->name('usuarios.toggle');
+
+    // Empresas y Estudiantes
+    Route::get('/empresas', [AdminController::class, 'empresas'])->name('empresas');
+    Route::get('/estudiantes', [AdminController::class, 'estudiantes'])->name('estudiantes');
+
+    // Ofertas
+    Route::get('/ofertas', [AdminController::class, 'ofertas'])->name('ofertas');
+    Route::patch('/ofertas/{id}/toggle', [AdminController::class, 'toggleOferta'])->name('ofertas.toggle');
+
+    // Reportes dinámicos
+    Route::get('/reportes', [AdminController::class, 'reportes'])->name('reportes');
+
+    // Logs (solo super admin)
+    Route::get('/logs', [LogController::class, 'index'])->name('logs');
+
+    // Estadísticas
+    Route::get('/estadisticas', [AdminController::class, 'estadisticas'])->name('estadisticas');
+});
+
 // ── Dashboards ────────────────────────────────────────────────────────────────
 
 Route::middleware('auth')->group(function () {
@@ -153,45 +209,32 @@ Route::middleware('auth')->group(function () {
             'todos_estudiantes' => PerfilEstudiante::with('usuario')->get(),
             'ofertas_activas' => OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])->get(),
         ];
-        return view('dashboards.dashboard_admin', compact('stats'));
+        return view('paneles-control.dashboard_admin', compact('stats'));
     })->name('dashboard.admin');
 
-    Route::get('/dashboard/company', function () {
-        abort_if(Auth::user()->rol_id != 2, 403);
-        $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->first();
+    Route::get('/dashboard/company', [App\Http\Controllers\CompanyController::class, 'dashboard'])->name('dashboard.company');
+    Route::post('/company/ofertas', [App\Http\Controllers\CompanyController::class, 'guardarOferta'])->name('company.ofertas.guardar');
+    Route::put('/company/ofertas/{id}/actualizar', [App\Http\Controllers\CompanyController::class, 'actualizarOferta'])->name('company.ofertas.actualizar');
+    Route::delete('/company/ofertas/{id}', [App\Http\Controllers\CompanyController::class, 'eliminarOferta'])->name('company.ofertas.eliminar');
+    Route::get('/company/citatorio/{postulacion_id}', [App\Http\Controllers\CompanyController::class, 'citatorio'])->name('company.citatorio');
+    Route::get('/api/ofertas/{id}', function ($id) {
+        $oferta = OfertaPasantia::findOrFail($id);
+        return response()->json($oferta);
+    })->middleware('auth');
 
-        if (!$empresa) {
-            return redirect('/login')->with('error', 'Perfil de empresa no encontrado.');
-        }
-
-        $ofertas = OfertaPasantia::where('perfil_empresa_id', $empresa->id)->get();
-        return view('dashboards.dashboard_company', compact('empresa', 'ofertas'));
-    })->name('dashboard.company');
-
-    Route::get('/dashboard/student', function () {
-        abort_if(Auth::user()->rol_id != 1, 403);
-        $estudiante = PerfilEstudiante::where('usuario_id', Auth::id())->first();
-
-        if (!$estudiante) {
-            return redirect('/login')->with('error', 'Perfil de estudiante no encontrado.');
-        }
-
-        $postulaciones = Postulacion::where('perfil_estudiante_id', $estudiante->id)->get();
-        return view('dashboards.dashboard_student', compact('estudiante', 'postulaciones'));
-    })->name('dashboard.student');
+    Route::get('/dashboard/student', [App\Http\Controllers\StudentController::class, 'dashboard'])->name('dashboard.student');
 
 });
 
 // ── Pasantías ─────────────────────────────────────────────────────────────────
 
 Route::get('/pasantia/{id}', function ($id) {
-    // Solo mostrar ofertas activas públicamente
     $oferta = OfertaPasantia::where('id', $id)
         ->whereHas('estadoPublicacion', function($q) {
-            $q->where('nombre', 'abierta'); // Solo mostrar abiertas
+            $q->where('nombre', 'abierta');
         })
         ->with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])
         ->firstOrFail();
-    
+
     return view('pasantias.show', compact('oferta'));
 })->name('pasantia.show');

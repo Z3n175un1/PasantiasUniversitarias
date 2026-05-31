@@ -11,10 +11,14 @@ class RegistroAuditoria extends Model
     protected $table = 'registro_auditoria';
     public $timestamps = false;
     protected $guarded = [];
-    public function perfilEmpresa() { return $this->belongsTo(PerfilEmpresa::class, 'perfil_empresa_id'); }
-    public function ubicacion() { return $this->belongsTo(Ubicacion::class, 'ubicacion_id'); }
-    public function ofertasPasantias() { return $this->hasMany(OfertaPasantia::class, 'perfil_empresa_id'); }
-    public function postulaciones() { return $this->hasMany(Postulacion::class, 'perfil_estudiante_id'); }
-    public function ofertaPasantia() { return $this->belongsTo(OfertaPasantia::class, 'oferta_pasantia_id'); }
 
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+    public function tipoEntidad()
+    {
+        return $this->belongsTo(TipoEntidad::class, 'tipo_entidad_id');
+    }
 }
