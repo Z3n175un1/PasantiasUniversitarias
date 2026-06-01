@@ -89,4 +89,4 @@ ENV APP_DEBUG=false
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "php artisan cache:clear && php artisan view:clear && php artisan route:clear && php artisan config:cache && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
+CMD ["sh", "-c", "chmod -R 775 storage bootstrap/cache && php artisan cache:clear && php artisan view:clear && php artisan route:clear && php artisan config:cache && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}"]
