@@ -18,6 +18,23 @@
 <body class="text-[#0f172a] overflow-x-hidden min-h-screen flex flex-col justify-between">
     @include('componentes.navbar')
 
+    @if(session('success'))
+        <div class="max-w-[1400px] mx-auto px-[8%] pt-4">
+            <div class="bg-green-50 border border-green-200 text-green-800 px-6 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2">
+                <i data-lucide="check-circle" class="w-5 h-5 text-green-600"></i>
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="max-w-[1400px] mx-auto px-[8%] pt-4">
+            <div class="bg-red-50 border border-red-200 text-red-800 px-6 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2">
+                <i data-lucide="x-circle" class="w-5 h-5 text-red-600"></i>
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-[8%] py-10">
         <div class="flex flex-col lg:flex-row gap-8">
             <aside class="lg:w-64 flex flex-col gap-2">
@@ -29,6 +46,10 @@
                     <i data-lucide="send" class="w-5 h-5"></i>
                     Mis Postulaciones
                     <span class="ml-auto bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full font-bold">{{ $total_postulaciones }}</span>
+                </button>
+                <button data-tab="documentos" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all text-left text-sm w-full">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                    Documentos y Habilidades
                 </button>
                 <button data-tab="ofertas" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all text-left text-sm w-full">
                     <i data-lucide="briefcase" class="w-5 h-5"></i>
@@ -54,8 +75,17 @@
                             <p class="text-sm text-slate-500 mt-1">{{ $estudiante->carrera ?? 'Carrera no especificada' }} • {{ $estudiante->universidad ?? 'Universidad no especificada' }}</p>
                         </div>
                         <div class="flex items-center gap-3 bg-blue-50/60 p-4 rounded-2xl border border-blue-100/50">
+                            @php
+                                $completado = 0;
+                                if ($estudiante->universidad) $completado += 25;
+                                if ($estudiante->carrera) $completado += 25;
+                                if ($estudiante->anio_graduacion) $completado += 15;
+                                if ($estudiante->biografia) $completado += 10;
+                                if ($estudiante->documentos->count() > 0) $completado += 15;
+                                if ($estudiante->habilidades->count() > 0) $completado += 10;
+                            @endphp
                             <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
-                                {{ min(100, ($estudiante->anio_graduacion ? 80 : 50) + ($estudiante->biografia ? 20 : 0)) }}%
+                                {{ $completado }}%
                             </div>
                             <div>
                                 <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Perfil Completado</h4>
@@ -169,6 +199,104 @@
                     </div>
                 </section>
 
+                {{-- Documentos y Habilidades --}}
+                <section id="documentos" class="tab-content space-y-6">
+                    {{-- Documentos --}}
+                    <div class="bg-white p-7 rounded-[2rem] border border-slate-100 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-lg">
+                                <i data-lucide="file-text" class="w-5 h-5 inline mr-2 text-blue-600"></i>Mis Documentos
+                            </h3>
+                            <button onclick="openModalDocumento()" class="px-4 py-2 bg-blue-600 text-white font-bold rounded-xl text-xs hover:bg-blue-700 transition shadow-md">
+                                <i data-lucide="upload" class="w-4 h-4 inline mr-1"></i>Subir Documento
+                            </button>
+                        </div>
+
+                        @if($estudiante->documentos->count() > 0)
+                            <div class="divide-y divide-slate-100">
+                                @foreach($estudiante->documentos as $doc)
+                                    <div class="flex items-center justify-between py-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500">
+                                                <i data-lucide="{{ $doc->tipo_mime == 'application/pdf' ? 'file' : 'file-image' }}" class="w-5 h-5"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="text-sm font-bold text-slate-900">{{ $doc->nombre_original }}</h4>
+                                                <p class="text-xs text-slate-400">
+                                                    {{ $doc->tipoDocumento->nombre ?? 'Documento' }} •
+                                                    {{ round($doc->tamano_bytes / 1024, 1) }} KB
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <a href="{{ asset('storage/' . $doc->ruta_almacenamiento) }}" target="_blank"
+                                               class="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition" title="Ver">
+                                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                            </a>
+                                            <form action="{{ route('student.documentos.eliminar', $doc->id) }}" method="POST"
+                                                  onsubmit="return confirm('¿Eliminar este documento?')" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-xl transition" title="Eliminar">
+                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-6">
+                                <i data-lucide="file-text" class="w-10 h-10 text-slate-300 mx-auto mb-2"></i>
+                                <p class="text-sm text-slate-400">No has subido ningún documento aún.</p>
+                                <p class="text-xs text-slate-300 mt-1">Sube tu CV, certificados u otros documentos.</p>
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Habilidades --}}
+                    <div class="bg-white p-7 rounded-[2rem] border border-slate-100 shadow-sm space-y-5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-slate-900 text-lg">
+                                <i data-lucide="zap" class="w-5 h-5 inline mr-2 text-amber-500"></i>Mis Habilidades
+                            </h3>
+                            <button onclick="openModalHabilidad()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs hover:bg-amber-600 transition shadow-md">
+                                <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i>Agregar Habilidad
+                            </button>
+                        </div>
+
+                        @if($estudiante->habilidades->count() > 0)
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                @foreach($estudiante->habilidades as $hab)
+                                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-sm text-slate-800">{{ $hab->habilidad->nombre ?? 'N/A' }}</span>
+                                            <div class="flex gap-0.5">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <span class="w-2 h-2 rounded-full {{ $i <= $hab->nivel ? 'bg-amber-400' : 'bg-slate-200' }}"></span>
+                                                @endfor
+                                            </div>
+                                        </div>
+                                        <form action="{{ route('student.habilidades.eliminar', $hab->id) }}" method="POST" style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-400 hover:text-red-600 transition" title="Eliminar">
+                                                <i data-lucide="x" class="w-4 h-4"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="text-center py-6">
+                                <i data-lucide="zap" class="w-10 h-10 text-slate-300 mx-auto mb-2"></i>
+                                <p class="text-sm text-slate-400">No has agregado habilidades aún.</p>
+                                <p class="text-xs text-slate-300 mt-1">Agrega tus habilidades para que las empresas te encuentren.</p>
+                            </div>
+                        @endif
+                    </div>
+                </section>
+
                 {{-- Ofertas Disponibles --}}
                 <section id="ofertas" class="tab-content space-y-6">
                     <h2 class="text-xl font-bold text-slate-900">Ofertas de Pasantía Disponibles</h2>
@@ -210,48 +338,132 @@
                 <section id="perfil" class="tab-content space-y-6">
                     <div class="flex flex-col">
                         <h2 class="text-xl font-bold text-slate-900">Mi Perfil Académico</h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Información de tu perfil de estudiante.</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Edita tu información académica y personal.</p>
                     </div>
 
                     <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                        <div class="space-y-6 text-sm font-semibold">
+                        <form action="{{ route('student.perfil.actualizar') }}" method="POST" class="space-y-6 text-sm font-semibold">
+                            @csrf
                             <div class="flex items-center gap-6 pb-6 border-b border-slate-100">
                                 <div class="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-md">
                                     {{ strtoupper(substr($estudiante->usuario->nombre ?? '?', 0, 2)) }}
                                 </div>
                                 <div>
-                                    <h3 class="text-lg font-bold text-slate-900">{{ $estudiante->usuario->nombre ?? 'N/A' }}</h3>
+                                    <h3 class="text-lg font-bold text-slate-900">{{ $estudiante->usuario->nombre ?? 'N/A' }} {{ $estudiante->usuario->ap_paterno ?? '' }}</h3>
                                     <p class="text-xs text-slate-400">{{ $estudiante->usuario->correo ?? '' }}</p>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Universidad</label>
-                                    <p class="font-bold text-slate-900">{{ $estudiante->universidad ?? 'No especificada' }}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Universidad</label>
+                                    <input type="text" name="universidad" value="{{ old('universidad', $estudiante->universidad) }}"
+                                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
                                 </div>
-                                <div>
-                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Carrera</label>
-                                    <p class="font-bold text-slate-900">{{ $estudiante->carrera ?? 'No especificada' }}</p>
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera</label>
+                                    <input type="text" name="carrera" value="{{ old('carrera', $estudiante->carrera) }}"
+                                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Año de Graduación</label>
-                                    <p class="font-bold text-slate-900">{{ $estudiante->anio_graduacion ?? 'No especificado' }}</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Año de Graduación</label>
+                                    <input type="number" name="anio_graduacion" value="{{ old('anio_graduacion', $estudiante->anio_graduacion) }}" min="1900" max="2100"
+                                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
                                 </div>
-                                <div>
-                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Correo Electrónico</label>
-                                    <p class="font-bold text-slate-900">{{ $estudiante->usuario->correo ?? 'N/A' }}</p>
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Correo Electrónico</label>
+                                    <input type="email" value="{{ $estudiante->usuario->correo ?? '' }}" disabled
+                                           class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl font-medium text-slate-500 cursor-not-allowed">
                                 </div>
                             </div>
-                        </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Biografía / Sobre mí</label>
+                                <textarea name="biografia" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none">{{ old('biografia', $estudiante->biografia) }}</textarea>
+                            </div>
+
+                            <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-sm">
+                                <i data-lucide="save" class="w-4 h-4 inline mr-1"></i>Guardar Cambios
+                            </button>
+                        </form>
                     </div>
                 </section>
             </div>
         </div>
     </main>
+
+    {{-- Modal Subir Documento --}}
+    <div id="modal-documento" class="fixed inset-0 bg-[#0d121f]/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-lg mx-4 p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 space-y-6 relative">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-black text-slate-900 tracking-tight">Subir Documento</h3>
+                <button onclick="closeModalDocumento()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form action="{{ route('student.documentos.subir') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-sm font-semibold">
+                @csrf
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Tipo de Documento</label>
+                    <select name="tipo_documento_id" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                        <option value="">Seleccionar...</option>
+                        @foreach($tipos_documento as $td)
+                            <option value="{{ $td->id }}">{{ $td->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Archivo (PDF, DOC, JPG, PNG - max 10MB)</label>
+                    <input type="file" name="archivo" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModalDocumento()" class="flex-1 py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Cancelar</button>
+                    <button type="submit" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Subir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Modal Agregar Habilidad --}}
+    <div id="modal-habilidad" class="fixed inset-0 bg-[#0d121f]/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-lg mx-4 p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 space-y-6 relative">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-black text-slate-900 tracking-tight">Agregar Habilidad</h3>
+                <button onclick="closeModalHabilidad()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form action="{{ route('student.habilidades.guardar') }}" method="POST" class="space-y-4 text-sm font-semibold">
+                @csrf
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Habilidad</label>
+                    <select name="habilidad_id" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                        <option value="">Seleccionar...</option>
+                        @foreach($habilidades_disponibles as $hab)
+                            <option value="{{ $hab->id }}">{{ $hab->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Nivel (1-5)</label>
+                    <div class="flex gap-2">
+                        @for($i = 1; $i <= 5; $i++)
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="nivel" value="{{ $i }}" {{ $i == 3 ? 'checked' : '' }} class="sr-only peer">
+                                <div class="text-center py-3 bg-slate-50 border border-slate-200 rounded-xl peer-checked:bg-amber-400 peer-checked:text-white peer-checked:border-amber-400 font-bold text-sm transition">
+                                    {{ $i }}
+                                </div>
+                            </label>
+                        @endfor
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModalHabilidad()" class="flex-1 py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Cancelar</button>
+                    <button type="submit" class="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition">Agregar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     @include('componentes.footer')
 
@@ -261,6 +473,7 @@
         const tabsMap = {
             'inicio': document.getElementById('inicio'),
             'postulaciones': document.getElementById('postulaciones'),
+            'documentos': document.getElementById('documentos'),
             'ofertas': document.getElementById('ofertas'),
             'perfil': document.getElementById('perfil')
         };
@@ -284,6 +497,16 @@
                 if (tabsMap[targetTab]) tabsMap[targetTab].classList.add('active');
             });
         });
+
+        // Modal Documento
+        const modalDoc = document.getElementById('modal-documento');
+        function openModalDocumento() { modalDoc.classList.remove('hidden'); }
+        function closeModalDocumento() { modalDoc.classList.add('hidden'); }
+
+        // Modal Habilidad
+        const modalHab = document.getElementById('modal-habilidad');
+        function openModalHabilidad() { modalHab.classList.remove('hidden'); }
+        function closeModalHabilidad() { modalHab.classList.add('hidden'); }
     </script>
 </body>
 </html>

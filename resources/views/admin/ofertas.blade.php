@@ -55,7 +55,18 @@
                             </td>
                             <td>{{ $oferta->perfilEmpresa->nombre_empresa ?? 'N/A' }}</td>
                             <td>{{ $oferta->ubicacion->ciudad ?? 'Remoto' }}</td>
-                            <td>{{ $oferta->duracion_semanas ? $oferta->duracion_semanas . ' semanas' : 'No especificada' }}</td>
+                            <td>
+                                @if($oferta->fecha_inicio && $oferta->fecha_fin)
+                                    @php
+                                        $inicio = \Carbon\Carbon::parse($oferta->fecha_inicio);
+                                        $fin = \Carbon\Carbon::parse($oferta->fecha_fin);
+                                        $semanas = $inicio->diffInWeeks($fin);
+                                    @endphp
+                                    {{ $semanas }} semanas ({{ $inicio->format('d/m/Y') }} - {{ $fin->format('d/m/Y') }})
+                                @else
+                                    No especificada
+                                @endif
+                            </td>
                             <td>
                                 @php
                                     $estado = $oferta->estadoPublicacion->nombre ?? 'desconocido';

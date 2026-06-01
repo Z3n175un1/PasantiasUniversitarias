@@ -26,6 +26,14 @@
             </div>
         </div>
     @endif
+    @if(session('error'))
+        <div class="max-w-[1400px] mx-auto px-[8%] pt-4">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-3 rounded-2xl text-sm font-semibold flex items-center gap-2">
+                <i data-lucide="alert-circle" class="w-5 h-5 text-red-500"></i>
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
 
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-[8%] py-10">
         <div class="flex flex-col lg:flex-row gap-8">
@@ -177,41 +185,78 @@
                 {{-- Postulantes --}}
                 <section id="postulantes" class="tab-content space-y-6">
                     <h2 class="text-xl font-bold text-slate-900">Postulantes Recibidos</h2>
-                    @if($postulaciones_recientes->count() > 0)
-                        <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-slate-50 border-b border-slate-100 text-xs font-bold uppercase tracking-wider text-slate-400">
-                                        <th class="p-5">Estudiante</th>
-                                        <th class="p-5">Carrera / Universidad</th>
-                                        <th class="p-5">Oferta</th>
-                                        <th class="p-5">Estado</th>
-                                        <th class="p-5 text-right">Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-sm font-medium text-slate-700 divide-y divide-slate-50">
-                                    @foreach($postulaciones_recientes as $post)
-                                        <tr>
-                                            <td class="p-5 font-bold text-slate-900">{{ $post->perfilEstudiante->usuario->nombre ?? 'N/A' }}</td>
-                                            <td class="p-5">
-                                                {{ $post->perfilEstudiante->carrera ?? 'N/A' }}<br>
-                                                <span class="text-xs text-slate-400">{{ $post->perfilEstudiante->universidad ?? '' }}</span>
-                                            </td>
-                                            <td class="p-5">{{ $post->ofertaPasantia->titulo ?? 'N/A' }}</td>
-                                            <td class="p-5">
-                                                <span class="px-2.5 py-1 bg-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-50 text-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-700 rounded-full font-bold text-xs">
-                                                    {{ $post->estadoPostulacion->nombre ?? 'Pendiente' }}
-                                                </span>
-                                            </td>
-                                            <td class="p-5 text-right">
+                    @if($todas_postulaciones->count() > 0)
+                        <div class="space-y-4">
+                            @foreach($todas_postulaciones as $post)
+                                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                                    <div class="p-5">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-bold text-sm text-slate-700">
+                                                    {{ strtoupper(substr($post->perfilEstudiante->usuario->nombre ?? '?', 0, 2)) }}
+                                                </div>
+                                                <div>
+                                                    <h4 class="font-bold text-slate-900">{{ $post->perfilEstudiante->usuario->nombre ?? 'N/A' }}</h4>
+                                                    <p class="text-xs text-slate-400">{{ $post->perfilEstudiante->carrera ?? 'N/A' }} - {{ $post->perfilEstudiante->universidad ?? '' }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <form action="{{ route('company.postulaciones.estado', $post->id) }}" method="POST" class="flex items-center gap-1">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <select name="estado_postulacion_id" onchange="this.form.submit()" class="text-xs font-bold rounded-full px-2.5 py-1 border-0 cursor-pointer bg-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-50 text-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-700 outline-none">
+                                                        @foreach($estados_postulacion as $estado)
+                                                            <option value="{{ $estado->id }}" {{ $post->estado_postulacion_id == $estado->id ? 'selected' : '' }}>{{ $estado->nombre }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </form>
                                                 <a href="{{ route('company.citatorio', $post->id) }}" target="_blank" class="px-3 py-1.5 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 transition">
                                                     <i data-lucide="file-text" class="w-3.5 h-3.5 inline mr-1"></i>Citatorio
                                                 </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pt-4 border-t border-slate-100">
+                                            <div>
+                                                <p class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">Documentos</p>
+                                                @if($post->perfilEstudiante->documentos && $post->perfilEstudiante->documentos->count() > 0)
+                                                    <div class="flex flex-wrap gap-2">
+                                                        @foreach($post->perfilEstudiante->documentos as $doc)
+                                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold">
+                                                                <i data-lucide="file" class="w-3 h-3"></i>
+                                                                {{ $doc->tipoDocumento->nombre ?? 'Documento' }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <p class="text-xs text-slate-400">Sin documentos</p>
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <p class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">Habilidades</p>
+                                                @if($post->perfilEstudiante->habilidades && $post->perfilEstudiante->habilidades->count() > 0)
+                                                    <div class="flex flex-wrap gap-2">
+                                                        @foreach($post->perfilEstudiante->habilidades as $hab)
+                                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 rounded-lg text-xs font-semibold">
+                                                                <i data-lucide="code" class="w-3 h-3"></i>
+                                                                {{ $hab->habilidad->nombre ?? 'Habilidad' }}
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <p class="text-xs text-slate-400">Sin habilidades registradas</p>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-3 pt-3 border-t border-slate-100">
+                                            <p class="text-xs text-slate-400">
+                                                Oferta: <span class="font-semibold text-slate-600">{{ $post->ofertaPasantia->titulo ?? 'N/A' }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     @else
                         <div class="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center">
@@ -304,6 +349,26 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Modalidad</label>
+                        <select name="modalidad" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            @foreach($modalidades as $modalidad)
+                                <option value="{{ $modalidad }}">{{ $modalidad }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
+                        <select name="carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            <option value="">Seleccionar carrera</option>
+                            @foreach($carreras as $carrera)
+                                <option value="{{ $carrera }}">{{ $carrera }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Ubicación</label>
                         <select name="ubicacion_id" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
                             @foreach(\App\Models\Ubicacion::all() as $ubicacion)
@@ -359,6 +424,26 @@
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Descripción</label>
                     <textarea name="descripcion" id="edit-descripcion" rows="4" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Modalidad</label>
+                        <select name="modalidad" id="edit-modalidad" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            @foreach($modalidades as $modalidad)
+                                <option value="{{ $modalidad }}">{{ $modalidad }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
+                        <select name="carrera" id="edit-carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            <option value="">Seleccionar carrera</option>
+                            @foreach($carreras as $carrera)
+                                <option value="{{ $carrera }}">{{ $carrera }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -433,6 +518,8 @@
                 .then(data => {
                     document.getElementById('edit-titulo').value = data.titulo;
                     document.getElementById('edit-descripcion').value = data.descripcion;
+                    document.getElementById('edit-modalidad').value = data.modalidad || 'Presencial';
+                    document.getElementById('edit-carrera').value = data.carrera || '';
                     document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
                     document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
                     document.getElementById('edit-fecha_fin').value = data.fecha_fin;

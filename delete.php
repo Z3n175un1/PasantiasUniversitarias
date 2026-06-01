@@ -5,9 +5,9 @@ try {
     // Conexión PDO PostgreSQL
     $host = "localhost";
     $port = "5432";
-    $dbname = "pasantias";
-    $user = "postgres";
-    $password = "Jadrian8";
+    $dbname = "sexualidad";
+    $user = "tumama";
+    $password = "";
 
     $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
 

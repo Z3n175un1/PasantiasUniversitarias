@@ -22,7 +22,12 @@ Route::get('/', function () {
 
 Route::get('/explora', function () {
     $ofertas = OfertaPasantia::with(['ubicacion', 'perfilEmpresa'])->get();
-    return view('explora', compact('ofertas'));
+    $ubicaciones = \App\Models\Ubicacion::orderBy('ciudad')->get();
+    $carreras = \App\Models\OfertaPasantia::whereNotNull('carrera')
+        ->distinct()->orderBy('carrera')->pluck('carrera');
+    $modalidades = \App\Models\OfertaPasantia::whereNotNull('modalidad')
+        ->distinct()->orderBy('modalidad')->pluck('modalidad');
+    return view('explora', compact('ofertas', 'ubicaciones', 'carreras', 'modalidades'));
 })->name('explora');
 
 Route::get('/comofunciona', function () {
@@ -109,6 +114,8 @@ Route::post('/register', function (Request $request) {
         'email' => 'required|email|unique:usuarios,correo',
         'password' => 'required|min:8|confirmed',
         'role' => 'required|in:student,company',
+    ], [
+        'email.unique' => '¡Ups! Parece que ya registraste esta cuenta. Intenta iniciar sesión.',
     ]);
 
     $rolId = $request->role === 'student' ? 1 : 2;
@@ -127,37 +134,64 @@ Route::post('/register', function (Request $request) {
         ];
     }
 
-    $usuario = Usuario::create(array_merge($data, [
-        'rol_id' => $rolId,
-        'correo' => $request->email,
-        'contrasena_hash' => Hash::make($request->password),
-        'activo' => true,
-    ]));
+    try {
+        $usuario = DB::transaction(function () use ($request, $data, $rolId) {
+        $usuario = Usuario::create(array_merge($data, [
+            'rol_id' => $rolId,
+            'correo' => $request->email,
+            'contrasena_hash' => Hash::make($request->password),
+            'activo' => true,
+        ]));
 
-    if ($request->role === 'student') {
-        PerfilEstudiante::create([
-            'usuario_id' => $usuario->id,
-            'universidad' => 'Por completar',
-            'carrera' => $request->career,
-            'anio_graduacion' => null,
-            'biografia' => null,
-        ]);
-    } else {
-        PerfilEmpresa::create([
-            'usuario_id' => $usuario->id,
-            'nombre_empresa' => $request->company_name,
-            'industria' => $request->sector,
-            'sitio_web' => null,
-            'verificada' => false,
-        ]);
-    }
+        if ($request->role === 'student') {
+            PerfilEstudiante::create([
+                'usuario_id' => $usuario->id,
+                'universidad' => 'Por completar',
+                'carrera' => $request->career,
+                'anio_graduacion' => null,
+                'biografia' => null,
+            ]);
+
+            RegistroAuditoria::create([
+                'usuario_id' => $usuario->id,
+                'tipo_entidad_id' => 3,
+                'entidad_id' => $usuario->id,
+                'accion' => 'Registro de estudiante',
+                'creado_en' => now(),
+            ]);
+        } else {
+            PerfilEmpresa::create([
+                'usuario_id' => $usuario->id,
+                'nombre_empresa' => $request->company_name,
+                'industria' => $request->sector,
+                'sitio_web' => null,
+                'verificada' => false,
+            ]);
+
+            RegistroAuditoria::create([
+                'usuario_id' => $usuario->id,
+                'tipo_entidad_id' => 2,
+                'entidad_id' => $usuario->id,
+                'accion' => 'Registro de empresa',
+                'creado_en' => now(),
+            ]);
+        }
+
+        return $usuario;
+    });
 
     Auth::login($usuario);
 
-    if ($usuario->rol_id == 2) {
-        return redirect('/dashboard/company')->with('success', '¡Bienvenida empresa!');
+        if ($usuario->rol_id == 2) {
+            return redirect('/dashboard/company')->with('success', '¡Bienvenida empresa!');
+        }
+        return redirect('/dashboard/student')->with('success', '¡Bienvenido estudiante!');
+    } catch (\Illuminate\Database\QueryException $e) {
+        if ($e->getCode() == 23505) {
+            return back()->withErrors(['email' => '¡Ups! Parece que ya registraste esta cuenta. Intenta iniciar sesión.'])->withInput();
+        }
+        throw $e;
     }
-    return redirect('/dashboard/student')->with('success', '¡Bienvenido estudiante!');
 });
 
 // ── Admin Panel (AdminLTE) ────────────────────────────────────────────────────
@@ -176,6 +210,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Empresas y Estudiantes
     Route::get('/empresas', [AdminController::class, 'empresas'])->name('empresas');
+    Route::patch('/empresas/{id}/toggle', [AdminController::class, 'toggleEmpresa'])->name('empresas.toggle');
     Route::get('/estudiantes', [AdminController::class, 'estudiantes'])->name('estudiantes');
 
     // Ofertas
@@ -222,7 +257,51 @@ Route::middleware('auth')->group(function () {
         return response()->json($oferta);
     })->middleware('auth');
 
+    // Student routes
+    // Postulaciones
+    Route::post('/postulaciones', function (Request $request) {
+        $request->validate([
+            'oferta_pasantia_id' => 'required|exists:ofertas_pasantia,id',
+        ]);
+
+        $estudiante = \App\Models\PerfilEstudiante::where('usuario_id', Auth::id())->firstOrFail();
+
+        $existe = \App\Models\Postulacion::where('perfil_estudiante_id', $estudiante->id)
+            ->where('oferta_pasantia_id', $request->oferta_pasantia_id)
+            ->exists();
+
+        if ($existe) {
+            return back()->with('error', 'Ya te has postulado a esta oferta.');
+        }
+
+        \App\Models\Postulacion::create([
+            'perfil_estudiante_id' => $estudiante->id,
+            'oferta_pasantia_id' => $request->oferta_pasantia_id,
+            'estado_postulacion_id' => 1,
+        ]);
+
+        \App\Models\RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 5,
+            'entidad_id' => $estudiante->id,
+            'accion' => 'Postulación a oferta',
+            'valor_nuevo' => ['oferta_pasantia_id' => $request->oferta_pasantia_id],
+            'creado_en' => now(),
+        ]);
+
+        return back()->with('success', '¡Bien hecho! Te postulaste correctamente. :D');
+    })->name('postulacion.store');
+
     Route::get('/dashboard/student', [App\Http\Controllers\StudentController::class, 'dashboard'])->name('dashboard.student');
+    Route::post('/student/perfil', [App\Http\Controllers\StudentController::class, 'actualizarPerfil'])->name('student.perfil.actualizar');
+    Route::post('/student/documentos', [App\Http\Controllers\StudentController::class, 'subirDocumento'])->name('student.documentos.subir');
+    Route::delete('/student/documentos/{id}', [App\Http\Controllers\StudentController::class, 'eliminarDocumento'])->name('student.documentos.eliminar');
+    Route::post('/student/habilidades', [App\Http\Controllers\StudentController::class, 'guardarHabilidad'])->name('student.habilidades.guardar');
+    Route::delete('/student/habilidades/{id}', [App\Http\Controllers\StudentController::class, 'eliminarHabilidad'])->name('student.habilidades.eliminar');
+
+    // Company profile routes
+    Route::post('/company/perfil', [App\Http\Controllers\CompanyController::class, 'actualizarPerfil'])->name('company.perfil.actualizar');
+    Route::patch('/company/postulaciones/{id}/estado', [App\Http\Controllers\CompanyController::class, 'cambiarEstadoPostulacion'])->name('company.postulaciones.estado');
 
 });
 

@@ -82,10 +82,18 @@ class AdminController extends Controller
             'tipo_entidad_id' => 1,
             'entidad_id' => $usuario->id,
             'accion' => 'Creación de usuario',
+            'valor_nuevo' => [
+                'nombre' => $usuario->nombre,
+                'ap_paterno' => $usuario->ap_paterno,
+                'ap_materno' => $usuario->ap_materno,
+                'correo' => $usuario->correo,
+                'rol_id' => $usuario->rol_id,
+                'activo' => true,
+            ],
             'creado_en' => now(),
         ]);
 
-        return redirect()->route('admin.usuarios')->with('success', 'Usuario creado correctamente.');
+        return redirect()->route('admin.usuarios')->with('success', '¡Bien hecho! Usuario creado correctamente. :D');
     }
 
     public function editarUsuario($id)
@@ -98,6 +106,7 @@ class AdminController extends Controller
     public function actualizarUsuario(Request $request, $id)
     {
         $usuario = Usuario::findOrFail($id);
+        $original = $usuario->getOriginal();
 
         $request->validate([
             'nombre' => 'required|string|max:255',
@@ -108,6 +117,14 @@ class AdminController extends Controller
             'password' => 'nullable|min:8',
         ]);
 
+        $cambios = [
+            'nombre' => $request->nombre,
+            'ap_paterno' => $request->ap_paterno,
+            'ap_materno' => $request->ap_materno,
+            'correo' => $request->correo,
+            'rol_id' => $request->rol_id,
+        ];
+
         $usuario->nombre = $request->nombre;
         $usuario->ap_paterno = $request->ap_paterno;
         $usuario->ap_materno = $request->ap_materno;
@@ -116,19 +133,24 @@ class AdminController extends Controller
 
         if ($request->filled('password')) {
             $usuario->contrasena_hash = Hash::make($request->password);
+            $cambios['contrasena_hash'] = $usuario->contrasena_hash;
         }
 
         $usuario->save();
+
+        $anterior = array_intersect_key($original, $cambios);
 
         RegistroAuditoria::create([
             'usuario_id' => Auth::id(),
             'tipo_entidad_id' => 1,
             'entidad_id' => $usuario->id,
             'accion' => 'Modificación de usuario',
+            'valor_anterior' => $anterior,
+            'valor_nuevo' => $cambios,
             'creado_en' => now(),
         ]);
 
-        return redirect()->route('admin.usuarios')->with('success', 'Usuario actualizado correctamente.');
+        return redirect()->route('admin.usuarios')->with('success', '¡Bien hecho! Usuario actualizado correctamente. :D');
     }
 
     public function eliminarUsuario($id)
@@ -144,6 +166,14 @@ class AdminController extends Controller
             'tipo_entidad_id' => 1,
             'entidad_id' => $usuario->id,
             'accion' => 'Eliminación de usuario',
+            'valor_anterior' => [
+                'nombre' => $usuario->nombre,
+                'ap_paterno' => $usuario->ap_paterno,
+                'ap_materno' => $usuario->ap_materno,
+                'correo' => $usuario->correo,
+                'rol_id' => $usuario->rol_id,
+                'activo' => $usuario->activo,
+            ],
             'creado_en' => now(),
         ]);
 
@@ -155,6 +185,7 @@ class AdminController extends Controller
     public function toggleUsuario($id)
     {
         $usuario = Usuario::findOrFail($id);
+        $estadoAnterior = $usuario->activo;
 
         if ($usuario->correo === 'prueba@edu.bo') {
             return back()->with('error', 'No se puede desactivar al administrador principal.');
@@ -168,6 +199,8 @@ class AdminController extends Controller
             'tipo_entidad_id' => 1,
             'entidad_id' => $usuario->id,
             'accion' => ($usuario->activo ? 'Activación' : 'Desactivación') . ' de usuario',
+            'valor_anterior' => ['activo' => $estadoAnterior],
+            'valor_nuevo' => ['activo' => $usuario->activo],
             'creado_en' => now(),
         ]);
 
@@ -181,6 +214,27 @@ class AdminController extends Controller
     {
         $empresas = PerfilEmpresa::with('usuario')->get();
         return view('admin.empresas', compact('empresas'));
+    }
+
+    public function toggleEmpresa($id)
+    {
+        $empresa = PerfilEmpresa::findOrFail($id);
+        $estadoAnterior = $empresa->verificada;
+        $empresa->verificada = !$empresa->verificada;
+        $empresa->save();
+
+        RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 2,
+            'entidad_id' => $empresa->usuario_id,
+            'accion' => ($empresa->verificada ? 'Verificación' : 'Desverificación') . ' de empresa',
+            'valor_anterior' => ['verificada' => $estadoAnterior],
+            'valor_nuevo' => ['verificada' => $empresa->verificada],
+            'creado_en' => now(),
+        ]);
+
+        $accion = $empresa->verificada ? 'verificada' : 'desverificada';
+        return back()->with('success', "Empresa {$accion} correctamente.");
     }
 
     // ── Estudiantes ────────────────────────────────────────────────────────────
@@ -206,11 +260,15 @@ class AdminController extends Controller
         $oferta->estado_publicacion_id = $estadoActual == 1 ? 2 : 1;
         $oferta->save();
 
+        $estados = [1 => 'Abierta', 2 => 'Cerrada'];
+
         RegistroAuditoria::create([
             'usuario_id' => Auth::id(),
             'tipo_entidad_id' => 4,
             'entidad_id' => $oferta->id,
             'accion' => 'Cambio de estado de oferta',
+            'valor_anterior' => ['estado_publicacion_id' => $estados[$estadoActual] ?? $estadoActual],
+            'valor_nuevo' => ['estado_publicacion_id' => $estados[$oferta->estado_publicacion_id] ?? $oferta->estado_publicacion_id],
             'creado_en' => now(),
         ]);
 

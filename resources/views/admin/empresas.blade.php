@@ -38,6 +38,7 @@
                         <th>Web</th>
                         <th>Verificada</th>
                         <th>Registro</th>
+                        <th style="width: 100px;">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,10 +67,20 @@
                                 @endif
                             </td>
                             <td>{{ $empresa->usuario->creado_en ? $empresa->usuario->creado_en->format('d/m/Y') : 'N/A' }}</td>
+                            <td>
+                                <form action="{{ route('admin.empresas.toggle', $empresa->id) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="btn btn-sm {{ $empresa->verificada ? 'btn-warning' : 'btn-success' }}"
+                                            title="{{ $empresa->verificada ? 'Desmarcar verificación' : 'Verificar empresa' }}">
+                                        <i class="fas {{ $empresa->verificada ? 'fa-times' : 'fa-check' }}"></i>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No hay empresas registradas</td>
+                            <td colspan="8" class="text-center text-muted py-4">No hay empresas registradas</td>
                         </tr>
                     @endforelse
                 </tbody>

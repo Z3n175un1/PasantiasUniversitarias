@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DocumentoEstudiante;
+use App\Models\EstadoPostulacion;
+use App\Models\HabilidadEstudiante;
 use App\Models\OfertaPasantia;
 use App\Models\PerfilEmpresa;
 use App\Models\Postulacion;
@@ -22,13 +25,30 @@ class CompanyController extends Controller
             ->get();
 
         $total_postulantes = Postulacion::whereIn('oferta_pasantia_id', $ofertas->pluck('id'))->count();
-        $postulaciones_recientes = Postulacion::with(['perfilEstudiante.usuario', 'ofertaPasantia', 'estadoPostulacion'])
+        $todas_postulaciones = Postulacion::with([
+                'perfilEstudiante.usuario',
+                'perfilEstudiante.documentos.tipoDocumento',
+                'perfilEstudiante.habilidades.habilidad',
+                'ofertaPasantia',
+                'estadoPostulacion'
+            ])
             ->whereIn('oferta_pasantia_id', $ofertas->pluck('id'))
             ->orderBy('id', 'desc')
-            ->take(5)
             ->get();
 
-        return view('paneles-control.dashboard_company', compact('empresa', 'ofertas', 'total_postulantes', 'postulaciones_recientes'));
+        $postulaciones_recientes = $todas_postulaciones->take(5);
+        $estados_postulacion = EstadoPostulacion::all();
+        $ubicaciones = Ubicacion::all();
+
+        $carreras = OfertaPasantia::whereNotNull('carrera')
+            ->distinct()->orderBy('carrera')->pluck('carrera');
+        $modalidades = ['Presencial', 'Remoto', 'Híbrido'];
+
+        return view('paneles-control.dashboard_company', compact(
+            'empresa', 'ofertas', 'total_postulantes',
+            'todas_postulaciones', 'postulaciones_recientes',
+            'estados_postulacion', 'ubicaciones', 'carreras', 'modalidades'
+        ));
     }
 
     public function guardarOferta(Request $request)
@@ -40,21 +60,39 @@ class CompanyController extends Controller
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
             'ubicacion_id' => 'required|exists:ubicaciones,id',
+            'modalidad' => 'required|string|in:Presencial,Remoto,Híbrido',
+            'carrera' => 'nullable|string|max:200',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
         ]);
 
-        OfertaPasantia::create([
+        $oferta = OfertaPasantia::create([
             'perfil_empresa_id' => $empresa->id,
             'ubicacion_id' => $request->ubicacion_id,
             'estado_publicacion_id' => 1,
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
+            'modalidad' => $request->modalidad,
+            'carrera' => $request->carrera,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
         ]);
 
-        return redirect()->route('dashboard.company')->with('success', 'Oferta creada correctamente.');
+        RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 4,
+            'entidad_id' => $oferta->id,
+            'accion' => 'Creación de oferta',
+            'valor_nuevo' => [
+                'titulo' => $oferta->titulo,
+                'descripcion' => $oferta->descripcion,
+                'fecha_inicio' => $oferta->fecha_inicio,
+                'fecha_fin' => $oferta->fecha_fin,
+            ],
+            'creado_en' => now(),
+        ]);
+
+        return redirect()->route('dashboard.company')->with('success', '¡Bien hecho! Publicaste tu oferta correctamente. :D');
     }
 
     public function actualizarOferta(Request $request, $id)
@@ -62,18 +100,35 @@ class CompanyController extends Controller
         abort_if(Auth::user()->rol_id != 2, 403);
         $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->firstOrFail();
         $oferta = OfertaPasantia::where('id', $id)->where('perfil_empresa_id', $empresa->id)->firstOrFail();
+        $original = $oferta->getOriginal();
 
         $request->validate([
             'titulo' => 'required|string|max:255',
             'descripcion' => 'required|string',
             'ubicacion_id' => 'required|exists:ubicaciones,id',
+            'modalidad' => 'required|string|in:Presencial,Remoto,Híbrido',
+            'carrera' => 'nullable|string|max:200',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
         ]);
 
-        $oferta->update($request->only(['titulo', 'descripcion', 'ubicacion_id', 'fecha_inicio', 'fecha_fin']));
+        $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'fecha_inicio', 'fecha_fin'];
+        $nuevos = $request->only($campos);
+        $oferta->update($nuevos);
 
-        return redirect()->route('dashboard.company')->with('success', 'Oferta actualizada correctamente.');
+        $anterior = array_intersect_key($original, $nuevos);
+
+        RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 4,
+            'entidad_id' => $oferta->id,
+            'accion' => 'Modificación de oferta',
+            'valor_anterior' => $anterior,
+            'valor_nuevo' => $nuevos,
+            'creado_en' => now(),
+        ]);
+
+        return redirect()->route('dashboard.company')->with('success', '¡Bien hecho! Actualizaste tu oferta correctamente. :D');
     }
 
     public function eliminarOferta($id)
@@ -81,9 +136,74 @@ class CompanyController extends Controller
         abort_if(Auth::user()->rol_id != 2, 403);
         $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->firstOrFail();
         $oferta = OfertaPasantia::where('id', $id)->where('perfil_empresa_id', $empresa->id)->firstOrFail();
+
+        RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 4,
+            'entidad_id' => $oferta->id,
+            'accion' => 'Eliminación de oferta',
+            'valor_anterior' => [
+                'titulo' => $oferta->titulo,
+                'descripcion' => $oferta->descripcion,
+                'fecha_inicio' => $oferta->fecha_inicio,
+                'fecha_fin' => $oferta->fecha_fin,
+            ],
+            'creado_en' => now(),
+        ]);
+
         $oferta->delete();
 
         return redirect()->route('dashboard.company')->with('success', 'Oferta eliminada correctamente.');
+    }
+
+    public function actualizarPerfil(Request $request)
+    {
+        abort_if(Auth::user()->rol_id != 2, 403);
+        $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->firstOrFail();
+
+        $request->validate([
+            'nombre_empresa' => 'required|string|max:200',
+            'industria' => 'required|string|max:100',
+            'sitio_web' => 'nullable|url|max:255',
+        ]);
+
+        $empresa->update($request->only(['nombre_empresa', 'industria', 'sitio_web']));
+
+        return back()->with('success', '¡Bien hecho! Actualizaste los datos de tu empresa correctamente. :D');
+    }
+
+    public function cambiarEstadoPostulacion(Request $request, $id)
+    {
+        abort_if(Auth::user()->rol_id != 2, 403);
+        $empresa = PerfilEmpresa::where('usuario_id', Auth::id())->firstOrFail();
+        $postulacion = Postulacion::with('ofertaPasantia', 'estadoPostulacion')
+            ->where('id', $id)
+            ->whereHas('ofertaPasantia', function ($q) use ($empresa) {
+                $q->where('perfil_empresa_id', $empresa->id);
+            })
+            ->firstOrFail();
+
+        $request->validate([
+            'estado_postulacion_id' => 'required|exists:estados_postulacion,id',
+        ]);
+
+        $estadoAnterior = $postulacion->estado_postulacion_id;
+        $postulacion->estado_postulacion_id = $request->estado_postulacion_id;
+        $postulacion->save();
+
+        $estados = EstadoPostulacion::all()->keyBy('id');
+
+        RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 5,
+            'entidad_id' => $postulacion->id,
+            'accion' => 'Cambio de estado de postulación',
+            'valor_anterior' => ['estado' => $estados->get($estadoAnterior)?->nombre ?? $estadoAnterior],
+            'valor_nuevo' => ['estado' => $estados->get($postulacion->estado_postulacion_id)?->nombre ?? $postulacion->estado_postulacion_id],
+            'creado_en' => now(),
+        ]);
+
+        return back()->with('success', '¡Bien hecho! Actualizaste el estado de la postulación. :D');
     }
 
     public function citatorio($postulacion_id)
