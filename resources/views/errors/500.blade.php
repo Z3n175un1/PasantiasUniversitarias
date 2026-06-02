@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>500 - Internal Server Error</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
     body{
-      overflow: hidden;
-      background: #0f172a;
+      overflow:hidden;
+      background:#020617;
     }
 
-    .noise::before{
-      content:'';
-      position:absolute;
-      inset:0;
-      background-image:
-      radial-gradient(rgba(255,255,255,.03) 1px, transparent 1px);
-      background-size: 4px 4px;
-      opacity:.15;
-      pointer-events:none;
+    .glow{
+      box-shadow:
+      0 0 30px rgba(59,130,246,.4),
+      0 0 80px rgba(59,130,246,.2);
     }
 
     .float{
-      animation: float 6s ease-in-out infinite;
+      animation: float 5s ease-in-out infinite;
     }
 
     @keyframes float{
@@ -37,204 +33,163 @@
       }
     }
 
-    .rotateSlow{
-      animation: rotateSlow 25s linear infinite;
+    .grid-bg{
+      background-image:
+      linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+
+      background-size:40px 40px;
     }
 
-    @keyframes rotateSlow{
-      from{
-        transform: rotate(0deg);
-      }
-      to{
-        transform: rotate(360deg);
-      }
+    .scanline::before{
+      content:'';
+      position:absolute;
+      inset:0;
+      background:
+      linear-gradient(
+        to bottom,
+        transparent 50%,
+        rgba(255,255,255,.02) 51%
+      );
+
+      background-size:100% 4px;
+      pointer-events:none;
     }
 
     .glitch{
-      position: relative;
-      color: white;
+      position:relative;
     }
 
     .glitch::before,
     .glitch::after{
-      content: attr(data-text);
-      position: absolute;
-      left: 0;
-      width: 100%;
-      overflow: hidden;
+      content:attr(data-text);
+      position:absolute;
+      left:0;
+      top:0;
+      width:100%;
     }
 
     .glitch::before{
-      animation: glitchTop 2s infinite linear alternate-reverse;
-      color: #38bdf8;
-      z-index: -1;
+      color:#38bdf8;
+      animation: glitch1 .6s infinite;
+      z-index:-1;
     }
 
     .glitch::after{
-      animation: glitchBottom 1.5s infinite linear alternate-reverse;
-      color: #818cf8;
-      z-index: -2;
+      color:#818cf8;
+      animation: glitch2 .6s infinite;
+      z-index:-2;
     }
 
-    @keyframes glitchTop{
-      0%{
-        clip-path: inset(0 0 80% 0);
-        transform: translate(-2px,-2px);
-      }
-      20%{
-        clip-path: inset(10% 0 60% 0);
-        transform: translate(2px,2px);
-      }
-      40%{
-        clip-path: inset(40% 0 30% 0);
-        transform: translate(-1px,1px);
-      }
-      60%{
-        clip-path: inset(60% 0 10% 0);
-        transform: translate(1px,-1px);
-      }
-      80%{
-        clip-path: inset(20% 0 50% 0);
-        transform: translate(2px,-2px);
-      }
-      100%{
-        clip-path: inset(0 0 80% 0);
-        transform: translate(0);
-      }
+    @keyframes glitch1{
+      0%{transform:translate(0)}
+      20%{transform:translate(-2px,2px)}
+      40%{transform:translate(-2px,-2px)}
+      60%{transform:translate(2px,2px)}
+      80%{transform:translate(2px,-2px)}
+      100%{transform:translate(0)}
     }
 
-    @keyframes glitchBottom{
-      0%{
-        clip-path: inset(80% 0 0 0);
-        transform: translate(2px,2px);
-      }
-      20%{
-        clip-path: inset(60% 0 10% 0);
-        transform: translate(-2px,0);
-      }
-      40%{
-        clip-path: inset(30% 0 40% 0);
-        transform: translate(1px,-1px);
-      }
-      60%{
-        clip-path: inset(10% 0 60% 0);
-        transform: translate(-1px,1px);
-      }
-      80%{
-        clip-path: inset(50% 0 20% 0);
-        transform: translate(2px,1px);
-      }
-      100%{
-        clip-path: inset(80% 0 0 0);
-        transform: translate(0);
-      }
+    @keyframes glitch2{
+      0%{transform:translate(0)}
+      20%{transform:translate(2px,-2px)}
+      40%{transform:translate(2px,2px)}
+      60%{transform:translate(-2px,-2px)}
+      80%{transform:translate(-2px,2px)}
+      100%{transform:translate(0)}
     }
-
-    .pulseRing{
-      animation: pulseRing 3s infinite;
-    }
-
-    @keyframes pulseRing{
-      0%{
-        transform: scale(.9);
-        opacity:.6;
-      }
-      70%{
-        transform: scale(1.1);
-        opacity:0;
-      }
-      100%{
-        opacity:0;
-      }
-    }
-
   </style>
 </head>
 
-<body class="noise relative flex items-center justify-center h-screen text-white">
+<body class="grid-bg scanline relative h-screen flex items-center justify-center text-white">
 
-  <!-- Background Blur -->
-  <div class="absolute top-[-120px] left-[-120px] w-[400px] h-[400px] bg-cyan-500/20 blur-3xl rounded-full"></div>
+  <!-- Blur background -->
+  <div class="absolute top-[-150px] left-[-150px] w-[400px] h-[400px] bg-cyan-500/20 blur-3xl rounded-full"></div>
   <div class="absolute bottom-[-150px] right-[-150px] w-[450px] h-[450px] bg-indigo-500/20 blur-3xl rounded-full"></div>
 
-  <!-- Rotating circles -->
-  <div class="absolute w-[700px] h-[700px] border border-cyan-400/10 rounded-full rotateSlow"></div>
-  <div class="absolute w-[500px] h-[500px] border border-indigo-400/10 rounded-full rotateSlow"></div>
-
   <!-- Main -->
-  <div class="relative z-10 text-center px-6">
+  <div class="relative z-10 max-w-5xl w-full px-6">
 
-    <!-- Pulse -->
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="w-72 h-72 border border-cyan-400/20 rounded-full pulseRing"></div>
-    </div>
+    <div class="grid md:grid-cols-2 gap-12 items-center">
 
-    <!-- Error code -->
-    <h1
-      data-text="500"
-      class="glitch text-[120px] md:text-[200px] font-black leading-none tracking-widest"
-    >
-      500
-    </h1>
+      <!-- LEFT -->
+      <div>
 
-    <!-- Card -->
-    <div class="mt-6 backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 md:p-10 max-w-2xl mx-auto shadow-2xl float">
+        <h1
+          data-text="500"
+          class="glitch text-[110px] md:text-[170px] font-black leading-none"
+        >
+          500
+        </h1>
 
-      <h2 class="text-3xl md:text-4xl font-bold text-cyan-300">
-        Internal Server Error
-      </h2>
+        <h2 class="text-4xl md:text-5xl font-bold mt-4">
+          Internal Server Error
+        </h2>
 
-      <p class="mt-5 text-gray-300 leading-relaxed text-lg">
-        Algo salió terriblemente mal dentro del servidor.
-        Nuestro sistema encontró una condición inesperada
-        y no pudo completar tu solicitud.
-      </p>
+        <p class="mt-6 text-slate-300 text-lg leading-relaxed">
+          El servidor acaba de colapsar de la manera más miserable posible.
+          Nuestros hamsters backend están trabajando para restaurar el sistema.
+        </p>
 
-      <!-- Fake terminal -->
-      <div class="mt-8 bg-black/40 border border-white/10 rounded-2xl p-5 text-left font-mono text-sm overflow-hidden">
+        <!-- Terminal -->
+        <div class="mt-8 bg-black/40 border border-cyan-400/20 rounded-2xl p-5 font-mono text-sm backdrop-blur-xl glow">
 
-        <div class="flex gap-2 mb-4">
-          <div class="w-3 h-3 rounded-full bg-red-500"></div>
-          <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-          <div class="w-3 h-3 rounded-full bg-green-500"></div>
+          <p class="text-red-400">
+            [CRITICAL] Kernel panic detected
+          </p>
+
+          <p class="text-cyan-300 mt-2">
+            Restarting microservices...
+          </p>
+
+          <p class="text-slate-400 mt-2">
+            Attempt #7 failed
+          </p>
+
+          <div class="mt-4 h-2 bg-white/10 rounded-full overflow-hidden">
+            <div class="h-full w-2/3 bg-gradient-to-r from-cyan-400 to-indigo-500 animate-pulse"></div>
+          </div>
+
         </div>
 
-        <p class="text-red-400">
-          [ERROR] Connection terminated unexpectedly
-        </p>
+        <!-- Buttons -->
+        <div class="mt-8 flex flex-wrap gap-4">
 
-        <p class="text-cyan-300 mt-2">
-          Attempting automatic recovery...
-        </p>
+          <button
+            onclick="location.reload()"
+            class="px-7 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:scale-105 transition-all duration-300 font-semibold shadow-lg shadow-cyan-500/30"
+          >
+            Reintentar
+          </button>
 
-        <div class="mt-4 w-full bg-white/10 rounded-full h-2 overflow-hidden">
-          <div class="h-full w-2/3 bg-gradient-to-r from-cyan-400 to-indigo-500 animate-pulse rounded-full"></div>
+          <a
+            href="/"
+            class="px-7 py-4 rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-300"
+          >
+            Volver al inicio
+          </a>
+
         </div>
 
       </div>
 
-      <!-- Buttons -->
-      <div class="mt-10 flex flex-col md:flex-row gap-4 justify-center">
+      <!-- RIGHT -->
+      <div class="flex justify-center">
 
-        <button
-          onclick="location.reload()"
-          class="px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:scale-105 transition-all duration-300 font-semibold shadow-lg shadow-cyan-500/30"
-        >
-          Reintentar
-        </button>
+        <div class="relative float">
 
-        <a
-          href="/"
-          class="px-8 py-4 rounded-2xl border border-white/15 hover:bg-white/10 transition-all duration-300 font-semibold"
-        >
-          Volver al inicio
-        </a>
+          <!-- Glow -->
+          <div class="absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full"></div>
 
-      </div>
+          <!-- GIF -->
+          <img
+            src="https://media1.tenor.com/m/2HxM8yrUDTAAAAAC/when-server-down-iceeramen.gif"
+            alt="Server Down"
+            class="relative z-10 rounded-3xl border border-cyan-400/20 shadow-2xl glow w-full max-w-md"
+          >
 
-      <!-- Footer -->
-      <div class="mt-10 text-xs tracking-[0.4em] uppercase text-gray-500">
-        SERVER STATUS · CRITICAL FAILURE
+        </div>
+
       </div>
 
     </div>
