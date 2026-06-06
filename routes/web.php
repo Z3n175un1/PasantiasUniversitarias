@@ -13,7 +13,10 @@ use App\Models\Usuario;
 use App\Models\PerfilEmpresa;
 use App\Models\PerfilEstudiante;
 use App\Models\Postulacion;
+use App\Http\Controllers\TopsisController;
 
+Route::get('/topsis', [ TopsisController::class, 'index'])->name('topsis.form');
+Route::post('/topsis', [TopsisController::class, 'calculate'])->name('topsis.calculate');
 // ── Rutas públicas ────────────────────────────────────────────────────────────
 
 Route::get('/', function () {
