@@ -299,98 +299,88 @@ return [
     */
 
     'menu' => [
-        // Navbar items:
         [
             'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
+            'text' => 'Buscar...',
+            'topnav_right' => false,
+            'topnav' => true,
         ],
         [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
-        // Sidebar items:
+        ['header' => 'PANEL DE CONTROL'],
+
         [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
+            'text' => 'Dashboard',
+            'icon' => 'fas fa-fw fa-chart-pie',
+            'route' => 'admin.dashboard',
+            'active' => ['admin/dashboard*'],
+        ],
+
+        ['header' => 'GESTIÓN DE USUARIOS'],
+
+        [
+            'text' => 'Usuarios',
+            'icon' => 'fas fa-fw fa-users',
+            'route' => 'admin.usuarios',
+            'active' => ['admin/usuarios*'],
         ],
         [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
+            'text' => 'Empresas',
+            'icon' => 'fas fa-fw fa-building',
+            'route' => 'admin.empresas',
+            'active' => ['admin/empresas*'],
         ],
         [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'far fa-fw fa-file',
-            'label' => 4,
-            'label_color' => 'success',
+            'text' => 'Estudiantes',
+            'icon' => 'fas fa-fw fa-graduation-cap',
+            'route' => 'admin.estudiantes',
+            'active' => ['admin/estudiantes*'],
         ],
-        ['header' => 'account_settings'],
+
+        ['header' => 'OFERTAS'],
+
         [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-user',
+            'text' => 'Ofertas',
+            'icon' => 'fas fa-fw fa-briefcase',
+            'route' => 'admin.ofertas',
+            'active' => ['admin/ofertas*'],
         ],
+
+        ['header' => 'REPORTES'],
+
         [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'fas fa-fw fa-lock',
+            'text' => 'Estadísticas',
+            'icon' => 'fas fa-fw fa-chart-bar',
+            'route' => 'admin.estadisticas',
+            'active' => ['admin/estadisticas*'],
         ],
+
         [
-            'text' => 'multilevel',
-            'icon' => 'fas fa-fw fa-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
+            'text' => 'Reportes Dinámicos',
+            'icon' => 'fas fa-fw fa-file-alt',
+            'route' => 'admin.reportes',
+            'active' => ['admin/reportes*'],
         ],
-        ['header' => 'labels'],
+
+        ['header' => 'SEGURIDAD'],
+
         [
-            'text' => 'important',
-            'icon_color' => 'red',
-            'url' => '#',
+            'text' => 'Logs del Sistema',
+            'icon' => 'fas fa-fw fa-history',
+            'route' => 'admin.logs',
+            'active' => ['admin/logs*'],
         ],
+
+        ['header' => 'NAVEGACIÓN'],
+
         [
-            'text' => 'warning',
-            'icon_color' => 'yellow',
-            'url' => '#',
-        ],
-        [
-            'text' => 'information',
-            'icon_color' => 'cyan',
-            'url' => '#',
+            'text' => 'Volver al Sitio',
+            'icon' => 'fas fa-fw fa-arrow-left',
+            'url' => '/',
+            'target' => '_blank',
         ],
     ],
 
