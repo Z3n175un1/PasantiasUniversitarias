@@ -1,8 +1,5 @@
 {
   "name": "pasantiasuniversitarias",
-  "lockfileVersion": 3,
-  "requires": true,
-  "packages": {},
   "version": "1.0.0",
   "description": "A project designed for students in the final stages of their career, specifically those in internships. This project will be open-source, but with a license, so please be careful.",
   "main": "postcss.config.js",
