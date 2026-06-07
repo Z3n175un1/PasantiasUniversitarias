@@ -6,7 +6,7 @@
 
   <title>500 - Internal Server Error</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+    @vite('resources/css/app.css')
 
   <style>
     body{
