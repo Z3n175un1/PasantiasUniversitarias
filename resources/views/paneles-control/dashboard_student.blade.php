@@ -271,22 +271,29 @@
                         @if($estudiante->habilidades->count() > 0)
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 @foreach($estudiante->habilidades as $hab)
-                                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
-                                        <div class="flex items-center gap-2">
-                                            <span class="font-bold text-sm text-slate-800">{{ $hab->habilidad->nombre ?? 'N/A' }}</span>
-                                            <div class="flex gap-0.5">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    <span class="w-2 h-2 rounded-full {{ $i <= $hab->nivel ? 'bg-amber-400' : 'bg-slate-200' }}"></span>
-                                                @endfor
+                                    <div class="flex flex-col p-3 bg-slate-50 rounded-xl">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center gap-2">
+                                                <span class="font-bold text-sm text-slate-800">{{ $hab->habilidad->nombre ?? 'N/A' }}</span>
+                                                <div class="flex gap-0.5">
+                                                    @for($i = 1; $i <= 5; $i++)
+                                                        <span class="w-2 h-2 rounded-full {{ $i <= $hab->nivel ? 'bg-amber-400' : 'bg-slate-200' }}"></span>
+                                                    @endfor
+                                                </div>
                                             </div>
+                                            <form action="{{ route('student.habilidades.eliminar', $hab->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-400 hover:text-red-600 transition" title="Eliminar">
+                                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                                </button>
+                                            </form>
                                         </div>
-                                        <form action="{{ route('student.habilidades.eliminar', $hab->id) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-400 hover:text-red-600 transition" title="Eliminar">
-                                                <i data-lucide="x" class="w-4 h-4"></i>
-                                            </button>
-                                        </form>
+                                        <div class="mt-1.5">
+                                            <span class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-full">
+                                                {{ $hab->habilidad->categoria ?? 'General' }}
+                                            </span>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
@@ -444,12 +451,18 @@
             <form action="{{ route('student.habilidades.guardar') }}" method="POST" class="space-y-4 text-sm font-semibold" onsubmit="return validarHabilidadEstudiante()">
                 @csrf
                 <div class="space-y-1.5">
-                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Habilidad</label>
-                    <select name="habilidad_id" id="hab-select" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
-                        <option value="">Seleccionar...</option>
-                        @foreach($habilidades_disponibles as $hab)
-                            <option value="{{ $hab->id }}">{{ $hab->nombre }}</option>
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Área / Categoría</label>
+                    <select id="hab-categoria" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                        <option value="">Seleccionar área...</option>
+                        @foreach($categorias as $categoria)
+                            <option value="{{ $categoria }}">{{ $categoria }}</option>
                         @endforeach
+                    </select>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Habilidad</label>
+                    <select name="habilidad_id" id="hab-select" required disabled class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                        <option value="">Primero selecciona un área</option>
                     </select>
                     <div class="error-text" id="hab-select-error">Selecciona una habilidad</div>
                 </div>
@@ -514,8 +527,46 @@
 
         // Modal Habilidad
         const modalHab = document.getElementById('modal-habilidad');
-        function openModalHabilidad() { modalHab.classList.remove('hidden'); }
+        function openModalHabilidad() {
+            modalHab.classList.remove('hidden');
+            document.getElementById('hab-categoria').value = '';
+            document.getElementById('hab-select').innerHTML = '<option value="">Primero selecciona un área</option>';
+            document.getElementById('hab-select').disabled = true;
+        }
         function closeModalHabilidad() { modalHab.classList.add('hidden'); }
+
+        // ─── FILTRO DE HABILIDADES POR CATEGORÍA ───
+        const habilidadesPorCategoria = @json($habilidades_por_categoria);
+
+        document.getElementById('hab-categoria').addEventListener('change', function() {
+            const categoria = this.value;
+            const select = document.getElementById('hab-select');
+
+            select.innerHTML = '';
+
+            if (!categoria) {
+                select.innerHTML = '<option value="">Primero selecciona un área</option>';
+                select.disabled = true;
+                return;
+            }
+
+            select.disabled = false;
+            const opciones = document.createElement('option');
+            opciones.value = '';
+            opciones.textContent = 'Seleccionar habilidad...';
+            select.appendChild(opciones);
+
+            const habilidades = habilidadesPorCategoria[categoria] || [];
+            habilidades.forEach(function(h) {
+                const opt = document.createElement('option');
+                opt.value = h.id;
+                opt.textContent = h.nombre;
+                select.appendChild(opt);
+            });
+
+            select.className = 'w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer';
+            lucide.createIcons();
+        });
 
         // ─── VALIDACIÓN PERFIL ESTUDIANTE ───
         function mostrarError(inputId, errorId) {
@@ -606,7 +657,14 @@
         }
 
         function validarHabilidadEstudiante() {
+            const categoria = document.getElementById('hab-categoria');
             const select = document.getElementById('hab-select');
+            if (!categoria.value) {
+                categoria.classList.add('input-error');
+                categoria.focus();
+                return false;
+            }
+            categoria.classList.remove('input-error');
             if (!select.value) {
                 mostrarError('hab-select', 'hab-select-error');
                 select.focus();

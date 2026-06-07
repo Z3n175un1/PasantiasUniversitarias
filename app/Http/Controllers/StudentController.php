@@ -37,11 +37,14 @@ class StudentController extends Controller
 
         $tipos_documento = TipoDocumento::all();
         $habilidades_disponibles = Habilidad::all();
+        $categorias = Habilidad::whereNotNull('categoria')->distinct()->orderBy('categoria')->pluck('categoria');
+        $habilidades_por_categoria = $habilidades_disponibles->groupBy('categoria');
 
         return view('paneles-control.dashboard_student', compact(
             'estudiante', 'postulaciones', 'total_postulaciones',
             'en_entrevista', 'ofertas_disponibles',
-            'tipos_documento', 'habilidades_disponibles'
+            'tipos_documento', 'habilidades_disponibles',
+            'categorias', 'habilidades_por_categoria'
         ));
     }
 
