@@ -6,11 +6,16 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\FixSequences' => $baseDir . '/app/Console/Commands/FixSequences.php',
+    'App\\Http\\Controllers\\Admin\\AdminController' => $baseDir . '/app/Http/Controllers/Admin/AdminController.php',
+    'App\\Http\\Controllers\\Admin\\LogController' => $baseDir . '/app/Http/Controllers/Admin/LogController.php',
+    'App\\Http\\Controllers\\Admin\\UsuarioController' => $baseDir . '/app/Http/Controllers/Admin/UsuarioController.php',
     'App\\Http\\Controllers\\ApplicationController' => $baseDir . '/app/Http/Controllers/ApplicationController.php',
     'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => $baseDir . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
     'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => $baseDir . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
     'App\\Http\\Controllers\\Auth\\EmailVerificationNotificationController' => $baseDir . '/app/Http/Controllers/Auth/EmailVerificationNotificationController.php',
     'App\\Http\\Controllers\\Auth\\EmailVerificationPromptController' => $baseDir . '/app/Http/Controllers/Auth/EmailVerificationPromptController.php',
+    'App\\Http\\Controllers\\Auth\\LoginController' => $baseDir . '/app/Http/Controllers/Auth/LoginController.php',
     'App\\Http\\Controllers\\Auth\\NewPasswordController' => $baseDir . '/app/Http/Controllers/Auth/NewPasswordController.php',
     'App\\Http\\Controllers\\Auth\\PasswordController' => $baseDir . '/app/Http/Controllers/Auth/PasswordController.php',
     'App\\Http\\Controllers\\Auth\\PasswordResetLinkController' => $baseDir . '/app/Http/Controllers/Auth/PasswordResetLinkController.php',
@@ -22,6 +27,8 @@ return array(
     'App\\Http\\Controllers\\OfferController' => $baseDir . '/app/Http/Controllers/OfferController.php',
     'App\\Http\\Controllers\\ProfileController' => $baseDir . '/app/Http/Controllers/ProfileController.php',
     'App\\Http\\Controllers\\StudentController' => $baseDir . '/app/Http/Controllers/StudentController.php',
+    'App\\Http\\Controllers\\TopsisController' => $baseDir . '/app/Http/Controllers/TopsisController.php',
+    'App\\Http\\Middleware\\CheckRole' => $baseDir . '/app/Http/Middleware/CheckRole.php',
     'App\\Http\\Requests\\Auth\\LoginRequest' => $baseDir . '/app/Http/Requests/Auth/LoginRequest.php',
     'App\\Http\\Requests\\ProfileUpdateRequest' => $baseDir . '/app/Http/Requests/ProfileUpdateRequest.php',
     'App\\Models\\DetallePuntajeTopsis' => $baseDir . '/app/Models/DetallePuntajeTopsis.php',

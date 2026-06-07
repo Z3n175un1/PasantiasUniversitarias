@@ -42,6 +42,7 @@ class ComposerStaticInitb879665b6fcbe6d80b6dff7c4c95bcb8
         'ce9671a430e4846b44e1c68c7611f9f5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'a1cfe24d14977df6878b9bf804af2d1c' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        'b4e3f29b106af37a2bb239f73cdf68c7' => __DIR__ . '/../..' . '/app/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -544,11 +545,16 @@ class ComposerStaticInitb879665b6fcbe6d80b6dff7c4c95bcb8
     );
 
     public static $classMap = array (
+        'App\\Console\\Commands\\FixSequences' => __DIR__ . '/../..' . '/app/Console/Commands/FixSequences.php',
+        'App\\Http\\Controllers\\Admin\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AdminController.php',
+        'App\\Http\\Controllers\\Admin\\LogController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/LogController.php',
+        'App\\Http\\Controllers\\Admin\\UsuarioController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/UsuarioController.php',
         'App\\Http\\Controllers\\ApplicationController' => __DIR__ . '/../..' . '/app/Http/Controllers/ApplicationController.php',
         'App\\Http\\Controllers\\Auth\\AuthenticatedSessionController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AuthenticatedSessionController.php',
         'App\\Http\\Controllers\\Auth\\ConfirmablePasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ConfirmablePasswordController.php',
         'App\\Http\\Controllers\\Auth\\EmailVerificationNotificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/EmailVerificationNotificationController.php',
         'App\\Http\\Controllers\\Auth\\EmailVerificationPromptController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/EmailVerificationPromptController.php',
+        'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\NewPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/NewPasswordController.php',
         'App\\Http\\Controllers\\Auth\\PasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/PasswordController.php',
         'App\\Http\\Controllers\\Auth\\PasswordResetLinkController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/PasswordResetLinkController.php',
@@ -560,6 +566,8 @@ class ComposerStaticInitb879665b6fcbe6d80b6dff7c4c95bcb8
         'App\\Http\\Controllers\\OfferController' => __DIR__ . '/../..' . '/app/Http/Controllers/OfferController.php',
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Controllers\\StudentController' => __DIR__ . '/../..' . '/app/Http/Controllers/StudentController.php',
+        'App\\Http\\Controllers\\TopsisController' => __DIR__ . '/../..' . '/app/Http/Controllers/TopsisController.php',
+        'App\\Http\\Middleware\\CheckRole' => __DIR__ . '/../..' . '/app/Http/Middleware/CheckRole.php',
         'App\\Http\\Requests\\Auth\\LoginRequest' => __DIR__ . '/../..' . '/app/Http/Requests/Auth/LoginRequest.php',
         'App\\Http\\Requests\\ProfileUpdateRequest' => __DIR__ . '/../..' . '/app/Http/Requests/ProfileUpdateRequest.php',
         'App\\Models\\DetallePuntajeTopsis' => __DIR__ . '/../..' . '/app/Models/DetallePuntajeTopsis.php',

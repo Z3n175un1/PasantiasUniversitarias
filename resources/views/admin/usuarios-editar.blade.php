@@ -1,5 +1,9 @@
 @extends('adminlte::page')
 
+@push('css')
+    <link rel="stylesheet" href="{{ vite_asset('resources/css/app.css') }}">
+@endpush
+
 @section('title', 'Editar Usuario')
 
 @section('content_header')
