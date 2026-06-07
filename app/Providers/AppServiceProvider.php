@@ -21,6 +21,12 @@ class AppServiceProvider extends ServiceProvider
     {
         if (config('app.env') === 'production') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
+
+            $this->app->booted(function () {
+                \Illuminate\Support\Facades\URL::forceRootUrl(
+                    'https://' . request()->getHttpHost()
+                );
+            });
         }
     }
 }
