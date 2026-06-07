@@ -257,7 +257,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/company/ofertas/{id}', [App\Http\Controllers\CompanyController::class, 'eliminarOferta'])->name('company.ofertas.eliminar');
     Route::get('/company/citatorio/{postulacion_id}', [App\Http\Controllers\CompanyController::class, 'citatorio'])->name('company.citatorio');
     Route::get('/api/ofertas/{id}', function ($id) {
-        $oferta = OfertaPasantia::findOrFail($id);
+        $oferta = OfertaPasantia::with('requisitosHabilidad.habilidad')->findOrFail($id);
         return response()->json($oferta);
     })->middleware('auth');
 
@@ -316,8 +316,18 @@ Route::get('/pasantia/{id}', function ($id) {
         ->whereHas('estadoPublicacion', function($q) {
             $q->where('nombre', 'abierta');
         })
-        ->with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])
+        ->with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion', 'requisitosHabilidad.habilidad'])
         ->firstOrFail();
 
-    return view('pasantias.show', compact('oferta'));
+    $ya_postulo = false;
+    if (Auth::check() && Auth::user()->rol_id == 1) {
+        $estudiante = \App\Models\PerfilEstudiante::where('usuario_id', Auth::id())->first();
+        if ($estudiante) {
+            $ya_postulo = \App\Models\Postulacion::where('perfil_estudiante_id', $estudiante->id)
+                ->where('oferta_pasantia_id', $oferta->id)
+                ->exists();
+        }
+    }
+
+    return view('pasantias.show', compact('oferta', 'ya_postulo'));
 })->name('pasantia.show');

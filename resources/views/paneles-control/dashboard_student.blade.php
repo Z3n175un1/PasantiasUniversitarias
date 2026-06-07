@@ -13,6 +13,9 @@
         .card-neo:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(43, 109, 242, 0.08); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .input-error { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .error-text { color: #ef4444; font-size: 11px; font-weight: 600; margin-top: 4px; display: none; }
+        .error-text.visible { display: block; }
     </style>
 </head>
 <body class="text-[#0f172a] overflow-x-hidden min-h-screen flex flex-col justify-between">
@@ -342,7 +345,7 @@
                     </div>
 
                     <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                        <form action="{{ route('student.perfil.actualizar') }}" method="POST" class="space-y-6 text-sm font-semibold">
+                        <form action="{{ route('student.perfil.actualizar') }}" method="POST" class="space-y-6 text-sm font-semibold" onsubmit="return validarPerfilEstudiante()">
                             @csrf
                             <div class="flex items-center gap-6 pb-6 border-b border-slate-100">
                                 <div class="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-md">
@@ -357,21 +360,24 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Universidad</label>
-                                    <input type="text" name="universidad" value="{{ old('universidad', $estudiante->universidad) }}"
+                                    <input type="text" name="universidad" id="perfil-universidad" value="{{ old('universidad', $estudiante->universidad) }}"
                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                                    <div class="error-text" id="perfil-universidad-error">La universidad es obligatoria</div>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera</label>
-                                    <input type="text" name="carrera" value="{{ old('carrera', $estudiante->carrera) }}"
+                                    <input type="text" name="carrera" id="perfil-carrera" value="{{ old('carrera', $estudiante->carrera) }}"
                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                                    <div class="error-text" id="perfil-carrera-error">La carrera es obligatoria</div>
                                 </div>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Año de Graduación</label>
-                                    <input type="number" name="anio_graduacion" value="{{ old('anio_graduacion', $estudiante->anio_graduacion) }}" min="1900" max="2100"
+                                    <input type="number" name="anio_graduacion" id="perfil-anio" value="{{ old('anio_graduacion', $estudiante->anio_graduacion) }}" min="1900" max="2100"
                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                                    <div class="error-text" id="perfil-anio-error">Ingresa un año válido (1900-2100)</div>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Correo Electrónico</label>
@@ -382,7 +388,7 @@
 
                             <div class="space-y-1.5">
                                 <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Biografía / Sobre mí</label>
-                                <textarea name="biografia" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none">{{ old('biografia', $estudiante->biografia) }}</textarea>
+                                <textarea name="biografia" id="perfil-biografia" rows="3" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none">{{ old('biografia', $estudiante->biografia) }}</textarea>
                             </div>
 
                             <button type="submit" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition text-sm">
@@ -402,21 +408,23 @@
                 <h3 class="text-xl font-black text-slate-900 tracking-tight">Subir Documento</h3>
                 <button onclick="closeModalDocumento()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <form action="{{ route('student.documentos.subir') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-sm font-semibold">
+            <form action="{{ route('student.documentos.subir') }}" method="POST" enctype="multipart/form-data" class="space-y-4 text-sm font-semibold" onsubmit="return validarDocumento()">
                 @csrf
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Tipo de Documento</label>
-                    <select name="tipo_documento_id" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                    <select name="tipo_documento_id" id="doc-tipo" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
                         <option value="">Seleccionar...</option>
                         @foreach($tipos_documento as $td)
                             <option value="{{ $td->id }}">{{ $td->nombre }}</option>
                         @endforeach
                     </select>
+                    <div class="error-text" id="doc-tipo-error">Selecciona un tipo de documento</div>
                 </div>
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Archivo (PDF, DOC, JPG, PNG - max 10MB)</label>
-                    <input type="file" name="archivo" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    <input type="file" name="archivo" id="doc-archivo" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    <div class="error-text" id="doc-archivo-error">Selecciona un archivo válido (PDF, DOC, JPG, PNG - max 10MB)</div>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="closeModalDocumento()" class="flex-1 py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Cancelar</button>
@@ -433,16 +441,17 @@
                 <h3 class="text-xl font-black text-slate-900 tracking-tight">Agregar Habilidad</h3>
                 <button onclick="closeModalHabilidad()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <form action="{{ route('student.habilidades.guardar') }}" method="POST" class="space-y-4 text-sm font-semibold">
+            <form action="{{ route('student.habilidades.guardar') }}" method="POST" class="space-y-4 text-sm font-semibold" onsubmit="return validarHabilidadEstudiante()">
                 @csrf
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Habilidad</label>
-                    <select name="habilidad_id" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                    <select name="habilidad_id" id="hab-select" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
                         <option value="">Seleccionar...</option>
                         @foreach($habilidades_disponibles as $hab)
                             <option value="{{ $hab->id }}">{{ $hab->nombre }}</option>
                         @endforeach
                     </select>
+                    <div class="error-text" id="hab-select-error">Selecciona una habilidad</div>
                 </div>
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Nivel (1-5)</label>
@@ -507,6 +516,119 @@
         const modalHab = document.getElementById('modal-habilidad');
         function openModalHabilidad() { modalHab.classList.remove('hidden'); }
         function closeModalHabilidad() { modalHab.classList.add('hidden'); }
+
+        // ─── VALIDACIÓN PERFIL ESTUDIANTE ───
+        function mostrarError(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            if (input) input.classList.add('input-error');
+            if (error) error.classList.add('visible');
+        }
+
+        function limpiarError(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            if (input) input.classList.remove('input-error');
+            if (error) error.classList.remove('visible');
+        }
+
+        function validarPerfilEstudiante() {
+            let valido = true;
+
+            const universidad = document.getElementById('perfil-universidad');
+            const carrera = document.getElementById('perfil-carrera');
+            const anio = document.getElementById('perfil-anio');
+
+            if (!universidad.value || universidad.value.trim() === '') {
+                mostrarError('perfil-universidad', 'perfil-universidad-error');
+                valido = false;
+            } else {
+                limpiarError('perfil-universidad', 'perfil-universidad-error');
+            }
+
+            if (!carrera.value || carrera.value.trim() === '') {
+                mostrarError('perfil-carrera', 'perfil-carrera-error');
+                valido = false;
+            } else {
+                limpiarError('perfil-carrera', 'perfil-carrera-error');
+            }
+
+            if (anio.value) {
+                const anioNum = parseInt(anio.value);
+                if (isNaN(anioNum) || anioNum < 1900 || anioNum > 2100) {
+                    mostrarError('perfil-anio', 'perfil-anio-error');
+                    valido = false;
+                } else {
+                    limpiarError('perfil-anio', 'perfil-anio-error');
+                }
+            } else {
+                limpiarError('perfil-anio', 'perfil-anio-error');
+            }
+
+            if (!valido) universidad.focus();
+            return valido;
+        }
+
+        function validarDocumento() {
+            let valido = true;
+
+            const tipo = document.getElementById('doc-tipo');
+            const archivo = document.getElementById('doc-archivo');
+
+            if (!tipo.value) {
+                mostrarError('doc-tipo', 'doc-tipo-error');
+                valido = false;
+            } else {
+                limpiarError('doc-tipo', 'doc-tipo-error');
+            }
+
+            if (!archivo.files || archivo.files.length === 0) {
+                mostrarError('doc-archivo', 'doc-archivo-error');
+                valido = false;
+            } else {
+                const file = archivo.files[0];
+                const ext = file.name.split('.').pop().toLowerCase();
+                const allowed = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'];
+                if (!allowed.includes(ext)) {
+                    mostrarError('doc-archivo', 'doc-archivo-error');
+                    document.getElementById('doc-archivo-error').textContent = 'Formato no permitido. Usa PDF, DOC, JPG o PNG.';
+                    valido = false;
+                } else if (file.size > 10485760) {
+                    mostrarError('doc-archivo', 'doc-archivo-error');
+                    document.getElementById('doc-archivo-error').textContent = 'El archivo no debe superar los 10MB.';
+                    valido = false;
+                } else {
+                    limpiarError('doc-archivo', 'doc-archivo-error');
+                }
+            }
+
+            return valido;
+        }
+
+        function validarHabilidadEstudiante() {
+            const select = document.getElementById('hab-select');
+            if (!select.value) {
+                mostrarError('hab-select', 'hab-select-error');
+                select.focus();
+                return false;
+            }
+            limpiarError('hab-select', 'hab-select-error');
+            return true;
+        }
+
+        // Limpiar errores al interactuar
+        document.addEventListener('input', function(e) {
+            const id = e.target.id;
+            if (id === 'perfil-universidad') limpiarError(id, 'perfil-universidad-error');
+            if (id === 'perfil-carrera') limpiarError(id, 'perfil-carrera-error');
+            if (id === 'perfil-anio') limpiarError(id, 'perfil-anio-error');
+        });
+
+        document.addEventListener('change', function(e) {
+            const id = e.target.id;
+            if (id === 'doc-tipo') limpiarError(id, 'doc-tipo-error');
+            if (id === 'hab-select') limpiarError(id, 'hab-select-error');
+        });
     </script>
 </body>
 </html>

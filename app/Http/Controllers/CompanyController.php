@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\DocumentoEstudiante;
 use App\Models\EstadoPostulacion;
+use App\Models\Habilidad;
 use App\Models\HabilidadEstudiante;
 use App\Models\OfertaPasantia;
 use App\Models\PerfilEmpresa;
 use App\Models\Postulacion;
 use App\Models\RegistroAuditoria;
+use App\Models\RequisitoHabilidadOferta;
 use App\Models\Ubicacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +21,7 @@ class CompanyController extends Controller
     {
         abort_if(Auth::user()->rol_id != 2, 403);
         $empresa = PerfilEmpresa::with('usuario')->where('usuario_id', Auth::id())->firstOrFail();
-        $ofertas = OfertaPasantia::with(['ubicacion', 'estadoPublicacion'])
+        $ofertas = OfertaPasantia::with(['ubicacion', 'estadoPublicacion', 'requisitosHabilidad.habilidad'])
             ->where('perfil_empresa_id', $empresa->id)
             ->orderBy('id', 'desc')
             ->get();
@@ -43,11 +45,13 @@ class CompanyController extends Controller
         $carreras = OfertaPasantia::whereNotNull('carrera')
             ->distinct()->orderBy('carrera')->pluck('carrera');
         $modalidades = ['Presencial', 'Remoto', 'Híbrido'];
+        $habilidades = Habilidad::orderBy('nombre')->get();
 
         return view('paneles-control.dashboard_company', compact(
             'empresa', 'ofertas', 'total_postulantes',
             'todas_postulaciones', 'postulaciones_recientes',
-            'estados_postulacion', 'ubicaciones', 'carreras', 'modalidades'
+            'estados_postulacion', 'ubicaciones', 'carreras', 'modalidades',
+            'habilidades'
         ));
     }
 
@@ -64,12 +68,18 @@ class CompanyController extends Controller
             'carrera' => 'nullable|string|max:200',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
+            'estado_publicacion_id' => 'nullable|exists:estados_publicacion,id',
+            'habilidades' => 'nullable|array',
+            'habilidades.*.habilidad_id' => 'required|exists:habilidades,id',
+            'habilidades.*.nivel_minimo' => 'required|integer|min:1|max:5',
+            'habilidades.*.peso' => 'required|numeric|min:0|max:100',
+            'habilidades.*.tipo_criterio' => 'required|in:benefit,cost',
         ]);
 
         $oferta = OfertaPasantia::create([
             'perfil_empresa_id' => $empresa->id,
             'ubicacion_id' => $request->ubicacion_id,
-            'estado_publicacion_id' => 1,
+            'estado_publicacion_id' => $request->estado_publicacion_id ?? 1,
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
             'modalidad' => $request->modalidad,
@@ -77,6 +87,18 @@ class CompanyController extends Controller
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
         ]);
+
+        if ($request->has('habilidades')) {
+            foreach ($request->habilidades as $req) {
+                RequisitoHabilidadOferta::create([
+                    'oferta_pasantia_id' => $oferta->id,
+                    'habilidad_id' => $req['habilidad_id'],
+                    'nivel_minimo' => $req['nivel_minimo'],
+                    'peso' => $req['peso'],
+                    'tipo_criterio' => $req['tipo_criterio'],
+                ]);
+            }
+        }
 
         RegistroAuditoria::create([
             'usuario_id' => Auth::id(),
@@ -110,11 +132,30 @@ class CompanyController extends Controller
             'carrera' => 'nullable|string|max:200',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
+            'estado_publicacion_id' => 'nullable|exists:estados_publicacion,id',
+            'habilidades' => 'nullable|array',
+            'habilidades.*.habilidad_id' => 'required|exists:habilidades,id',
+            'habilidades.*.nivel_minimo' => 'required|integer|min:1|max:5',
+            'habilidades.*.peso' => 'required|numeric|min:0|max:100',
+            'habilidades.*.tipo_criterio' => 'required|in:benefit,cost',
         ]);
 
-        $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'fecha_inicio', 'fecha_fin'];
+        $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'fecha_inicio', 'fecha_fin', 'estado_publicacion_id'];
         $nuevos = $request->only($campos);
         $oferta->update($nuevos);
+
+        $oferta->requisitosHabilidad()->delete();
+        if ($request->has('habilidades')) {
+            foreach ($request->habilidades as $req) {
+                RequisitoHabilidadOferta::create([
+                    'oferta_pasantia_id' => $oferta->id,
+                    'habilidad_id' => $req['habilidad_id'],
+                    'nivel_minimo' => $req['nivel_minimo'],
+                    'peso' => $req['peso'],
+                    'tipo_criterio' => $req['tipo_criterio'],
+                ]);
+            }
+        }
 
         $anterior = array_intersect_key($original, $nuevos);
 

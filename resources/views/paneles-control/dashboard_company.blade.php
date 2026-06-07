@@ -13,6 +13,9 @@
         .card-neo:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(43, 109, 242, 0.08); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .input-error { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .error-text { color: #ef4444; font-size: 11px; font-weight: 600; margin-top: 4px; display: none; }
+        .error-text.visible { display: block; }
     </style>
 </head>
 <body class="text-[#0f172a] overflow-x-hidden min-h-screen flex flex-col justify-between">
@@ -335,16 +338,18 @@
                 <button onclick="closeModalCrear()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <form action="{{ route('company.ofertas.guardar') }}" method="POST" class="space-y-4 text-sm font-semibold">
+            <form action="{{ route('company.ofertas.guardar') }}" method="POST" class="space-y-4 text-sm font-semibold" onsubmit="return validarFormCrear()">
                 @csrf
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Título del Puesto</label>
-                    <input type="text" name="titulo" required placeholder="Ej. Pasante Laravel Backend" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    <input type="text" name="titulo" id="crear-titulo" required placeholder="Ej. Pasante Laravel Backend" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    <div class="error-text" id="crear-titulo-error">El título es obligatorio</div>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Descripción</label>
-                    <textarea name="descripcion" rows="4" required placeholder="Describe las responsabilidades y requisitos..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                    <textarea name="descripcion" id="crear-descripcion" rows="4" required placeholder="Describe las responsabilidades y requisitos..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                    <div class="error-text" id="crear-descripcion-error">La descripción es obligatoria</div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -359,7 +364,7 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <select name="carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
-                            <option value="">Seleccionar carrera</option>
+                            <option value="">Todas las carreras</option>
                             @foreach($carreras as $carrera)
                                 <option value="{{ $carrera }}">{{ $carrera }}</option>
                             @endforeach
@@ -389,12 +394,32 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Inicio</label>
-                        <input type="date" name="fecha_inicio" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                        <input type="date" name="fecha_inicio" id="crear-fecha_inicio" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                        <div class="error-text" id="crear-fecha_inicio-error">La fecha de inicio es obligatoria</div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Fin</label>
-                        <input type="date" name="fecha_fin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                        <input type="date" name="fecha_fin" id="crear-fecha_fin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                        <div class="error-text" id="crear-fecha_fin-error">La fecha de fin es obligatoria y debe ser posterior a la de inicio</div>
                     </div>
+                </div>
+
+                {{-- Habilidades Requeridas (TOPSIS) --}}
+                <div class="border-t border-slate-200 pt-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="code" class="w-4 h-4"></i> Habilidades Requeridas (Criterios TOPSIS)
+                        </label>
+                        <button type="button" onclick="agregarFilaHabilidad('crear')" class="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold rounded-lg text-xs hover:bg-indigo-100 transition">
+                            <i data-lucide="plus" class="w-3.5 h-3.5 inline mr-0.5"></i>Agregar
+                        </button>
+                    </div>
+                    <div id="crear-habilidades-container">
+                        <div class="text-xs text-slate-400 text-center py-3" id="crear-habilidades-empty">
+                            No hay habilidades agregadas. Haz clic en "Agregar" para añadir criterios TOPSIS.
+                        </div>
+                    </div>
+                    <div class="error-text" id="crear-habilidades-error">Agrega al menos una habilidad requerida</div>
                 </div>
 
                 <div class="flex gap-3 pt-2">
@@ -413,17 +438,19 @@
                 <button onclick="closeModalEditar()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <form id="form-editar-oferta" method="POST" class="space-y-4 text-sm font-semibold">
+            <form id="form-editar-oferta" method="POST" class="space-y-4 text-sm font-semibold" onsubmit="return validarFormEditar()">
                 @csrf
                 @method('PUT')
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Título del Puesto</label>
                     <input type="text" name="titulo" id="edit-titulo" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    <div class="error-text" id="edit-titulo-error">El título es obligatorio</div>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Descripción</label>
                     <textarea name="descripcion" id="edit-descripcion" rows="4" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                    <div class="error-text" id="edit-descripcion-error">La descripción es obligatoria</div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
@@ -438,7 +465,7 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <select name="carrera" id="edit-carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
-                            <option value="">Seleccionar carrera</option>
+                            <option value="">Todas las carreras</option>
                             @foreach($carreras as $carrera)
                                 <option value="{{ $carrera }}">{{ $carrera }}</option>
                             @endforeach
@@ -459,12 +486,32 @@
                         <div class="space-y-1.5">
                             <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Inicio</label>
                             <input type="date" name="fecha_inicio" id="edit-fecha_inicio" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                            <div class="error-text" id="edit-fecha_inicio-error">La fecha de inicio es obligatoria</div>
                         </div>
                         <div class="space-y-1.5">
                             <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fin</label>
                             <input type="date" name="fecha_fin" id="edit-fecha_fin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                            <div class="error-text" id="edit-fecha_fin-error">La fecha de fin debe ser posterior a la de inicio</div>
                         </div>
                     </div>
+                </div>
+
+                {{-- Habilidades Requeridas (TOPSIS) --}}
+                <div class="border-t border-slate-200 pt-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                            <i data-lucide="code" class="w-4 h-4"></i> Habilidades Requeridas (Criterios TOPSIS)
+                        </label>
+                        <button type="button" onclick="agregarFilaHabilidad('edit')" class="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-bold rounded-lg text-xs hover:bg-indigo-100 transition">
+                            <i data-lucide="plus" class="w-3.5 h-3.5 inline mr-0.5"></i>Agregar
+                        </button>
+                    </div>
+                    <div id="edit-habilidades-container">
+                        <div class="text-xs text-slate-400 text-center py-3" id="edit-habilidades-empty">
+                            No hay habilidades agregadas. Haz clic en "Agregar" para añadir criterios TOPSIS.
+                        </div>
+                    </div>
+                    <div class="error-text" id="edit-habilidades-error">Agrega al menos una habilidad requerida</div>
                 </div>
 
                 <div class="flex gap-3 pt-2">
@@ -507,8 +554,15 @@
 
         // Modal Crear
         const modalCrear = document.getElementById('modal-crear-oferta');
-        function openModalCrear() { modalCrear.classList.remove('hidden'); }
-        function closeModalCrear() { modalCrear.classList.add('hidden'); }
+        function openModalCrear() {
+            modalCrear.classList.remove('hidden');
+            document.getElementById('crear-habilidades-container').innerHTML = '<div class="text-xs text-slate-400 text-center py-3" id="crear-habilidades-empty">No hay habilidades agregadas. Haz clic en "Agregar" para añadir criterios TOPSIS.</div>';
+            limpiarErrores('crear');
+        }
+        function closeModalCrear() {
+            modalCrear.classList.add('hidden');
+            limpiarErrores('crear');
+        }
 
         // Modal Editar
         const modalEditar = document.getElementById('modal-editar-oferta');
@@ -524,10 +578,190 @@
                     document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
                     document.getElementById('edit-fecha_fin').value = data.fecha_fin;
                     document.getElementById('form-editar-oferta').action = '/company/ofertas/' + id + '/actualizar';
+
+                    const container = document.getElementById('edit-habilidades-container');
+                    container.innerHTML = '';
+                    if (data.requisitos_habilidad && data.requisitos_habilidad.length > 0) {
+                        data.requisitos_habilidad.forEach(req => {
+                            agregarFilaHabilidad('edit', req);
+                        });
+                    } else {
+                        container.innerHTML = '<div class="text-xs text-slate-400 text-center py-3" id="edit-habilidades-empty">No hay habilidades agregadas. Haz clic en "Agregar" para añadir criterios TOPSIS.</div>';
+                    }
                     modalEditar.classList.remove('hidden');
+                    limpiarErrores('edit');
                 });
         }
-        function closeModalEditar() { modalEditar.classList.add('hidden'); }
+        function closeModalEditar() {
+            modalEditar.classList.add('hidden');
+            limpiarErrores('edit');
+        }
+
+        // ─── HABILIDADES DINÁMICAS (TOPSIS) ───
+        const habilidadesData = @json($habilidades);
+
+        function agregarFilaHabilidad(prefix, data) {
+            const container = document.getElementById(prefix + '-habilidades-container');
+            const empty = container.querySelector('#' + prefix + '-habilidades-empty');
+            if (empty) empty.remove();
+
+            const index = container.querySelectorAll('.fila-habilidad').length;
+            const div = document.createElement('div');
+            div.className = 'fila-habilidad bg-slate-50 rounded-xl p-3 mb-2 border border-slate-200';
+            div.dataset.index = index;
+
+            let habilidadOptions = '<option value="">Seleccionar habilidad</option>';
+            habilidadesData.forEach(h => {
+                const selected = (data && data.habilidad_id == h.id) ? 'selected' : '';
+                habilidadOptions += `<option value="${h.id}" ${selected}>${h.nombre}</option>`;
+            });
+
+            div.innerHTML = `
+                <div class="flex items-start gap-2">
+                    <div class="flex-1 space-y-1.5">
+                        <select name="habilidades[${index}][habilidad_id]" required
+                            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
+                            ${habilidadOptions}
+                        </select>
+                    </div>
+                    <div class="w-20 space-y-1.5">
+                        <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nivel Min</label>
+                        <input type="number" name="habilidades[${index}][nivel_minimo]" min="1" max="5" required value="${data ? data.nivel_minimo : 3}"
+                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
+                    </div>
+                    <div class="w-20 space-y-1.5">
+                        <label class="text-[10px] font-extrabold text-slate-400 uppercase">Peso (%)</label>
+                        <input type="number" name="habilidades[${index}][peso]" min="0" max="100" step="0.1" required value="${data ? data.peso : 50}"
+                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
+                    </div>
+                    <div class="w-24 space-y-1.5">
+                        <label class="text-[10px] font-extrabold text-slate-400 uppercase">Criterio</label>
+                        <select name="habilidades[${index}][tipo_criterio]" required
+                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
+                            <option value="benefit" ${data && data.tipo_criterio === 'benefit' ? 'selected' : ''}>Beneficio 👍</option>
+                            <option value="cost" ${data && data.tipo_criterio === 'cost' ? 'selected' : ''}>Costo 👎</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="this.closest('.fila-habilidad').remove()"
+                        class="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(div);
+            lucide.createIcons();
+        }
+
+        // ─── VALIDACIÓN DE FORMULARIOS ───
+        function mostrarError(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            if (input) input.classList.add('input-error');
+            if (error) error.classList.add('visible');
+        }
+
+        function limpiarErrores(prefix) {
+            document.querySelectorAll('#' + prefix + '\\-habilidades-container .input-error, #' + prefix + '\\-habilidades-error').forEach(el => {
+                if (el.classList) el.classList.remove('visible', 'input-error');
+            });
+            document.querySelectorAll('[id^="' + prefix + '-"]').forEach(el => {
+                el.classList.remove('input-error');
+                if (el.classList.contains('error-text')) el.classList.remove('visible');
+            });
+        }
+
+        function validarCampo(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            if (!input) return true;
+            if (!input.value || input.value.trim() === '') {
+                input.classList.add('input-error');
+                if (error) error.classList.add('visible');
+                return false;
+            }
+            input.classList.remove('input-error');
+            if (error) error.classList.remove('visible');
+            return true;
+        }
+
+        function validarFechas(prefix) {
+            const inicio = document.getElementById(prefix + '-fecha_inicio');
+            const fin = document.getElementById(prefix + '-fecha_fin');
+            const error = document.getElementById(prefix + '-fecha_fin-error');
+            if (!inicio || !fin) return true;
+            if (fin.value && inicio.value && fin.value <= inicio.value) {
+                fin.classList.add('input-error');
+                if (error) error.classList.add('visible');
+                return false;
+            }
+            fin.classList.remove('input-error');
+            if (error) error.classList.remove('visible');
+            return true;
+        }
+
+        function validarHabilidades(prefix) {
+            const container = document.getElementById(prefix + '-habilidades-container');
+            const error = document.getElementById(prefix + '-habilidades-error');
+            const filas = container.querySelectorAll('.fila-habilidad');
+            if (filas.length === 0) {
+                if (error) error.classList.add('visible');
+                return false;
+            }
+            let valido = true;
+            filas.forEach(fila => {
+                const select = fila.querySelector('select[name*="[habilidad_id]"]');
+                if (select && !select.value) {
+                    select.classList.add('input-error');
+                    valido = false;
+                }
+            });
+            if (!valido && error) error.classList.add('visible');
+            else if (error) error.classList.remove('visible');
+            return valido;
+        }
+
+        function validarFormCrear() {
+            limpiarErrores('crear');
+            const valido =
+                validarCampo('crear-titulo', 'crear-titulo-error') &&
+                validarCampo('crear-descripcion', 'crear-descripcion-error') &&
+                validarCampo('crear-fecha_inicio', 'crear-fecha_inicio-error') &&
+                validarCampo('crear-fecha_fin', 'crear-fecha_fin-error') &&
+                validarFechas('crear') &&
+                validarHabilidades('crear');
+            if (!valido) {
+                document.getElementById('crear-titulo').focus();
+                return false;
+            }
+            return true;
+        }
+
+        function validarFormEditar() {
+            limpiarErrores('edit');
+            const valido =
+                validarCampo('edit-titulo', 'edit-titulo-error') &&
+                validarCampo('edit-descripcion', 'edit-descripcion-error') &&
+                validarCampo('edit-fecha_inicio', 'edit-fecha_inicio-error') &&
+                validarCampo('edit-fecha_fin', 'edit-fecha_fin-error') &&
+                validarFechas('edit') &&
+                validarHabilidades('edit');
+            if (!valido) {
+                document.getElementById('edit-titulo').focus();
+                return false;
+            }
+            return true;
+        }
+
+        // Limpiar errores al escribir
+        document.addEventListener('input', function(e) {
+            const target = e.target;
+            if (target.id && target.id.includes('titulo') || target.id.includes('descripcion') || target.id.includes('fecha')) {
+                target.classList.remove('input-error');
+                const errorId = target.id + '-error';
+                const error = document.getElementById(errorId);
+                if (error) error.classList.remove('visible');
+            }
+        });
     </script>
 </body>
 </html>

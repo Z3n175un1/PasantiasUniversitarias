@@ -17,7 +17,35 @@
     </style>
 </head>
 <body class="bg-[#f8fafc] min-h-screen">
-    
+
+    {{-- Flash Messages --}}
+    @if(session('success'))
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+            <div class="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl text-sm font-semibold flex items-center gap-3 shadow-sm">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-green-900">¡Super postulaste a la pasantía! 🎉</p>
+                    <p class="text-green-700 text-xs mt-0.5">{{ session('success') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+            <div class="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-2xl text-sm font-semibold flex items-center gap-3 shadow-sm">
+                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="alert-circle" class="w-6 h-6 text-red-500"></i>
+                </div>
+                <div>
+                    <p class="font-bold text-red-900">Oops!</p>
+                    <p class="text-red-600 text-xs mt-0.5">{{ session('error') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     {{-- Navbar --}}
     <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,19 +134,36 @@
                     <p class="text-gray-700 leading-relaxed">{{ $oferta->descripcion }}</p>
                 </div>
                 
-                {{-- Habilidades Requeridas --}}
+                {{-- Habilidades Requeridas (TOPSIS) --}}
                 @if($oferta->requisitosHabilidad && $oferta->requisitosHabilidad->count() > 0)
                 <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">⭐ Habilidades Requeridas</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">⭐ Habilidades Requeridas (Criterios TOPSIS)</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($oferta->requisitosHabilidad as $requisito)
-                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
                                     <i data-lucide="code" class="w-5 h-5 text-blue-600"></i>
                                 </div>
-                                <div>
-                                    <p class="font-semibold text-gray-900">{{ $requisito->habilidad->nombre ?? 'Habilidad' }}</p>
-                                    <p class="text-xs text-gray-500">Nivel mínimo: {{ $requisito->nivel_minimo ?? '1' }}</p>
+                                <div class="flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <p class="font-semibold text-gray-900">{{ $requisito->habilidad->nombre ?? 'Habilidad' }}</p>
+                                        <span class="text-[10px] font-extrabold uppercase {{ $requisito->tipo_criterio === 'benefit' ? 'text-green-600' : 'text-red-500' }}">
+                                            {{ $requisito->tipo_criterio === 'benefit' ? 'Beneficio' : 'Costo' }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-3 mt-1.5">
+                                        <span class="text-xs text-gray-500">
+                                            <span class="font-bold">Nivel min:</span> {{ $requisito->nivel_minimo ?? '1' }}/5
+                                        </span>
+                                        <span class="text-xs text-gray-500">
+                                            <span class="font-bold">Peso:</span> {{ $requisito->peso ?? '50' }}%
+                                        </span>
+                                    </div>
+                                    <div class="mt-2 flex gap-0.5">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <span class="w-2 h-2 rounded-full {{ $i <= ($requisito->nivel_minimo ?? 1) ? 'bg-blue-500' : 'bg-gray-200' }}"></span>
+                                        @endfor
+                                    </div>
                                 </div>
                             </div>
                         @endforeach
@@ -143,18 +188,44 @@
                             Empresa Verificada
                         </div>
                     @endif
+
+                    {{-- Detalles de la oferta --}}
+                    <div class="border-t border-gray-100 pt-4 mb-4 space-y-3">
+                        @if($oferta->modalidad)
+                        <div class="flex items-center gap-2 text-sm">
+                            <i data-lucide="briefcase" class="w-4 h-4 text-gray-400"></i>
+                            <span class="text-gray-600">{{ $oferta->modalidad }}</span>
+                        </div>
+                        @endif
+                        @if($oferta->carrera)
+                        <div class="flex items-center gap-2 text-sm">
+                            <i data-lucide="graduation-cap" class="w-4 h-4 text-gray-400"></i>
+                            <span class="text-gray-600">{{ $oferta->carrera }}</span>
+                        </div>
+                        @endif
+                    </div>
                     
-                    {{-- Botón Postular --}}
+                    {{-- Botón Postular / Ya postulado --}}
                     @auth
                         @if(auth()->user()->rol_id == 1)
-                            <form action="{{ route('postulacion.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="oferta_pasantia_id" value="{{ $oferta->id }}">
-                                <button type="submit" 
-                                    class="w-full bg-[#0d121f] text-white py-4 rounded-2xl font-bold hover:bg-[#2b6df2] transition-all">
-                                    🚀 Postular Ahora
-                                </button>
-                            </form>
+                            @if($ya_postulo)
+                                <div class="w-full bg-blue-50 border border-blue-200 text-blue-800 py-4 rounded-2xl font-bold text-center">
+                                    <div class="flex items-center justify-center gap-2 mb-1">
+                                        <i data-lucide="check-circle" class="w-5 h-5 text-blue-600"></i>
+                                        <span class="text-blue-900">¡Super postulaste a la pasantía! 🎉</span>
+                                    </div>
+                                    <p class="text-xs text-blue-600 font-medium">Ya te has postulado a esta oferta</p>
+                                </div>
+                            @else
+                                <form action="{{ route('postulacion.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="oferta_pasantia_id" value="{{ $oferta->id }}">
+                                    <button type="submit" 
+                                        class="w-full bg-[#0d121f] text-white py-4 rounded-2xl font-bold hover:bg-[#2b6df2] transition-all">
+                                        🚀 Postular Ahora
+                                    </button>
+                                </form>
+                            @endif
                         @endif
                     @else
                         <a href="{{ route('login') }}" 
