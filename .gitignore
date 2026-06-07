@@ -5,6 +5,7 @@ scratch/
 
 # dont see the vendor
 vendor/
+!resources/views/vendor/
 node_modules/
 npm-debug.log
 yarn-error.log
