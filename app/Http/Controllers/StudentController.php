@@ -40,12 +40,84 @@ class StudentController extends Controller
         $categorias = Habilidad::whereNotNull('categoria')->distinct()->orderBy('categoria')->pluck('categoria');
         $habilidades_por_categoria = $habilidades_disponibles->groupBy('categoria');
 
+        $universidades = $this->universidadesBolivia();
+        $carreras = $this->carrerasBolivia();
+        $semestres = range(1, 12);
+
         return view('paneles-control.dashboard_student', compact(
             'estudiante', 'postulaciones', 'total_postulaciones',
             'en_entrevista', 'ofertas_disponibles',
             'tipos_documento', 'habilidades_disponibles',
-            'categorias', 'habilidades_por_categoria'
+            'categorias', 'habilidades_por_categoria',
+            'universidades', 'carreras', 'semestres'
         ));
+    }
+
+    private function universidadesBolivia(): array
+    {
+        return [
+            'Universidad Autónoma Gabriel René Moreno (UAGRM)',
+            'Universidad Autónoma Juan Misael Saracho (UAJMS)',
+            'Universidad Autónoma de Chuquisaca (UAC)',
+            'Universidad Autónoma de Oruro (UAO)',
+            'Universidad Autónoma Tomás Frías (UATF)',
+            'Universidad Autónoma del Beni "José Ballivián" (UABJB)',
+            'Universidad Mayor de San Andrés (UMSA)',
+            'Universidad Mayor de San Simón (UMSS)',
+            'Universidad Mayor Real y Pontificia de San Francisco Xavier (USFX)',
+            'Universidad Pública de El Alto (UPEA)',
+            'Universidad Católica Boliviana "San Pablo" (UCB)',
+            'Universidad Privada de Bolivia (UPB)',
+            'Universidad Privada del Valle (UNIVALLE)',
+            'Universidad Privada de Santa Cruz de la Sierra (UPSA)',
+            'Universidad de Aquino Bolivia (UDABOL)',
+            'Universidad Estatal de Militares (UNEMI)',
+            'Universidad Nur (UN Nur)',
+            'Universidad Salesiana de Bolivia (USAL)',
+            'Universidad Amazónica de Pando (UAP)',
+            'Universidad Técnica de Oruro (UTO)',
+            'Universidad Técnica Privada Cosmos (UNITEPC)',
+            'Universidad Autónoma de Tarija (UAT)',
+        ];
+    }
+
+    private function carrerasBolivia(): array
+    {
+        return [
+            'Administración de Empresas',
+            'Agronomía',
+            'Arquitectura',
+            'Biotecnología',
+            'Ciencia de la Computación',
+            'Ciencias de la Comunicación',
+            'Ciencias de la Educación',
+            'Ciencias Políticas',
+            'Contabilidad',
+            'Derecho',
+            'Economía',
+            'Diseño Digital',
+            'Diseño Gráfico',
+            'Enfermería',
+            'Ingeniería Agroindustrial',
+            'Ingeniería Ambiental',
+            'Ingeniería Civil',
+            'Ingeniería Comercial',
+            'Ingeniería de Alimentos',
+            'Ingeniería de Sistemas',
+            'Ingeniería de Telecomunicaciones',
+            'Ingeniería Electrónica',
+            'Ingeniería Electrónica y Telecomunicaciones',
+            'Ingeniería Informática',
+            'Ingeniería Mecánica',
+            'Ingeniería Mecatrónica',
+            'Ingeniería en Alimentos',
+            'Ingeniería en Biotecnología',
+            'Marketing',
+            'Medicina',
+            'Psicología',
+            'Relaciones Internacionales',
+            'Turismo y Hotelería',
+        ];
     }
 
     public function actualizarPerfil(Request $request)
@@ -56,11 +128,12 @@ class StudentController extends Controller
         $request->validate([
             'universidad' => 'required|string|max:200',
             'carrera' => 'required|string|max:200',
+            'semestre_actual' => 'nullable|integer|min:1|max:12',
             'anio_graduacion' => 'nullable|integer|min:1900|max:2100',
             'biografia' => 'nullable|string|max:1000',
         ]);
 
-        $estudiante->update($request->only(['universidad', 'carrera', 'anio_graduacion', 'biografia']));
+        $estudiante->update($request->only(['universidad', 'carrera', 'semestre_actual', 'anio_graduacion', 'biografia']));
 
         return back()->with('success', '¡Bien hecho! Actualizaste tus datos correctamente. :D');
     }

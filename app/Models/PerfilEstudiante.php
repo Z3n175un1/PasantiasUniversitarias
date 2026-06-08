@@ -12,6 +12,7 @@ class PerfilEstudiante extends Model
         'usuario_id',
         'universidad',
         'carrera',
+        'semestre_actual',
         'anio_graduacion',
         'biografia',
     ];

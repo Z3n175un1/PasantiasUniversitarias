@@ -367,19 +367,39 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Universidad</label>
-                                    <input type="text" name="universidad" id="perfil-universidad" value="{{ old('universidad', $estudiante->universidad) }}"
-                                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                                    <select name="universidad" id="perfil-universidad"
+                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium appearance-none cursor-pointer">
+                                        <option value="">Seleccionar universidad...</option>
+                                        @foreach($universidades as $universidad)
+                                            <option value="{{ $universidad }}" @selected(old('universidad', $estudiante->universidad) === $universidad)>{{ $universidad }}</option>
+                                        @endforeach
+                                    </select>
                                     <div class="error-text" id="perfil-universidad-error">La universidad es obligatoria</div>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera</label>
-                                    <input type="text" name="carrera" id="perfil-carrera" value="{{ old('carrera', $estudiante->carrera) }}"
-                                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                                    <select name="carrera" id="perfil-carrera"
+                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium appearance-none cursor-pointer">
+                                        <option value="">Seleccionar carrera...</option>
+                                        @foreach($carreras as $carrera)
+                                            <option value="{{ $carrera }}" @selected(old('carrera', $estudiante->carrera) === $carrera)>{{ $carrera }}</option>
+                                        @endforeach
+                                    </select>
                                     <div class="error-text" id="perfil-carrera-error">La carrera es obligatoria</div>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <div class="space-y-1.5">
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Semestre Actual</label>
+                                    <select name="semestre_actual" id="perfil-semestre" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium appearance-none cursor-pointer">
+                                        <option value="">Seleccionar semestre...</option>
+                                        @foreach($semestres as $semestre)
+                                            <option value="{{ $semestre }}" @selected(old('semestre_actual', $estudiante->semestre_actual) == $semestre)>{{ $semestre }}°</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="error-text" id="perfil-semestre-error">Selecciona el semestre actual</div>
+                                </div>
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Año de Graduación</label>
                                     <input type="number" name="anio_graduacion" id="perfil-anio" value="{{ old('anio_graduacion', $estudiante->anio_graduacion) }}" min="1900" max="2100"
