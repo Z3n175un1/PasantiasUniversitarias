@@ -543,19 +543,30 @@
                             @endforeach
                         </select>
                     </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="space-y-1.5">
-                                <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Vacantes</label>
-                                <input type="number" name="vacantes_disponibles" id="edit-vacantes" min="1" max="999"
-                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
-                            </div>
-                            <div class="space-y-1.5">
-                                <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Duración (sem.)</label>
-                                <input type="number" name="duracion_semanas" id="edit-duracion" min="1" max="156" placeholder="Ej. 12"
-                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
-                            </div>
-                        </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Inicio</label>
+                        <input type="date" name="fecha_inicio" id="edit-fecha_inicio" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                        <div class="error-text" id="edit-fecha_inicio-error">La fecha de inicio es obligatoria</div>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Fin</label>
+                        <input type="date" name="fecha_fin" id="edit-fecha_fin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                        <div class="error-text" id="edit-fecha_fin-error">La fecha de fin debe ser posterior a la de inicio</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Vacantes</label>
+                        <input type="number" name="vacantes_disponibles" id="edit-vacantes" min="1" max="999"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Duración (semanas)</label>
+                    <input type="number" name="duracion_semanas" id="edit-duracion" min="1" max="156" placeholder="Ej. 12"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
                 </div>
 
                 <div class="space-y-1.5">
