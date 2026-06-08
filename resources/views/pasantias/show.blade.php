@@ -130,8 +130,28 @@
                 
                 {{-- Descripción --}}
                 <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">📋 Descripción</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">📋 Descripción del Puesto</h2>
                     <p class="text-gray-700 leading-relaxed">{{ $oferta->descripcion }}</p>
+
+                    @if($oferta->requisitos)
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="list-checks" class="w-5 h-5 text-blue-500"></i>
+                            Requisitos Específicos
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed whitespace-pre-line">{{ $oferta->requisitos }}</p>
+                    </div>
+                    @endif
+
+                    @if($oferta->beneficios)
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="gift" class="w-5 h-5 text-green-500"></i>
+                            Beneficios / Ofrecemos
+                        </h3>
+                        <p class="text-gray-700 leading-relaxed whitespace-pre-line">{{ $oferta->beneficios }}</p>
+                    </div>
+                    @endif
                 </div>
                 
                 {{-- Habilidades Requeridas (TOPSIS) --}}
@@ -180,7 +200,16 @@
                     <div class="mb-4">
                         <p class="font-bold text-gray-900">{{ $oferta->perfilEmpresa->nombre_empresa ?? 'Empresa' }}</p>
                         <p class="text-sm text-gray-500">{{ $oferta->perfilEmpresa->industria ?? 'Tecnología' }}</p>
+                        @if($oferta->perfilEmpresa->tamano_empresa)
+                            <span class="inline-block mt-1 px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-[10px] font-extrabold">{{ $oferta->perfilEmpresa->tamano_empresa }}</span>
+                        @endif
                     </div>
+
+                    @if($oferta->perfilEmpresa->descripcion)
+                    <div class="mb-4 text-sm text-gray-600 leading-relaxed">
+                        {{ Str::limit($oferta->perfilEmpresa->descripcion, 120) }}
+                    </div>
+                    @endif
                     
                     @if($oferta->perfilEmpresa->verificada)
                         <div class="flex items-center gap-2 text-sm text-green-600 font-semibold mb-4">
@@ -201,6 +230,18 @@
                         <div class="flex items-center gap-2 text-sm">
                             <i data-lucide="graduation-cap" class="w-4 h-4 text-gray-400"></i>
                             <span class="text-gray-600">{{ $oferta->carrera }}</span>
+                        </div>
+                        @endif
+                        @if($oferta->vacantes_disponibles)
+                        <div class="flex items-center gap-2 text-sm">
+                            <i data-lucide="users" class="w-4 h-4 text-gray-400"></i>
+                            <span class="text-gray-600">{{ $oferta->vacantes_disponibles }} vacante(s)</span>
+                        </div>
+                        @endif
+                        @if($oferta->duracion_semanas)
+                        <div class="flex items-center gap-2 text-sm">
+                            <i data-lucide="clock" class="w-4 h-4 text-gray-400"></i>
+                            <span class="text-gray-600">{{ $oferta->duracion_semanas }} semanas</span>
                         </div>
                         @endif
                     </div>

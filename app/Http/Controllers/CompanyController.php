@@ -66,6 +66,10 @@ class CompanyController extends Controller
             'ubicacion_id' => 'required|exists:ubicaciones,id',
             'modalidad' => 'required|string|in:Presencial,Remoto,Híbrido',
             'carrera' => 'nullable|string|max:200',
+            'requisitos' => 'nullable|string|max:5000',
+            'beneficios' => 'nullable|string|max:5000',
+            'vacantes_disponibles' => 'nullable|integer|min:1|max:999',
+            'duracion_semanas' => 'nullable|integer|min:1|max:156',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
             'estado_publicacion_id' => 'nullable|exists:estados_publicacion,id',
@@ -84,6 +88,10 @@ class CompanyController extends Controller
             'descripcion' => $request->descripcion,
             'modalidad' => $request->modalidad,
             'carrera' => $request->carrera,
+            'requisitos' => $request->requisitos,
+            'beneficios' => $request->beneficios,
+            'vacantes_disponibles' => $request->vacantes_disponibles ?? 1,
+            'duracion_semanas' => $request->duracion_semanas,
             'fecha_inicio' => $request->fecha_inicio,
             'fecha_fin' => $request->fecha_fin,
         ]);
@@ -130,6 +138,10 @@ class CompanyController extends Controller
             'ubicacion_id' => 'required|exists:ubicaciones,id',
             'modalidad' => 'required|string|in:Presencial,Remoto,Híbrido',
             'carrera' => 'nullable|string|max:200',
+            'requisitos' => 'nullable|string|max:5000',
+            'beneficios' => 'nullable|string|max:5000',
+            'vacantes_disponibles' => 'nullable|integer|min:1|max:999',
+            'duracion_semanas' => 'nullable|integer|min:1|max:156',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after:fecha_inicio',
             'estado_publicacion_id' => 'nullable|exists:estados_publicacion,id',
@@ -140,7 +152,7 @@ class CompanyController extends Controller
             'habilidades.*.tipo_criterio' => 'required|in:benefit,cost',
         ]);
 
-        $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'fecha_inicio', 'fecha_fin', 'estado_publicacion_id'];
+        $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'requisitos', 'beneficios', 'vacantes_disponibles', 'duracion_semanas', 'fecha_inicio', 'fecha_fin', 'estado_publicacion_id'];
         $nuevos = $request->only($campos);
         $oferta->update($nuevos);
 
@@ -205,10 +217,18 @@ class CompanyController extends Controller
         $request->validate([
             'nombre_empresa' => 'required|string|max:200',
             'industria' => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:2000',
+            'telefono' => 'nullable|string|max:30',
+            'direccion' => 'nullable|string|max:255',
+            'tamano_empresa' => 'nullable|string|in:Pequeña,Mediana,Grande',
+            'anio_fundacion' => 'nullable|integer|min:1800|max:' . date('Y'),
             'sitio_web' => 'nullable|url|max:255',
         ]);
 
-        $empresa->update($request->only(['nombre_empresa', 'industria', 'sitio_web']));
+        $empresa->update($request->only([
+            'nombre_empresa', 'industria', 'descripcion', 'telefono',
+            'direccion', 'tamano_empresa', 'anio_fundacion', 'sitio_web',
+        ]));
 
         return back()->with('success', '¡Bien hecho! Actualizaste los datos de tu empresa correctamente. :D');
     }

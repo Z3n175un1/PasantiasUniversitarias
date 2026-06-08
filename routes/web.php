@@ -262,7 +262,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/company/citatorio/{postulacion_id}', [App\Http\Controllers\CompanyController::class, 'citatorio'])->name('company.citatorio');
     Route::get('/api/ofertas/{id}', function ($id) {
         $oferta = OfertaPasantia::with('requisitosHabilidad.habilidad')->findOrFail($id);
-        return response()->json($oferta);
+        return response()->json($oferta->makeVisible(['requisitos', 'beneficios', 'vacantes_disponibles', 'duracion_semanas']));
     })->middleware('auth');
 
     // Student routes
@@ -309,7 +309,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/student/habilidades/{id}', [App\Http\Controllers\StudentController::class, 'eliminarHabilidad'])->name('student.habilidades.eliminar');
 
     // Company profile routes
-    Route::post('/company/perfil', [App\Http\Controllers\CompanyController::class, 'actualizarPerfil'])->name('company.perfil.actualizar');
+    Route::match(['post', 'patch'], '/company/perfil', [App\Http\Controllers\CompanyController::class, 'actualizarPerfil'])->name('company.perfil.actualizar');
     Route::patch('/company/postulaciones/{id}/estado', [App\Http\Controllers\CompanyController::class, 'cambiarEstadoPostulacion'])->name('company.postulaciones.estado');
 
 });

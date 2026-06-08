@@ -149,12 +149,18 @@
                                             <h3 class="font-bold text-slate-900 text-lg">{{ $oferta->titulo }}</h3>
                                             <p class="text-xs text-slate-400 font-bold">
                                                 {{ $oferta->ubicacion->ciudad ?? 'Remoto' }} •
+                                                {{ $oferta->modalidad ?? 'Presencial' }} •
                                                 <span class="text-{{ $oferta->estado_publicacion_id == 2 ? 'green' : 'gray' }}-600">
                                                     {{ $oferta->estadoPublicacion->nombre ?? 'Borrador' }}
                                                 </span>
                                                 @if($oferta->fecha_inicio)
                                                     • {{ \Carbon\Carbon::parse($oferta->fecha_inicio)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($oferta->fecha_fin)->format('d/m/Y') }}
                                                 @endif
+                                            </p>
+                                            <p class="text-[10px] text-slate-400 mt-0.5">
+                                                @if($oferta->vacantes_disponibles) {{ $oferta->vacantes_disponibles }} vacante(s) • @endif
+                                                @if($oferta->duracion_semanas) {{ $oferta->duracion_semanas }} semanas @endif
+                                                @if($oferta->carrera) • {{ $oferta->carrera }} @endif
                                             </p>
                                         </div>
                                     </div>
@@ -272,9 +278,14 @@
 
                 {{-- Perfil de Empresa --}}
                 <section id="perfil" class="tab-content space-y-6">
-                    <div class="flex flex-col">
-                        <h2 class="text-xl font-bold text-slate-900">Perfil de la Empresa</h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Información de tu organización.</p>
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Perfil de la Empresa</h2>
+                            <p class="text-xs text-slate-400 mt-0.5">Información de tu organización.</p>
+                        </div>
+                        <button onclick="openModalEditarPerfil()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs transition shadow-md flex items-center gap-1.5">
+                            <i data-lucide="edit-3" class="w-4 h-4"></i> Editar Perfil
+                        </button>
                     </div>
 
                     <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
@@ -286,6 +297,9 @@
                                 <div>
                                     <h3 class="text-lg font-bold text-slate-900">{{ $empresa->nombre_empresa }}</h3>
                                     <p class="text-xs text-slate-400">{{ $empresa->industria ?? 'Industria no especificada' }}</p>
+                                    @if($empresa->tamano_empresa)
+                                        <span class="inline-block mt-1 px-2.5 py-0.5 bg-blue-50 text-blue-700 rounded-full text-[10px] font-extrabold">{{ $empresa->tamano_empresa }}</span>
+                                    @endif
                                 </div>
                             </div>
 
@@ -300,7 +314,25 @@
                                 </div>
                             </div>
 
+                            @if($empresa->descripcion)
+                            <div>
+                                <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Acerca de la Empresa</label>
+                                <p class="text-sm font-medium text-slate-700 leading-relaxed">{{ $empresa->descripcion }}</p>
+                            </div>
+                            @endif
+
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Teléfono</label>
+                                    <p class="font-bold text-slate-900">{{ $empresa->telefono ?? 'No registrado' }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Dirección</label>
+                                    <p class="font-bold text-slate-900">{{ $empresa->direccion ?? 'No registrada' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Correo de Contacto</label>
                                     <p class="font-bold text-slate-900">{{ $empresa->usuario->correo ?? 'N/A' }}</p>
@@ -312,6 +344,10 @@
                                     @else
                                         <p class="font-bold text-slate-400">No registrado</p>
                                     @endif
+                                </div>
+                                <div>
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider block mb-1">Año de Fundación</label>
+                                    <p class="font-bold text-slate-900">{{ $empresa->anio_fundacion ?? 'No registrado' }}</p>
                                 </div>
                             </div>
 
@@ -393,6 +429,19 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Vacantes Disponibles</label>
+                        <input type="number" name="vacantes_disponibles" id="crear-vacantes" min="1" max="999" value="1"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Duración (semanas)</label>
+                        <input type="number" name="duracion_semanas" id="crear-duracion" min="1" max="156" placeholder="Ej. 12"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Inicio</label>
                         <input type="date" name="fecha_inicio" id="crear-fecha_inicio" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
                         <div class="error-text" id="crear-fecha_inicio-error">La fecha de inicio es obligatoria</div>
@@ -402,6 +451,18 @@
                         <input type="date" name="fecha_fin" id="crear-fecha_fin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
                         <div class="error-text" id="crear-fecha_fin-error">La fecha de fin es obligatoria y debe ser posterior a la de inicio</div>
                     </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Requisitos Específicos</label>
+                    <textarea name="requisitos" id="crear-requisitos" rows="3" placeholder="Ej. Conocimientos en Laravel, disponibilidad para viajar..."
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Beneficios / Ofrecemos</label>
+                    <textarea name="beneficios" id="crear-beneficios" rows="3" placeholder="Ej. Certificado, experiencia laboral, horario flexible..."
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
                 </div>
 
                 {{-- Habilidades Requeridas (TOPSIS) --}}
@@ -482,18 +543,31 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Inicio</label>
-                            <input type="date" name="fecha_inicio" id="edit-fecha_inicio" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
-                            <div class="error-text" id="edit-fecha_inicio-error">La fecha de inicio es obligatoria</div>
-                        </div>
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fin</label>
-                            <input type="date" name="fecha_fin" id="edit-fecha_fin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
-                            <div class="error-text" id="edit-fecha_fin-error">La fecha de fin debe ser posterior a la de inicio</div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Vacantes</label>
+                                <input type="number" name="vacantes_disponibles" id="edit-vacantes" min="1" max="999"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Duración (sem.)</label>
+                                <input type="number" name="duracion_semanas" id="edit-duracion" min="1" max="156" placeholder="Ej. 12"
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                            </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Requisitos Específicos</label>
+                    <textarea name="requisitos" id="edit-requisitos" rows="3" placeholder="Ej. Conocimientos en Laravel, disponibilidad para viajar..."
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Beneficios / Ofrecemos</label>
+                    <textarea name="beneficios" id="edit-beneficios" rows="3" placeholder="Ej. Certificado, experiencia laboral, horario flexible..."
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
                 </div>
 
                 {{-- Habilidades Requeridas (TOPSIS) --}}
@@ -517,6 +591,90 @@
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="closeModalEditar()" class="flex-1 py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Cancelar</button>
                     <button type="submit" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {{-- Modal Editar Perfil de Empresa --}}
+    <div id="modal-editar-perfil" class="fixed inset-0 bg-[#0d121f]/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-xl mx-4 p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-black text-slate-900 tracking-tight">Editar Perfil de Empresa</h3>
+                <button onclick="closeModalEditarPerfil()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <form action="{{ route('company.perfil.actualizar') }}" method="POST" class="space-y-4 text-sm font-semibold">
+                @csrf
+                @method('PATCH')
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Nombre de la Empresa</label>
+                        <input type="text" name="nombre_empresa" id="perfil-nombre" value="{{ $empresa->nombre_empresa }}" required
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Industria / Sector</label>
+                        <input type="text" name="industria" id="perfil-industria" value="{{ $empresa->industria }}" required
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Acerca de la Empresa</label>
+                    <textarea name="descripcion" id="perfil-descripcion" rows="4"
+                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none">{{ $empresa->descripcion }}</textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Teléfono</label>
+                        <input type="text" name="telefono" id="perfil-telefono" value="{{ $empresa->telefono }}"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Tamaño de Empresa</label>
+                        <select name="tamano_empresa"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            <option value="">Seleccionar...</option>
+                            <option value="Pequeña" {{ $empresa->tamano_empresa == 'Pequeña' ? 'selected' : '' }}>Pequeña (1-50 empleados)</option>
+                            <option value="Mediana" {{ $empresa->tamano_empresa == 'Mediana' ? 'selected' : '' }}>Mediana (51-250 empleados)</option>
+                            <option value="Grande" {{ $empresa->tamano_empresa == 'Grande' ? 'selected' : '' }}>Grande (251+ empleados)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Dirección</label>
+                        <input type="text" name="direccion" id="perfil-direccion" value="{{ $empresa->direccion }}"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Año de Fundación</label>
+                        <input type="number" name="anio_fundacion" id="perfil-anio" value="{{ $empresa->anio_fundacion }}" min="1800" max="{{ date('Y') }}"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Sitio Web</label>
+                        <input type="url" name="sitio_web" id="perfil-sitio" value="{{ $empresa->sitio_web }}" placeholder="https://ejemplo.com"
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Correo de Contacto</label>
+                        <input type="email" value="{{ $empresa->usuario->correo ?? '' }}" disabled
+                            class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed font-medium">
+                        <p class="text-[10px] text-slate-400 mt-0.5">El correo se gestiona desde la configuración de la cuenta.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModalEditarPerfil()" class="flex-1 py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Cancelar</button>
+                    <button type="submit" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition">Guardar Cambios</button>
                 </div>
             </form>
         </div>
@@ -552,6 +710,11 @@
             });
         });
 
+        // Modal Editar Perfil
+        const modalPerfil = document.getElementById('modal-editar-perfil');
+        function openModalEditarPerfil() { modalPerfil.classList.remove('hidden'); }
+        function closeModalEditarPerfil() { modalPerfil.classList.add('hidden'); }
+
         // Modal Crear
         const modalCrear = document.getElementById('modal-crear-oferta');
         function openModalCrear() {
@@ -577,6 +740,10 @@
                     document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
                     document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
                     document.getElementById('edit-fecha_fin').value = data.fecha_fin;
+                    document.getElementById('edit-vacantes').value = data.vacantes_disponibles || 1;
+                    document.getElementById('edit-duracion').value = data.duracion_semanas || '';
+                    document.getElementById('edit-requisitos').value = data.requisitos || '';
+                    document.getElementById('edit-beneficios').value = data.beneficios || '';
                     document.getElementById('form-editar-oferta').action = '/company/ofertas/' + id + '/actualizar';
 
                     const container = document.getElementById('edit-habilidades-container');

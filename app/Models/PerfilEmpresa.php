@@ -12,6 +12,11 @@ class PerfilEmpresa extends Model
         'usuario_id',
         'nombre_empresa',
         'industria',
+        'descripcion',
+        'telefono',
+        'direccion',
+        'tamano_empresa',
+        'anio_fundacion',
         'sitio_web',
         'verificada',
     ];
