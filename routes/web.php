@@ -243,6 +243,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Ofertas
     Route::get('/ofertas', [AdminController::class, 'ofertas'])->name('ofertas');
     Route::patch('/ofertas/{id}/toggle', [AdminController::class, 'toggleOferta'])->name('ofertas.toggle');
+    Route::get('/ofertas/{id}', [AdminController::class, 'mostrarOferta'])->name('ofertas.mostrar');
+    Route::put('/ofertas/{id}', [AdminController::class, 'actualizarOferta'])->name('ofertas.actualizar');
 
     // Reportes dinámicos
     Route::get('/reportes', [AdminController::class, 'reportes'])->name('reportes');

@@ -8,7 +8,9 @@ use App\Models\Postulacion;
 use App\Models\PerfilEmpresa;
 use App\Models\PerfilEstudiante;
 use App\Models\RegistroAuditoria;
+use App\Models\RequisitoHabilidadOferta;
 use App\Models\Rol;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -342,7 +344,8 @@ class AdminController extends Controller
     public function ofertas()
     {
         $ofertas = OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion', 'requisitosHabilidad.habilidad'])->get();
-        return view('admin.ofertas', compact('ofertas'));
+        $ubicaciones = Ubicacion::all();
+        return view('admin.ofertas', compact('ofertas', 'ubicaciones'));
     }
 
     public function toggleOferta($id)
@@ -365,6 +368,50 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', 'Estado de la oferta actualizado.');
+    }
+
+    public function mostrarOferta($id)
+    {
+        $oferta = OfertaPasantia::with(['requisitosHabilidad.habilidad', 'ubicacion', 'perfilEmpresa'])->findOrFail($id);
+        return response()->json($oferta->makeVisible(['requisitos', 'beneficios', 'vacantes_disponibles', 'duracion_semanas']));
+    }
+
+    public function actualizarOferta(Request $request, $id)
+    {
+        $oferta = OfertaPasantia::findOrFail($id);
+        $original = $oferta->getOriginal();
+
+        $request->validate([
+            'titulo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'ubicacion_id' => 'required|exists:ubicaciones,id',
+            'modalidad' => 'required|string|in:Presencial,Remoto,Híbrido',
+            'carrera' => 'nullable|string|max:200',
+            'requisitos' => 'nullable|string|max:5000',
+            'beneficios' => 'nullable|string|max:5000',
+            'vacantes_disponibles' => 'nullable|integer|min:1|max:999',
+            'duracion_semanas' => 'nullable|integer|min:1|max:156',
+            'fecha_inicio' => 'required|date',
+            'fecha_fin' => 'required|date|after:fecha_inicio',
+        ]);
+
+        $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'requisitos', 'beneficios', 'vacantes_disponibles', 'duracion_semanas', 'fecha_inicio', 'fecha_fin'];
+        $nuevos = $request->only($campos);
+        $oferta->update($nuevos);
+
+        $anterior = array_intersect_key($original, $nuevos);
+
+        RegistroAuditoria::create([
+            'usuario_id' => Auth::id(),
+            'tipo_entidad_id' => 4,
+            'entidad_id' => $oferta->id,
+            'accion' => 'Modificación de oferta (admin)',
+            'valor_anterior' => $anterior,
+            'valor_nuevo' => $nuevos,
+            'creado_en' => now(),
+        ]);
+
+        return redirect()->route('admin.ofertas')->with('success', 'Oferta actualizada correctamente.');
     }
 
     // ── Reportes Dinámicos ─────────────────────────────────────────────────────

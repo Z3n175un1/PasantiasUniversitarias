@@ -47,7 +47,7 @@
                         <th>Duración</th>
                         <th>Requisitos / Beneficios</th>
                         <th>Estado</th>
-                        <th style="width: 100px;">Acción</th>
+                        <th style="width: 150px;">Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,13 +66,13 @@
                             </td>
                             <td>
                                 @if($oferta->duracion_semanas)
-                                    {{ $oferta->duracion_semanas }} semanas
+                                    {{ intval($oferta->duracion_semanas) }} semanas
                                 @elseif($oferta->fecha_inicio && $oferta->fecha_fin)
                                     @php
                                         $inicio = \Carbon\Carbon::parse($oferta->fecha_inicio);
                                         $fin = \Carbon\Carbon::parse($oferta->fecha_fin);
                                     @endphp
-                                    {{ $inicio->diffInWeeks($fin) }} semanas
+                                    {{ intval($inicio->diffInWeeks($fin)) }} semanas
                                 @else
                                     No especificada
                                 @endif
@@ -106,7 +106,10 @@
                                 @endphp
                                 <span class="badge {{ $badgeClass }}">{{ ucfirst($estado) }}</span>
                             </td>
-                            <td>
+                            <td nowrap>
+                                <button type="button" class="btn btn-sm btn-info" title="Editar oferta" onclick="openEditModal({{ $oferta->id }})">
+                                    <i class="fas fa-pen"></i>
+                                </button>
                                 <form action="{{ route('admin.ofertas.toggle', $oferta->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('PATCH')
@@ -129,12 +132,133 @@
             </table>
         </div>
     </div>
+
+    {{-- Modal Editar Oferta --}}
+    <div id="modal-editar-oferta" class="fixed inset-0 bg-[#0d121f]/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-xl mx-4 p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 space-y-6 relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-black text-slate-900 tracking-tight">Editar Oferta</h3>
+                <button onclick="closeEditModal()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+
+            <form id="form-editar-oferta" method="POST" class="space-y-4 text-sm font-semibold">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="id" id="edit-id">
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Título del Puesto</label>
+                    <input type="text" name="titulo" id="edit-titulo" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Descripción</label>
+                    <textarea name="descripcion" id="edit-descripcion" rows="4" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Modalidad</label>
+                        <select name="modalidad" id="edit-modalidad" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            <option value="Presencial">Presencial</option>
+                            <option value="Remoto">Remoto</option>
+                            <option value="Híbrido">Híbrido</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
+                        <select name="carrera" id="edit-carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            <option value="">Todas las carreras</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Ubicación</label>
+                        <select name="ubicacion_id" id="edit-ubicacion_id" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                            @foreach($ubicaciones as $ubicacion)
+                                <option value="{{ $ubicacion->id }}">{{ $ubicacion->ciudad }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Inicio</label>
+                        <input type="date" name="fecha_inicio" id="edit-fecha_inicio" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Fin</label>
+                        <input type="date" name="fecha_fin" id="edit-fecha_fin" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Vacantes</label>
+                        <input type="number" name="vacantes_disponibles" id="edit-vacantes" min="1" max="999" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Duración (semanas)</label>
+                    <input type="number" name="duracion_semanas" id="edit-duracion" min="1" max="156" placeholder="Ej. 12" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Requisitos</label>
+                    <textarea name="requisitos" id="edit-requisitos" rows="3" placeholder="Ej. Conocimientos en Laravel..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Beneficios</label>
+                    <textarea name="beneficios" id="edit-beneficios" rows="3" placeholder="Ej. Certificado, horario flexible..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium resize-none"></textarea>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeEditModal()" class="flex-1 py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Cancelar</button>
+                    <button type="submit" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
 @stop
 
 @push('js')
 <script>
     $(function () {
         $('[data-toggle="popover"]').popover({ trigger: 'hover focus' });
+    });
+
+    const modalEditar = document.getElementById('modal-editar-oferta');
+
+    function openEditModal(id) {
+        fetch('/admin/ofertas/' + id)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('edit-id').value = data.id;
+                document.getElementById('edit-titulo').value = data.titulo;
+                document.getElementById('edit-descripcion').value = data.descripcion;
+                document.getElementById('edit-modalidad').value = data.modalidad;
+                document.getElementById('edit-carrera').value = data.carrera || '';
+                document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
+                document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
+                document.getElementById('edit-fecha_fin').value = data.fecha_fin;
+                document.getElementById('edit-vacantes').value = data.vacantes_disponibles || '';
+                document.getElementById('edit-duracion').value = data.duracion_semanas || '';
+                document.getElementById('edit-requisitos').value = data.requisitos || '';
+                document.getElementById('edit-beneficios').value = data.beneficios || '';
+
+                document.getElementById('form-editar-oferta').action = '/admin/ofertas/' + data.id;
+                modalEditar.classList.remove('hidden');
+            });
+    }
+
+    function closeEditModal() {
+        modalEditar.classList.add('hidden');
+    }
+
+    document.addEventListener('click', function (e) {
+        if (e.target === modalEditar) closeEditModal();
     });
 </script>
 @endpush
