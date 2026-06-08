@@ -6,6 +6,13 @@
     <title>Panel de Empresa | UWorkFlow</title>
     <link rel="icon" href="{{ asset('empresa.ico') }}">
     @vite('resources/css/app.css')
+    <style>
+        .chip-option, .chip-skill { cursor: pointer; user-select: none; }
+        .chip-option.selected, .chip-skill.selected { background: #4f46e5; color: white; border-color: #4f46e5; }
+        .chip-option:not(.selected):hover, .chip-skill:not(.selected):hover { background: #f1f5f9; }
+        .chip-skill-container::-webkit-scrollbar, #crear-carrera-chips::-webkit-scrollbar, #edit-carrera-chips::-webkit-scrollbar { height: 4px; }
+        .chip-skill-container::-webkit-scrollbar-thumb, #crear-carrera-chips::-webkit-scrollbar-thumb, #edit-carrera-chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -406,12 +413,13 @@
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
-                        <select name="carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
-                            <option value="">Todas las carreras</option>
+                        <input type="hidden" name="carrera" id="crear-carrera" value="">
+                        <div id="crear-carrera-chips" class="flex gap-1.5 overflow-x-auto pb-2 scrollbar-thin" style="scrollbar-width: thin;">
+                            <button type="button" class="chip-option selected shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="">Todas las carreras</button>
                             @foreach($carreras as $carrera)
-                                <option value="{{ $carrera }}">{{ $carrera }}</option>
+                                <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
                 </div>
 
@@ -532,12 +540,13 @@
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
-                        <select name="carrera" id="edit-carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
-                            <option value="">Todas las carreras</option>
+                        <input type="hidden" name="carrera" id="edit-carrera" value="">
+                        <div id="edit-carrera-chips" class="flex gap-1.5 overflow-x-auto pb-2 scrollbar-thin" style="scrollbar-width: thin;">
+                            <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="">Todas las carreras</button>
                             @foreach($carreras as $carrera)
-                                <option value="{{ $carrera }}">{{ $carrera }}</option>
+                                <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
                 </div>
 
@@ -703,6 +712,10 @@
     <script>
         lucide.createIcons();
 
+        // Initialiser chip selectors
+        initChipSelector('crear-carrera-chips', 'crear-carrera');
+        initChipSelector('edit-carrera-chips', 'edit-carrera');
+
         const tabsMap = {
             'inicio': document.getElementById('inicio'),
             'ofertas': document.getElementById('ofertas'),
@@ -755,6 +768,14 @@
                     document.getElementById('edit-descripcion').value = data.descripcion;
                     document.getElementById('edit-modalidad').value = data.modalidad || 'Presencial';
                     document.getElementById('edit-carrera').value = data.carrera || '';
+                    document.querySelectorAll('#edit-carrera-chips .chip-option').forEach(chip => {
+                        chip.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                        chip.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                        if (chip.dataset.value === (data.carrera || '')) {
+                            chip.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                            chip.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                        }
+                    });
                     document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
                     document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
                     document.getElementById('edit-fecha_fin').value = data.fecha_fin;
@@ -782,6 +803,41 @@
             limpiarErrores('edit');
         }
 
+        // ─── CHIP SELECTOR (horizontal scroll) ───
+        function initChipSelector(containerId, hiddenInputId) {
+            const container = document.getElementById(containerId);
+            const hidden = document.getElementById(hiddenInputId);
+            if (!container || !hidden) return;
+
+            container.querySelectorAll('.chip-option').forEach(chip => {
+                chip.addEventListener('click', function () {
+                    container.querySelectorAll('.chip-option').forEach(c => {
+                        c.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                        c.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                    });
+                    this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                    this.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                    hidden.value = this.dataset.value;
+                });
+            });
+        }
+
+        function initSkillChipSelector(containerEl, hiddenInputName, selectedId) {
+            const chips = containerEl.querySelectorAll('.chip-skill');
+            const hidden = containerEl.querySelector('input[type="hidden"]');
+            chips.forEach(chip => {
+                chip.addEventListener('click', function () {
+                    chips.forEach(c => {
+                        c.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                        c.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                    });
+                    this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                    this.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                    hidden.value = this.dataset.value;
+                });
+            });
+        }
+
         // ─── HABILIDADES DINÁMICAS (TOPSIS) ───
         const habilidadesData = @json($habilidades);
 
@@ -795,51 +851,54 @@
             div.className = 'fila-habilidad bg-slate-50 rounded-xl p-3 mb-2 border border-slate-200';
             div.dataset.index = index;
 
-            let habilidadOptions = '<option value="">Seleccionar habilidad</option>';
+            let skillChips = '';
             habilidadesData.forEach(h => {
-                const selected = (data && data.habilidad_id == h.id) ? 'selected' : '';
-                habilidadOptions += `<option value="${h.id}" ${selected}>${h.nombre}</option>`;
+                const selected = (data && data.habilidad_id == h.id);
+                skillChips += `<button type="button" class="chip-skill shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap ${selected ? 'selected bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}" data-value="${h.id}">${h.nombre}</button>`;
             });
 
             div.innerHTML = `
-                <div class="flex items-start gap-2">
-                    <div class="flex-1 space-y-1.5">
-                        <select name="habilidades[${index}][habilidad_id]" required
-                            class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
-                            ${habilidadOptions}
-                        </select>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-extrabold text-slate-400 uppercase">Habilidad</label>
+                    <div class="chip-skill-container flex gap-1.5 overflow-x-auto pb-1" style="scrollbar-width: thin;">
+                        <input type="hidden" name="habilidades[${index}][habilidad_id]" value="${data ? data.habilidad_id : ''}">
+                        ${skillChips}
                     </div>
-                    <div class="w-28 space-y-1.5">
-                        <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nivel Min</label>
-                        <select name="habilidades[${index}][nivel_minimo]" required
-                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
-                            <option value="1" ${data && data.nivel_minimo == 1 ? 'selected' : ''}>1 - Inexperto</option>
-                            <option value="2" ${data && data.nivel_minimo == 2 ? 'selected' : ''}>2 - Básico</option>
-                            <option value="3" ${data && data.nivel_minimo == 3 ? 'selected' : ''}>3 - Intermedio</option>
-                            <option value="4" ${data && data.nivel_minimo == 4 ? 'selected' : ''}>4 - Alto</option>
-                            <option value="5" ${data && data.nivel_minimo == 5 ? 'selected' : ''}>5 - Experto</option>
-                        </select>
+                    <div class="flex items-start gap-2">
+                        <div class="w-28 space-y-1.5">
+                            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nivel Min</label>
+                            <select name="habilidades[${index}][nivel_minimo]" required
+                                class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
+                                <option value="1" ${data && data.nivel_minimo == 1 ? 'selected' : ''}>1 - Inexperto</option>
+                                <option value="2" ${data && data.nivel_minimo == 2 ? 'selected' : ''}>2 - Básico</option>
+                                <option value="3" ${data && data.nivel_minimo == 3 ? 'selected' : ''}>3 - Intermedio</option>
+                                <option value="4" ${data && data.nivel_minimo == 4 ? 'selected' : ''}>4 - Alto</option>
+                                <option value="5" ${data && data.nivel_minimo == 5 ? 'selected' : ''}>5 - Experto</option>
+                            </select>
+                        </div>
+                        <div class="w-20 space-y-1.5">
+                            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Peso (%)</label>
+                            <input type="number" name="habilidades[${index}][peso]" min="0" max="100" step="0.1" required value="${data ? data.peso : 50}"
+                                class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
+                        </div>
+                        <div class="w-24 space-y-1.5">
+                            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Criterio</label>
+                            <select name="habilidades[${index}][tipo_criterio]" required
+                                class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
+                                <option value="benefit" ${data && data.tipo_criterio === 'benefit' ? 'selected' : ''}>Beneficio 👍</option>
+                                <option value="cost" ${data && data.tipo_criterio === 'cost' ? 'selected' : ''}>Costo 👎</option>
+                            </select>
+                        </div>
+                        <button type="button" onclick="this.closest('.fila-habilidad').remove()"
+                            class="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
                     </div>
-                    <div class="w-20 space-y-1.5">
-                        <label class="text-[10px] font-extrabold text-slate-400 uppercase">Peso (%)</label>
-                        <input type="number" name="habilidades[${index}][peso]" min="0" max="100" step="0.1" required value="${data ? data.peso : 50}"
-                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
-                    </div>
-                    <div class="w-24 space-y-1.5">
-                        <label class="text-[10px] font-extrabold text-slate-400 uppercase">Criterio</label>
-                        <select name="habilidades[${index}][tipo_criterio]" required
-                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
-                            <option value="benefit" ${data && data.tipo_criterio === 'benefit' ? 'selected' : ''}>Beneficio 👍</option>
-                            <option value="cost" ${data && data.tipo_criterio === 'cost' ? 'selected' : ''}>Costo 👎</option>
-                        </select>
-                    </div>
-                    <button type="button" onclick="this.closest('.fila-habilidad').remove()"
-                        class="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
                 </div>
             `;
             container.appendChild(div);
+            const chipContainer = div.querySelector('.chip-skill-container');
+            if (chipContainer) initSkillChipSelector(chipContainer);
             lucide.createIcons();
         }
 
@@ -900,9 +959,9 @@
             }
             let valido = true;
             filas.forEach(fila => {
-                const select = fila.querySelector('select[name*="[habilidad_id]"]');
-                if (select && !select.value) {
-                    select.classList.add('input-error');
+                const hidden = fila.querySelector('input[type="hidden"][name*="[habilidad_id]"]');
+                if (hidden && !hidden.value) {
+                    fila.querySelector('.chip-skill-container')?.classList.add('input-error');
                     valido = false;
                 }
             });

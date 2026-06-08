@@ -2,6 +2,7 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ vite_asset('resources/css/app.css') }}">
+    <link rel="icon" href="{{ asset('ad.ico') }}">
 @endpush
 
 @section('title', 'Editar Usuario')

@@ -2,6 +2,14 @@
 
 @push('css')
     <link rel="stylesheet" href="{{ vite_asset('resources/css/app.css') }}">
+    <link rel="icon" href="{{ asset('ad.ico') }}">
+    <style>
+        .chip-option { cursor: pointer; user-select: none; }
+        .chip-option.selected { background: #4f46e5; color: white; border-color: #4f46e5; }
+        .chip-option:not(.selected):hover { background: #f1f5f9; }
+        #edit-carrera-chips::-webkit-scrollbar { height: 4px; }
+        #edit-carrera-chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
 @endpush
 
 @section('title', 'Ofertas')
@@ -167,12 +175,13 @@
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
-                        <select name="carrera" id="edit-carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
-                            <option value="">Todas las carreras</option>
+                        <input type="hidden" name="carrera" id="edit-carrera" value="">
+                        <div id="edit-carrera-chips" class="flex gap-1.5 overflow-x-auto pb-2" style="scrollbar-width: thin;">
+                            <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="">Todas las carreras</button>
                             @foreach($carreras as $carrera)
-                                <option value="{{ $carrera }}">{{ $carrera }}</option>
+                                <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
                 </div>
 
@@ -232,6 +241,25 @@
         $('[data-toggle="popover"]').popover({ trigger: 'hover focus' });
     });
 
+    function initChipSelector(containerId, hiddenInputId) {
+        const container = document.getElementById(containerId);
+        const hidden = document.getElementById(hiddenInputId);
+        if (!container || !hidden) return;
+        container.querySelectorAll('.chip-option').forEach(chip => {
+            chip.addEventListener('click', function () {
+                container.querySelectorAll('.chip-option').forEach(c => {
+                    c.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                    c.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                });
+                this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                this.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                hidden.value = this.dataset.value;
+            });
+        });
+    }
+
+    initChipSelector('edit-carrera-chips', 'edit-carrera');
+
     const modalEditar = document.getElementById('modal-editar-oferta');
 
     function openEditModal(id) {
@@ -243,6 +271,14 @@
                 document.getElementById('edit-descripcion').value = data.descripcion;
                 document.getElementById('edit-modalidad').value = data.modalidad;
                 document.getElementById('edit-carrera').value = data.carrera || '';
+                document.querySelectorAll('#edit-carrera-chips .chip-option').forEach(chip => {
+                    chip.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                    chip.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                    if (chip.dataset.value === (data.carrera || '')) {
+                        chip.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
+                        chip.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
+                    }
+                });
                 document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
                 document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
                 document.getElementById('edit-fecha_fin').value = data.fecha_fin;
