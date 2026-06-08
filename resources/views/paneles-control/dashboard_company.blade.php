@@ -7,11 +7,16 @@
     <link rel="icon" href="{{ asset('empresa.ico') }}">
     @vite('resources/css/app.css')
     <style>
-        .chip-option, .chip-skill { cursor: pointer; user-select: none; }
-        .chip-option.selected, .chip-skill.selected { background: #4f46e5; color: white; border-color: #4f46e5; }
-        .chip-option:not(.selected):hover, .chip-skill:not(.selected):hover { background: #f1f5f9; }
-        .chip-skill-container::-webkit-scrollbar, #crear-carrera-chips::-webkit-scrollbar, #edit-carrera-chips::-webkit-scrollbar { height: 4px; }
-        .chip-skill-container::-webkit-scrollbar-thumb, #crear-carrera-chips::-webkit-scrollbar-thumb, #edit-carrera-chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .chip-option, .chip-skill { cursor: pointer; user-select: none; transition: all 0.15s ease; }
+        .chip-option { background: white; color: #334155; border-color: #e2e8f0; }
+        .chip-option.selected, .chip-skill.selected { background: #4f46e5 !important; color: white !important; border-color: #4f46e5 !important; }
+        .chip-option:not(.selected):hover { background: #eef2ff; border-color: #a5b4fc; }
+        .chip-skill { background: white; color: #334155; border-color: #e2e8f0; }
+        .chip-skill:not(.selected):hover { background: #eef2ff; border-color: #a5b4fc; }
+        #crear-carrera-chips::-webkit-scrollbar, #edit-carrera-chips::-webkit-scrollbar, .chip-skill-container::-webkit-scrollbar { height: 6px; }
+        #crear-carrera-chips::-webkit-scrollbar-track, #edit-carrera-chips::-webkit-scrollbar-track, .chip-skill-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+        #crear-carrera-chips::-webkit-scrollbar-thumb, #edit-carrera-chips::-webkit-scrollbar-thumb, .chip-skill-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        #crear-carrera-chips::-webkit-scrollbar-thumb:hover, #edit-carrera-chips::-webkit-scrollbar-thumb:hover, .chip-skill-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -414,10 +419,10 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <input type="hidden" name="carrera" id="crear-carrera" value="">
-                        <div id="crear-carrera-chips" class="flex gap-1.5 overflow-x-auto pb-2 scrollbar-thin" style="scrollbar-width: thin;">
-                            <button type="button" class="chip-option selected shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="">Todas las carreras</button>
+                        <div id="crear-carrera-chips" class="flex gap-2 overflow-x-auto p-3 bg-slate-50 border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
+                            <button type="button" class="chip-option selected shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="">Todas las carreras</button>
                             @foreach($carreras as $carrera)
-                                <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
+                                <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
                             @endforeach
                         </div>
                     </div>
@@ -541,10 +546,10 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <input type="hidden" name="carrera" id="edit-carrera" value="">
-                        <div id="edit-carrera-chips" class="flex gap-1.5 overflow-x-auto pb-2 scrollbar-thin" style="scrollbar-width: thin;">
-                            <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="">Todas las carreras</button>
+                        <div id="edit-carrera-chips" class="flex gap-2 overflow-x-auto p-3 bg-slate-50 border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
+                            <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="">Todas las carreras</button>
                             @foreach($carreras as $carrera)
-                                <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
+                                <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
                             @endforeach
                         </div>
                     </div>
@@ -860,7 +865,7 @@
             div.innerHTML = `
                 <div class="space-y-2">
                     <label class="text-[10px] font-extrabold text-slate-400 uppercase">Habilidad</label>
-                    <div class="chip-skill-container flex gap-1.5 overflow-x-auto pb-1" style="scrollbar-width: thin;">
+                    <div class="chip-skill-container flex gap-2 overflow-x-auto p-3 bg-white border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
                         <input type="hidden" name="habilidades[${index}][habilidad_id]" value="${data ? data.habilidad_id : ''}">
                         ${skillChips}
                     </div>

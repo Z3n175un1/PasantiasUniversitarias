@@ -4,11 +4,13 @@
     <link rel="stylesheet" href="{{ vite_asset('resources/css/app.css') }}">
     <link rel="icon" href="{{ asset('ad.ico') }}">
     <style>
-        .chip-option { cursor: pointer; user-select: none; }
-        .chip-option.selected { background: #4f46e5; color: white; border-color: #4f46e5; }
-        .chip-option:not(.selected):hover { background: #f1f5f9; }
-        #edit-carrera-chips::-webkit-scrollbar { height: 4px; }
-        #edit-carrera-chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .chip-option { cursor: pointer; user-select: none; transition: all 0.15s ease; background: white; color: #334155; border-color: #e2e8f0; }
+        .chip-option.selected { background: #4f46e5 !important; color: white !important; border-color: #4f46e5 !important; }
+        .chip-option:not(.selected):hover { background: #eef2ff; border-color: #a5b4fc; }
+        #edit-carrera-chips::-webkit-scrollbar { height: 6px; }
+        #edit-carrera-chips::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
+        #edit-carrera-chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        #edit-carrera-chips::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 @endpush
 
@@ -176,10 +178,10 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <input type="hidden" name="carrera" id="edit-carrera" value="">
-                        <div id="edit-carrera-chips" class="flex gap-1.5 overflow-x-auto pb-2" style="scrollbar-width: thin;">
-                            <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="">Todas las carreras</button>
+                        <div id="edit-carrera-chips" class="flex gap-2 overflow-x-auto p-3 bg-slate-50 border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
+                            <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="">Todas las carreras</button>
                             @foreach($carreras as $carrera)
-                                <button type="button" class="chip-option shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
+                                <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
                             @endforeach
                         </div>
                     </div>
