@@ -52,19 +52,27 @@ class AdminController extends Controller
 
     public function crearUsuario()
     {
-        $roles = Rol::all();
+        $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
+        $roles = $esSuperAdmin
+            ? Rol::where('id', 3)->get()
+            : Rol::whereIn('id', [1, 2])->get();
         return view('admin.usuarios-crear', compact('roles'));
     }
 
     public function guardarUsuario(Request $request)
     {
+        $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
+        $rolPermitido = $esSuperAdmin ? 3 : [1, 2];
+
         $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'ap_paterno' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'ap_materno' => ['nullable', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'correo' => 'required|email|unique:usuarios,correo',
             'password' => 'required|min:8',
-            'rol_id' => 'required|exists:roles,id',
+            'rol_id' => 'required|in:' . (is_array($rolPermitido) ? implode(',', $rolPermitido) : $rolPermitido),
+        ], [
+            'rol_id.in' => 'No tienes permiso para asignar ese rol.',
         ]);
 
         if ($request->rol_id == 2) {
@@ -135,7 +143,10 @@ class AdminController extends Controller
     public function editarUsuario($id)
     {
         $usuario = Usuario::with('rol')->findOrFail($id);
-        $roles = Rol::all();
+        $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
+        $roles = $esSuperAdmin
+            ? Rol::where('id', 3)->get()
+            : Rol::whereIn('id', [1, 2])->get();
         $empresa = PerfilEmpresa::where('usuario_id', $id)->first();
         $estudiante = PerfilEstudiante::where('usuario_id', $id)->first();
         $ubicaciones = \App\Models\Ubicacion::all();
@@ -148,13 +159,18 @@ class AdminController extends Controller
         $usuario = Usuario::findOrFail($id);
         $original = $usuario->getOriginal();
 
+        $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
+        $rolPermitido = $esSuperAdmin ? 3 : [1, 2];
+
         $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             'ap_paterno' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'ap_materno' => ['nullable', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'correo' => 'required|email|unique:usuarios,correo,' . $id,
-            'rol_id' => 'required|exists:roles,id',
+            'rol_id' => 'required|in:' . (is_array($rolPermitido) ? implode(',', $rolPermitido) : $rolPermitido),
             'password' => 'nullable|min:8',
+        ], [
+            'rol_id.in' => 'No tienes permiso para asignar ese rol.',
         ]);
 
         if ($request->rol_id == 2) {
