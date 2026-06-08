@@ -56,7 +56,7 @@ class AdminController extends Controller
     {
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
         $roles = $esSuperAdmin
-            ? Rol::where('id', 3)->get()
+            ? Rol::all()
             : Rol::whereIn('id', [1, 2])->get();
         return view('admin.usuarios-crear', compact('roles'));
     }
@@ -64,7 +64,7 @@ class AdminController extends Controller
     public function guardarUsuario(Request $request)
     {
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
-        $rolPermitido = $esSuperAdmin ? 3 : [1, 2];
+        $rolPermitido = $esSuperAdmin ? [1, 2, 3] : [1, 2];
 
         $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
@@ -147,7 +147,7 @@ class AdminController extends Controller
         $usuario = Usuario::with('rol')->findOrFail($id);
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
         $roles = $esSuperAdmin
-            ? Rol::where('id', 3)->get()
+            ? Rol::all()
             : Rol::whereIn('id', [1, 2])->get();
         $empresa = PerfilEmpresa::where('usuario_id', $id)->first();
         $estudiante = PerfilEstudiante::where('usuario_id', $id)->first();
