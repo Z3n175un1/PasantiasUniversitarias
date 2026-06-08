@@ -59,13 +59,28 @@ class AdminController extends Controller
     public function guardarUsuario(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'ap_paterno' => 'required|string|max:100',
-            'ap_materno' => 'nullable|string|max:100',
+            'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'ap_paterno' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'ap_materno' => ['nullable', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'correo' => 'required|email|unique:usuarios,correo',
             'password' => 'required|min:8',
             'rol_id' => 'required|exists:roles,id',
         ]);
+
+        if ($request->rol_id == 2) {
+            $request->validate([
+                'nombre_empresa' => 'required|string|max:200',
+                'industria' => 'required|string|max:100',
+                'telefono' => 'nullable|string|max:30',
+                'direccion' => 'nullable|string|max:255',
+            ]);
+        } elseif ($request->rol_id == 1) {
+            $request->validate([
+                'universidad' => 'required|string|max:200',
+                'carrera' => 'required|string|max:200',
+                'fecha_nacimiento' => 'nullable|date',
+            ]);
+        }
 
         $usuario = Usuario::create([
             'rol_id' => $request->rol_id,
@@ -76,6 +91,27 @@ class AdminController extends Controller
             'contrasena_hash' => Hash::make($request->password),
             'activo' => true,
         ]);
+
+        if ($request->rol_id == 2) {
+            PerfilEmpresa::create([
+                'usuario_id' => $usuario->id,
+                'nombre_empresa' => $request->nombre_empresa,
+                'industria' => $request->industria,
+                'telefono' => $request->telefono,
+                'direccion' => $request->direccion,
+                'sitio_web' => null,
+                'verificada' => false,
+            ]);
+        } elseif ($request->rol_id == 1) {
+            PerfilEstudiante::create([
+                'usuario_id' => $usuario->id,
+                'universidad' => $request->universidad,
+                'carrera' => $request->carrera,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'anio_graduacion' => null,
+                'biografia' => null,
+            ]);
+        }
 
         RegistroAuditoria::create([
             'usuario_id' => Auth::id(),
@@ -100,7 +136,11 @@ class AdminController extends Controller
     {
         $usuario = Usuario::with('rol')->findOrFail($id);
         $roles = Rol::all();
-        return view('admin.usuarios-editar', compact('usuario', 'roles'));
+        $empresa = PerfilEmpresa::where('usuario_id', $id)->first();
+        $estudiante = PerfilEstudiante::where('usuario_id', $id)->first();
+        $ubicaciones = \App\Models\Ubicacion::all();
+        $carreras = \App\Models\Habilidad::select('categoria')->whereNotNull('categoria')->distinct()->pluck('categoria');
+        return view('admin.usuarios-editar', compact('usuario', 'roles', 'empresa', 'estudiante', 'ubicaciones', 'carreras'));
     }
 
     public function actualizarUsuario(Request $request, $id)
@@ -109,13 +149,28 @@ class AdminController extends Controller
         $original = $usuario->getOriginal();
 
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'ap_paterno' => 'required|string|max:100',
-            'ap_materno' => 'nullable|string|max:100',
+            'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'ap_paterno' => ['required', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
+            'ap_materno' => ['nullable', 'string', 'max:100', 'regex:/^[\pL\s]+$/u'],
             'correo' => 'required|email|unique:usuarios,correo,' . $id,
             'rol_id' => 'required|exists:roles,id',
             'password' => 'nullable|min:8',
         ]);
+
+        if ($request->rol_id == 2) {
+            $request->validate([
+                'nombre_empresa' => 'required|string|max:200',
+                'industria' => 'required|string|max:100',
+                'telefono' => 'nullable|string|max:30',
+                'direccion' => 'nullable|string|max:255',
+            ]);
+        } elseif ($request->rol_id == 1) {
+            $request->validate([
+                'universidad' => 'required|string|max:200',
+                'carrera' => 'required|string|max:200',
+                'fecha_nacimiento' => 'nullable|date',
+            ]);
+        }
 
         $cambios = [
             'nombre' => $request->nombre,
@@ -137,6 +192,27 @@ class AdminController extends Controller
         }
 
         $usuario->save();
+
+        if ($request->rol_id == 2) {
+            PerfilEmpresa::updateOrCreate(
+                ['usuario_id' => $usuario->id],
+                [
+                    'nombre_empresa' => $request->nombre_empresa,
+                    'industria' => $request->industria,
+                    'telefono' => $request->telefono,
+                    'direccion' => $request->direccion,
+                ]
+            );
+        } elseif ($request->rol_id == 1) {
+            PerfilEstudiante::updateOrCreate(
+                ['usuario_id' => $usuario->id],
+                [
+                    'universidad' => $request->universidad,
+                    'carrera' => $request->carrera,
+                    'fecha_nacimiento' => $request->fecha_nacimiento,
+                ]
+            );
+        }
 
         $anterior = array_intersect_key($original, $cambios);
 

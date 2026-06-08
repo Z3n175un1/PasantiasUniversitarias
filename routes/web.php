@@ -118,11 +118,30 @@ Route::get('/register/{rol}', function ($rol) {
 })->name('register')->where('rol', 'student|company');
 
 Route::post('/register', function (Request $request) {
-    $request->validate([
+    $rules = [
         'email' => 'required|email|unique:usuarios,correo',
         'password' => 'required|min:8|confirmed',
         'role' => 'required|in:student,company',
-    ], [
+    ];
+
+    if ($request->role === 'student') {
+        $rules = array_merge($rules, [
+            'full_name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'paternal_surname' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'maternal_surname' => ['nullable', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'career' => 'required|string|max:200',
+        ]);
+    } else {
+        $rules = array_merge($rules, [
+            'company_name' => 'required|string|max:200',
+            'sector' => 'required|string|max:100',
+            'hr_name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'hr_paternal' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+            'hr_maternal' => ['nullable', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+        ]);
+    }
+
+    $request->validate($rules, [
         'email.unique' => '¡Ups! Parece que ya registraste esta cuenta. Intenta iniciar sesión.',
     ]);
 

@@ -39,20 +39,20 @@ class RegisterController extends Controller
 
         if ($request->role === 'student') {
             $rules = array_merge($rules, [
-                'full_name' => 'required|string|max:255',
-                'paternal_surname' => 'required|string|max:255',
-                'maternal_surname' => 'required|string|max:255',
+                'full_name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+                'paternal_surname' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+                'maternal_surname' => ['nullable', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
                 'phone' => 'required|digits:8',
-                'career' => 'required|string|max:255',
+                'career' => 'required|string|max:200',
             ]);
         } else {
             $rules = array_merge($rules, [
-                'company_name' => 'required|string|max:255',
-                'sector' => 'required|string|max:255',
+                'company_name' => 'required|string|max:200',
+                'sector' => 'required|string|max:100',
                 'phone' => 'required|digits:8',
-                'hr_name' => 'required|string|max:255',
-                'hr_paternal' => 'required|string|max:255',
-                'hr_maternal' => 'required|string|max:255',
+                'hr_name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+                'hr_paternal' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
+                'hr_maternal' => ['nullable', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
             ]);
         }
 
