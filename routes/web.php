@@ -241,16 +241,46 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard/admin', function () {
         abort_if(Auth::user()->rol_id != 3, 403);
+
+        $admins = Usuario::where('rol_id', 3)->count();
+        $totalEstudiantes = PerfilEstudiante::count();
+        $totalEmpresas = PerfilEmpresa::count();
+        $totalUsuarios = $admins + $totalEstudiantes + $totalEmpresas;
+        $totalOfertas = OfertaPasantia::count();
+        $totalPostulaciones = Postulacion::count();
+
+        $ofertasPorEstado = OfertaPasantia::selectRaw('estado_publicacion_id, count(*) as total')
+            ->groupBy('estado_publicacion_id')->pluck('total', 'estado_publicacion_id');
+        $postulacionesPorEstado = Postulacion::selectRaw('estado_postulacion_id, count(*) as total')
+            ->groupBy('estado_postulacion_id')->pluck('total', 'estado_postulacion_id');
+
+        $usuariosPorMes = Usuario::selectRaw("strftime('%m', creado_en) as mes, count(*) as total")
+            ->whereYear('creado_en', '>=', now()->subYear()->year)
+            ->groupBy('mes')->orderBy('mes')->pluck('total', 'mes');
+
+        $ultimosLogs = RegistroAuditoria::with('usuario')
+            ->latest('creado_en')->take(8)->get();
+
         $stats = [
-            'usuarios' => Usuario::count(),
-            'empresas' => PerfilEmpresa::count(),
-            'estudiantes' => PerfilEstudiante::count(),
-            'ofertas' => OfertaPasantia::count(),
-            'postulaciones' => Postulacion::count(),
+            'usuarios' => $totalUsuarios,
+            'estudiantes' => $totalEstudiantes,
+            'empresas' => $totalEmpresas,
+            'admins' => $admins,
+            'ofertas' => $totalOfertas,
+            'postulaciones' => $totalPostulaciones,
             'ultimos_usuarios' => Usuario::with('rol')->latest('creado_en')->take(10)->get(),
-            'todas_empresas' => PerfilEmpresa::with('usuario')->get(),
-            'todos_estudiantes' => PerfilEstudiante::with('usuario')->get(),
-            'ofertas_activas' => OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])->get(),
+            'todas_empresas' => PerfilEmpresa::with('usuario')->orderBy('nombre_empresa')->get(),
+            'todos_estudiantes' => PerfilEstudiante::with('usuario')->orderBy('carrera')->get(),
+            'ofertas_activas' => OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])
+                ->where('estado_publicacion_id', 2)->orderBy('id', 'desc')->take(15)->get(),
+            'ofertas_borrador' => OfertaPasantia::with(['perfilEmpresa'])
+                ->where('estado_publicacion_id', 1)->count(),
+            'ofertas_cerradas' => OfertaPasantia::with(['perfilEmpresa'])
+                ->where('estado_publicacion_id', 3)->count(),
+            'ofertas_por_estado' => $ofertasPorEstado,
+            'postulaciones_por_estado' => $postulacionesPorEstado,
+            'usuarios_por_mes' => $usuariosPorMes,
+            'ultimos_logs' => $ultimosLogs,
         ];
         return view('paneles-control.dashboard_admin', compact('stats'));
     })->name('dashboard.admin');
