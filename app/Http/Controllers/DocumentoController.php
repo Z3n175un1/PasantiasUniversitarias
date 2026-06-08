@@ -30,7 +30,8 @@ class DocumentoController extends Controller
             abort(403);
         }
 
-        return view('documentos.ver', compact('doc'));
+        $archivoExiste = Storage::disk('public')->exists($doc->ruta_almacenamiento);
+        return view('documentos.ver', compact('doc', 'archivoExiste'));
     }
 
     public function archivo($id)
@@ -52,7 +53,11 @@ class DocumentoController extends Controller
         }
 
         if (!Storage::disk('public')->exists($doc->ruta_almacenamiento)) {
-            abort(404, 'Archivo no encontrado en el servidor.');
+            $placeholder = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+            return response($placeholder, 200, [
+                'Content-Type' => 'image/png',
+                'Content-Disposition' => 'inline',
+            ]);
         }
 
         return Storage::disk('public')->response($doc->ruta_almacenamiento, $doc->nombre_original, [

@@ -148,17 +148,28 @@
                 </div>
             </div>
             <div class="flex gap-2">
+                @if($archivoExiste)
                 <a href="{{ route('documentos.archivo', $doc->id) }}" download="{{ $doc->nombre_original }}"
                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition shadow-sm">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     Descargar
                 </a>
+                @endif
             </div>
         </div>
 
         {{-- Viewer --}}
         <div class="doc-viewer">
-            @if(str_starts_with($doc->tipo_mime, 'application/pdf'))
+            @if(!$archivoExiste)
+                <div class="no-viewer">
+                    <div class="file-icon-large">
+                        <i data-lucide="file-x" class="w-7 h-7"></i>
+                    </div>
+                    <h3>Archivo no disponible</h3>
+                    <p class="text-sm text-slate-400 mb-1">El archivo físico no se encuentra en el servidor.</p>
+                    <p class="text-xs text-slate-400">Puede que haya sido eliminado o aún no se haya subido.</p>
+                </div>
+            @elseif(str_starts_with($doc->tipo_mime, 'application/pdf'))
                 <div id="pdf-viewer" style="width:100%">
                     <div class="pdf-toolbar">
                         <button id="prev-page" disabled>
