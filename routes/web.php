@@ -272,7 +272,15 @@ Route::middleware('auth')->group(function () {
             'oferta_pasantia_id' => 'required|exists:ofertas_pasantia,id',
         ]);
 
-        $estudiante = \App\Models\PerfilEstudiante::where('usuario_id', Auth::id())->firstOrFail();
+        $estudiante = \App\Models\PerfilEstudiante::withCount(['documentos', 'habilidades'])->where('usuario_id', Auth::id())->firstOrFail();
+
+        if ($estudiante->documentos_count === 0) {
+            return back()->with('error', 'Primero debes subir al menos un documento en tu perfil antes de postular.');
+        }
+
+        if ($estudiante->habilidades_count === 0) {
+            return back()->with('error', 'Primero debes registrar al menos una habilidad en tu perfil antes de postular.');
+        }
 
         $existe = \App\Models\Postulacion::where('perfil_estudiante_id', $estudiante->id)
             ->where('oferta_pasantia_id', $request->oferta_pasantia_id)
@@ -282,11 +290,38 @@ Route::middleware('auth')->group(function () {
             return back()->with('error', 'Ya te has postulado a esta oferta.');
         }
 
-        \App\Models\Postulacion::create([
+        $post = \App\Models\Postulacion::create([
             'perfil_estudiante_id' => $estudiante->id,
             'oferta_pasantia_id' => $request->oferta_pasantia_id,
             'estado_postulacion_id' => 1,
         ]);
+
+        $oferta = \App\Models\OfertaPasantia::with('requisitosHabilidad')->findOrFail($request->oferta_pasantia_id);
+
+        $habilidadesEstudiante = $estudiante->habilidades->keyBy('habilidad_id');
+        $pesoTotal = 0;
+        $ponderadoTotal = 0;
+
+        foreach ($oferta->requisitosHabilidad as $req) {
+            $nivelEstudiante = $habilidadesEstudiante->get($req->habilidad_id)?->nivel ?? 0;
+            $benefit = $req->tipo_criterio === 'benefit';
+            $valorNormalizado = $benefit ? $nivelEstudiante / 5 : 1 - ($nivelEstudiante / 5);
+            $peso = $req->peso ?? 0;
+            $valorPonderado = $valorNormalizado * ($peso / 100);
+            $ponderadoTotal += $valorPonderado;
+            $pesoTotal += $peso;
+
+            \App\Models\DetallePuntajeTopsis::create([
+                'postulacion_id' => $post->id,
+                'habilidad_id' => $req->habilidad_id,
+                'valor_bruto' => $nivelEstudiante,
+                'valor_normalizado' => round($valorNormalizado, 4),
+                'valor_ponderado' => round($valorPonderado, 4),
+            ]);
+        }
+
+        $puntajeTopsis = $pesoTotal > 0 ? round(($ponderadoTotal / ($pesoTotal / 100)) * 100, 2) : 0;
+        $post->update(['puntaje_topsis' => $puntajeTopsis]);
 
         \App\Models\RegistroAuditoria::create([
             'usuario_id' => Auth::id(),

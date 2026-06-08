@@ -211,6 +211,12 @@
                                                 </div>
                                             </div>
                                             <div class="flex items-center gap-2">
+                                                @if($post->puntaje_topsis !== null)
+                                                    <div class="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-extrabold rounded-xl text-xs flex items-center gap-1.5">
+                                                        <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
+                                                        TOPSIS: {{ $post->puntaje_topsis }}%
+                                                    </div>
+                                                @endif
                                                 <form action="{{ route('company.postulaciones.estado', $post->id) }}" method="POST" class="flex items-center gap-1">
                                                     @csrf
                                                     @method('PATCH')

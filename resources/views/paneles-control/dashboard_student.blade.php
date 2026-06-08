@@ -98,6 +98,38 @@
                         </div>
                     </div>
 
+                    {{-- Alertas de perfil incompleto --}}
+                    @php
+                        $sinDocumentos = $estudiante->documentos->count() === 0;
+                        $sinHabilidades = $estudiante->habilidades->count() === 0;
+                    @endphp
+                    @if($sinDocumentos || $sinHabilidades)
+                        <div class="bg-amber-50 border border-amber-200 rounded-[2rem] p-5 flex items-start gap-4">
+                            <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-amber-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-sm font-bold text-amber-800">Completa tu perfil para poder postular</h4>
+                                <ul class="mt-2 space-y-1">
+                                    @if($sinDocumentos)
+                                        <li class="text-xs text-amber-700 flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+                                            Sube al menos un documento (CV, certificado, etc.)
+                                            <a href="#" onclick="event.preventDefault(); document.querySelector('[data-tab=\"documentos\"]').click();" class="underline font-bold hover:text-amber-900">Ir a Documentos</a>
+                                        </li>
+                                    @endif
+                                    @if($sinHabilidades)
+                                        <li class="text-xs text-amber-700 flex items-center gap-2">
+                                            <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+                                            Registra al menos una habilidad técnica o blanda
+                                            <a href="#" onclick="event.preventDefault(); document.querySelector('[data-tab=\"documentos\"]').click();" class="underline font-bold hover:text-amber-900">Ir a Habilidades</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
+
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4">
                             <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center"><i data-lucide="send" class="w-6 h-6"></i></div>
@@ -403,6 +435,13 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                                 <div class="space-y-1.5">
+                                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Nacimiento</label>
+                                    <input type="date" name="fecha_nacimiento" id="perfil-fecha_nacimiento" value="{{ old('fecha_nacimiento', $estudiante->fecha_nacimiento) }}"
+                                           max="{{ now()->subYears(18)->format('Y-m-d') }}" min="{{ now()->subYears(30)->format('Y-m-d') }}"
+                                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                                    <div class="error-text" id="perfil-fecha_nacimiento-error">Debes tener entre 18 y 30 años</div>
+                                </div>
+                                <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Semestre Actual</label>
                                     <select name="semestre_actual" id="perfil-semestre" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium appearance-none cursor-pointer">
                                         <option value="">Seleccionar semestre...</option>
@@ -667,6 +706,7 @@
 
             const universidad = document.getElementById('perfil-universidad');
             const carrera = document.getElementById('perfil-carrera');
+            const fechaNac = document.getElementById('perfil-fecha_nacimiento');
             const semestre = document.getElementById('perfil-semestre');
             const anio = document.getElementById('perfil-anio');
 
@@ -682,6 +722,20 @@
                 valido = false;
             } else {
                 limpiarError('perfil-carrera', 'perfil-carrera-error');
+            }
+
+            if (fechaNac && fechaNac.value) {
+                const nac = new Date(fechaNac.value);
+                const hoy = new Date();
+                let edad = hoy.getFullYear() - nac.getFullYear();
+                const mes = hoy.getMonth() - nac.getMonth();
+                if (mes < 0 || (mes === 0 && hoy.getDate() < nac.getDate())) edad--;
+                if (edad < 18 || edad > 30) {
+                    mostrarError('perfil-fecha_nacimiento', 'perfil-fecha_nacimiento-error');
+                    valido = false;
+                } else {
+                    limpiarError('perfil-fecha_nacimiento', 'perfil-fecha_nacimiento-error');
+                }
             }
 
             if (semestre && !semestre.value) {

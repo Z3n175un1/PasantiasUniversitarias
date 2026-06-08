@@ -157,7 +157,7 @@
                 {{-- Habilidades Requeridas (TOPSIS) --}}
                 @if($oferta->requisitosHabilidad && $oferta->requisitosHabilidad->count() > 0)
                 <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">⭐ Habilidades Requeridas (Criterios TOPSIS)</h2>
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">⭐ Habilidades Requeridas (Ponderación TOPSIS)</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         @foreach($oferta->requisitosHabilidad as $requisito)
                             <div class="flex items-start gap-3 p-4 bg-gray-50 rounded-xl">
@@ -167,27 +167,18 @@
                                 <div class="flex-1">
                                     <div class="flex items-center justify-between">
                                         <p class="font-semibold text-gray-900">{{ $requisito->habilidad->nombre ?? 'Habilidad' }}</p>
-                                        <span class="text-[10px] font-extrabold uppercase {{ $requisito->tipo_criterio === 'benefit' ? 'text-green-600' : 'text-red-500' }}">
-                                            {{ $requisito->tipo_criterio === 'benefit' ? 'Beneficio' : 'Costo' }}
-                                        </span>
+                                        <span class="text-xs font-bold text-indigo-600">{{ $requisito->peso ?? '50' }}%</span>
                                     </div>
-                                    <div class="flex items-center gap-3 mt-1.5">
-                                        <span class="text-xs text-gray-500">
-                                            <span class="font-bold">Nivel min:</span> {{ $requisito->nivel_minimo ?? '1' }}/5
-                                        </span>
-                                        <span class="text-xs text-gray-500">
-                                            <span class="font-bold">Peso:</span> {{ $requisito->peso ?? '50' }}%
-                                        </span>
-                                    </div>
-                                    <div class="mt-2 flex gap-0.5">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <span class="w-2 h-2 rounded-full {{ $i <= ($requisito->nivel_minimo ?? 1) ? 'bg-blue-500' : 'bg-gray-200' }}"></span>
-                                        @endfor
+                                    <div class="mt-1.5">
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-indigo-500 h-2 rounded-full" style="width: {{ $requisito->peso ?? 50 }}%"></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
+                    <p class="text-xs text-slate-400 mt-4 text-center">Estas habilidades se evaluarán mediante el método TOPSIS para calcular el puntaje de compatibilidad.</p>
                 </div>
                 @endif
             </div>
