@@ -162,7 +162,7 @@ class AdminController extends Controller
         $original = $usuario->getOriginal();
 
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
-        $rolPermitido = $esSuperAdmin ? 3 : [1, 2];
+        $rolPermitido = $esSuperAdmin ? [1, 2, 3] : [1, 2];
 
         $request->validate([
             'nombre' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'],
