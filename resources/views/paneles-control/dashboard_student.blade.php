@@ -265,7 +265,7 @@
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <a href="{{ asset('storage/' . $doc->ruta_almacenamiento) }}" target="_blank"
+                                            <a href="{{ route('documentos.ver', $doc->id) }}" target="_blank"
                                                class="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition" title="Ver">
                                                 <i data-lucide="eye" class="w-4 h-4"></i>
                                             </a>

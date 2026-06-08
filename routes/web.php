@@ -274,6 +274,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/estadisticas', [AdminController::class, 'estadisticas'])->name('estadisticas');
 });
 
+// ── Documentos ────────────────────────────────────────────────────────────────
+
+Route::get('/documentos/{id}/ver', [App\Http\Controllers\DocumentoController::class, 'ver'])
+    ->name('documentos.ver')
+    ->middleware('auth');
+
 // ── Dashboards ────────────────────────────────────────────────────────────────
 
 Route::middleware('auth')->group(function () {

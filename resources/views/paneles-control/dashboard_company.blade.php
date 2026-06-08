@@ -243,10 +243,11 @@
                                                 @if($post->perfilEstudiante->documentos && $post->perfilEstudiante->documentos->count() > 0)
                                                     <div class="flex flex-wrap gap-2">
                                                         @foreach($post->perfilEstudiante->documentos as $doc)
-                                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold">
+                                                            <a href="{{ route('documentos.ver', $doc->id) }}" target="_blank"
+                                                               class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold transition">
                                                                 <i data-lucide="file" class="w-3 h-3"></i>
                                                                 {{ $doc->tipoDocumento->nombre ?? 'Documento' }}
-                                                            </span>
+                                                            </a>
                                                         @endforeach
                                                     </div>
                                                 @else
