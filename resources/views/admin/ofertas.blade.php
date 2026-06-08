@@ -169,6 +169,9 @@
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <select name="carrera" id="edit-carrera" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
                             <option value="">Todas las carreras</option>
+                            @foreach($carreras as $carrera)
+                                <option value="{{ $carrera }}">{{ $carrera }}</option>
+                            @endforeach
                         </select>
                     </div>
                 </div>

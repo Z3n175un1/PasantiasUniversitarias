@@ -809,10 +809,16 @@
                             ${habilidadOptions}
                         </select>
                     </div>
-                    <div class="w-20 space-y-1.5">
+                    <div class="w-28 space-y-1.5">
                         <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nivel Min</label>
-                        <input type="number" name="habilidades[${index}][nivel_minimo]" min="1" max="5" required value="${data ? data.nivel_minimo : 3}"
-                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
+                        <select name="habilidades[${index}][nivel_minimo]" required
+                            class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
+                            <option value="1" ${data && data.nivel_minimo == 1 ? 'selected' : ''}>1 - Inexperto</option>
+                            <option value="2" ${data && data.nivel_minimo == 2 ? 'selected' : ''}>2 - Básico</option>
+                            <option value="3" ${data && data.nivel_minimo == 3 ? 'selected' : ''}>3 - Intermedio</option>
+                            <option value="4" ${data && data.nivel_minimo == 4 ? 'selected' : ''}>4 - Alto</option>
+                            <option value="5" ${data && data.nivel_minimo == 5 ? 'selected' : ''}>5 - Experto</option>
+                        </select>
                     </div>
                     <div class="w-20 space-y-1.5">
                         <label class="text-[10px] font-extrabold text-slate-400 uppercase">Peso (%)</label>
