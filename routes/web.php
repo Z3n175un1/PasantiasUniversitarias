@@ -301,6 +301,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/student/documentos', [App\Http\Controllers\StudentController::class, 'subirDocumento'])->name('student.documentos.subir');
     Route::delete('/student/documentos/{id}', [App\Http\Controllers\StudentController::class, 'eliminarDocumento'])->name('student.documentos.eliminar');
     Route::post('/student/habilidades', [App\Http\Controllers\StudentController::class, 'guardarHabilidad'])->name('student.habilidades.guardar');
+    Route::patch('/student/habilidades/{id}/nivel', [App\Http\Controllers\StudentController::class, 'actualizarNivelHabilidad'])->name('student.habilidades.nivel');
     Route::delete('/student/habilidades/{id}', [App\Http\Controllers\StudentController::class, 'eliminarHabilidad'])->name('student.habilidades.eliminar');
 
     // Company profile routes

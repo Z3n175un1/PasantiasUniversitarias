@@ -262,6 +262,7 @@
                         <div class="flex items-center justify-between">
                             <h3 class="font-bold text-slate-900 text-lg">
                                 <i data-lucide="zap" class="w-5 h-5 inline mr-2 text-amber-500"></i>Mis Habilidades
+                                <span class="ml-2 text-xs font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">{{ $estudiante->habilidades->count() }}</span>
                             </h3>
                             <button onclick="openModalHabilidad()" class="px-4 py-2 bg-amber-500 text-white font-bold rounded-xl text-xs hover:bg-amber-600 transition shadow-md">
                                 <i data-lucide="plus" class="w-4 h-4 inline mr-1"></i>Agregar Habilidad
@@ -271,7 +272,7 @@
                         @if($estudiante->habilidades->count() > 0)
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                 @foreach($estudiante->habilidades as $hab)
-                                    <div class="flex flex-col p-3 bg-slate-50 rounded-xl">
+                                    <div class="flex flex-col p-3 bg-slate-50 rounded-xl border border-slate-100 hover:border-amber-200 transition">
                                         <div class="flex items-center justify-between">
                                             <div class="flex items-center gap-2">
                                                 <span class="font-bold text-sm text-slate-800">{{ $hab->habilidad->nombre ?? 'N/A' }}</span>
@@ -281,27 +282,37 @@
                                                     @endfor
                                                 </div>
                                             </div>
-                                            <form action="{{ route('student.habilidades.eliminar', $hab->id) }}" method="POST" style="display:inline;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-400 hover:text-red-600 transition" title="Eliminar">
-                                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                            <div class="flex items-center gap-1">
+                                                <button onclick="openModalEditarHabilidad({{ $hab->id }}, {{ $hab->nivel }}, '{{ $hab->habilidad->nombre }}')" class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Editar nivel">
+                                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
                                                 </button>
-                                            </form>
+                                                <form action="{{ route('student.habilidades.eliminar', $hab->id) }}" method="POST" style="display:inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Eliminar" onclick="return confirm('¿Eliminar esta habilidad?')">
+                                                        <i data-lucide="x" class="w-4 h-4"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
-                                        <div class="mt-1.5">
+                                        <div class="mt-1.5 flex items-center gap-2">
                                             <span class="inline-block px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-full">
                                                 {{ $hab->habilidad->categoria ?? 'General' }}
+                                            </span>
+                                            <span class="text-[10px] text-slate-400 font-medium">
+                                                Nivel: {{ $hab->nivel }}/5
                                             </span>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
                         @else
-                            <div class="text-center py-6">
-                                <i data-lucide="zap" class="w-10 h-10 text-slate-300 mx-auto mb-2"></i>
-                                <p class="text-sm text-slate-400">No has agregado habilidades aún.</p>
-                                <p class="text-xs text-slate-300 mt-1">Agrega tus habilidades para que las empresas te encuentren.</p>
+                            <div class="text-center py-8">
+                                <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                                    <i data-lucide="zap" class="w-8 h-8 text-slate-300"></i>
+                                </div>
+                                <h4 class="font-bold text-slate-500">No tienes habilidades registradas</h4>
+                                <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Agrega tus habilidades técnicas y blandas para que las empresas te encuentren más fácilmente.</p>
                             </div>
                         @endif
                     </div>
@@ -507,6 +518,41 @@
         </div>
     </div>
 
+    {{-- Modal Editar Nivel de Habilidad --}}
+    <div id="modal-editar-habilidad" class="fixed inset-0 bg-[#0d121f]/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-md mx-4 p-8 rounded-[2.5rem] shadow-2xl border border-slate-100 space-y-6 relative">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-black text-slate-900 tracking-tight">Editar Nivel</h3>
+                <button onclick="closeModalEditarHabilidad()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form id="form-editar-habilidad" method="POST" class="space-y-4 text-sm font-semibold">
+                @csrf
+                @method('PATCH')
+                <div class="text-center">
+                    <p class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Habilidad</p>
+                    <p id="edit-hab-nombre" class="text-lg font-bold text-slate-900 mt-1">-</p>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Nivel (1-5)</label>
+                    <div class="flex gap-2" id="edit-hab-niveles">
+                        @for($i = 1; $i <= 5; $i++)
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="nivel" value="{{ $i }}" class="sr-only peer edit-nivel-radio">
+                                <div class="text-center py-3 bg-slate-50 border border-slate-200 rounded-xl peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600 font-bold text-sm transition">
+                                    {{ $i }}
+                                </div>
+                            </label>
+                        @endfor
+                    </div>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModalEditarHabilidad()" class="flex-1 py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Cancelar</button>
+                    <button type="submit" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @include('componentes.footer')
 
     <script>
@@ -554,6 +600,18 @@
             document.getElementById('hab-select').disabled = true;
         }
         function closeModalHabilidad() { modalHab.classList.add('hidden'); }
+
+        // Modal Editar Habilidad
+        const modalEditarHab = document.getElementById('modal-editar-habilidad');
+        function openModalEditarHabilidad(id, nivel, nombre) {
+            document.getElementById('edit-hab-nombre').textContent = nombre;
+            document.querySelectorAll('.edit-nivel-radio').forEach(r => {
+                r.checked = (parseInt(r.value) === parseInt(nivel));
+            });
+            document.getElementById('form-editar-habilidad').action = '/student/habilidades/' + id + '/nivel';
+            modalEditarHab.classList.remove('hidden');
+        }
+        function closeModalEditarHabilidad() { modalEditarHab.classList.add('hidden'); }
 
         // ─── FILTRO DE HABILIDADES POR CATEGORÍA ───
         const habilidadesPorCategoria = @json($habilidades_por_categoria);
@@ -608,6 +666,7 @@
 
             const universidad = document.getElementById('perfil-universidad');
             const carrera = document.getElementById('perfil-carrera');
+            const semestre = document.getElementById('perfil-semestre');
             const anio = document.getElementById('perfil-anio');
 
             if (!universidad.value || universidad.value.trim() === '') {
@@ -622,6 +681,13 @@
                 valido = false;
             } else {
                 limpiarError('perfil-carrera', 'perfil-carrera-error');
+            }
+
+            if (semestre && !semestre.value) {
+                mostrarError('perfil-semestre', 'perfil-semestre-error');
+                valido = false;
+            } else if (semestre) {
+                limpiarError('perfil-semestre', 'perfil-semestre-error');
             }
 
             if (anio.value) {

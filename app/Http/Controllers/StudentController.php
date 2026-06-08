@@ -223,6 +223,24 @@ class StudentController extends Controller
         return back()->with('success', '¡Bien hecho! Agregaste tu habilidad correctamente. :D');
     }
 
+    public function actualizarNivelHabilidad(Request $request, $id)
+    {
+        abort_if(Auth::user()->rol_id != 1, 403);
+        $estudiante = PerfilEstudiante::where('usuario_id', Auth::id())->firstOrFail();
+        $habilidad = HabilidadEstudiante::where('id', $id)
+            ->where('perfil_estudiante_id', $estudiante->id)
+            ->firstOrFail();
+
+        $request->validate([
+            'nivel' => 'required|integer|min:1|max:5',
+        ]);
+
+        $habilidad->nivel = $request->nivel;
+        $habilidad->save();
+
+        return back()->with('success', '¡Bien hecho! Actualizaste el nivel de tu habilidad correctamente. :D');
+    }
+
     public function eliminarHabilidad($id)
     {
         abort_if(Auth::user()->rol_id != 1, 403);
