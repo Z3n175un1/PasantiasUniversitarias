@@ -43,7 +43,9 @@
                         <th>Título</th>
                         <th>Empresa</th>
                         <th>Ubicación</th>
+                        <th>Vacantes</th>
                         <th>Duración</th>
+                        <th>Requisitos / Beneficios</th>
                         <th>Estado</th>
                         <th style="width: 100px;">Acción</th>
                     </tr>
@@ -60,15 +62,37 @@
                             <td>{{ $oferta->perfilEmpresa->nombre_empresa ?? 'N/A' }}</td>
                             <td>{{ $oferta->ubicacion->ciudad ?? 'Remoto' }}</td>
                             <td>
-                                @if($oferta->fecha_inicio && $oferta->fecha_fin)
+                                <span class="badge badge-info">{{ $oferta->vacantes_disponibles ?? 'N/A' }}</span>
+                            </td>
+                            <td>
+                                @if($oferta->duracion_semanas)
+                                    {{ $oferta->duracion_semanas }} semanas
+                                @elseif($oferta->fecha_inicio && $oferta->fecha_fin)
                                     @php
                                         $inicio = \Carbon\Carbon::parse($oferta->fecha_inicio);
                                         $fin = \Carbon\Carbon::parse($oferta->fecha_fin);
-                                        $semanas = $inicio->diffInWeeks($fin);
                                     @endphp
-                                    {{ $semanas }} semanas ({{ $inicio->format('d/m/Y') }} - {{ $fin->format('d/m/Y') }})
+                                    {{ $inicio->diffInWeeks($fin) }} semanas
                                 @else
                                     No especificada
+                                @endif
+                            </td>
+                            <td>
+                                @if($oferta->requisitos || $oferta->beneficios)
+                                    <a href="#" class="text-info" data-toggle="popover" data-html="true"
+                                       data-content="
+                                        @if($oferta->requisitos)
+                                            <b>Requisitos:</b><br>{{ nl2br(e(Str::limit($oferta->requisitos, 150))) }}<br><br>
+                                        @endif
+                                        @if($oferta->beneficios)
+                                            <b>Beneficios:</b><br>{{ nl2br(e(Str::limit($oferta->beneficios, 150))) }}
+                                        @endif
+                                       "
+                                       title="{{ $oferta->titulo }}">
+                                        <i class="fas fa-info-circle"></i> Ver
+                                    </a>
+                                @else
+                                    <span class="text-muted">—</span>
                                 @endif
                             </td>
                             <td>
@@ -98,7 +122,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No hay ofertas registradas</td>
+                            <td colspan="9" class="text-center text-muted py-4">No hay ofertas registradas</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -106,3 +130,11 @@
         </div>
     </div>
 @stop
+
+@push('js')
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover({ trigger: 'hover focus' });
+    });
+</script>
+@endpush

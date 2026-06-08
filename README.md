@@ -3,3 +3,6 @@ A project designed for students in the final stages of their career, specificall
 
 # Icons sacados de:
 -> https://www.flaticon.es/
+-> https://iconscout.com/es
+
+# CREDITOS A ELLOS PORFA 
