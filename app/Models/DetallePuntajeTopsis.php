@@ -11,10 +11,14 @@ class DetallePuntajeTopsis extends Model
     protected $table = 'detalle_puntaje_topsis';
     public $timestamps = false;
     protected $guarded = [];
-    public function perfilEmpresa() { return $this->belongsTo(PerfilEmpresa::class, 'perfil_empresa_id'); }
-    public function ubicacion() { return $this->belongsTo(Ubicacion::class, 'ubicacion_id'); }
-    public function ofertasPasantias() { return $this->hasMany(OfertaPasantia::class, 'perfil_empresa_id'); }
-    public function postulaciones() { return $this->hasMany(Postulacion::class, 'perfil_estudiante_id'); }
-    public function ofertaPasantia() { return $this->belongsTo(OfertaPasantia::class, 'oferta_pasantia_id'); }
 
+    public function postulacion()
+    {
+        return $this->belongsTo(Postulacion::class, 'postulacion_id');
+    }
+
+    public function habilidad()
+    {
+        return $this->belongsTo(Habilidad::class, 'habilidad_id');
+    }
 }
