@@ -128,12 +128,11 @@ class StudentController extends Controller
         $request->validate([
             'universidad' => 'required|string|max:200',
             'carrera' => 'required|string|max:200',
-            'semestre_actual' => 'nullable|integer|min:1|max:12',
             'anio_graduacion' => 'nullable|integer|min:1900|max:2100',
             'biografia' => 'nullable|string|max:1000',
         ]);
 
-        $estudiante->update($request->only(['universidad', 'carrera', 'semestre_actual', 'anio_graduacion', 'biografia']));
+        $estudiante->update($request->only(['universidad', 'carrera', 'anio_graduacion', 'biografia']));
 
         return back()->with('success', '¡Bien hecho! Actualizaste tus datos correctamente. :D');
     }
