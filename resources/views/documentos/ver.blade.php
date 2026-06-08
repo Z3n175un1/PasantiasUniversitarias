@@ -148,7 +148,7 @@
                 </div>
             </div>
             <div class="flex gap-2">
-                <a href="{{ asset('storage/' . $doc->ruta_almacenamiento) }}" download="{{ $doc->nombre_original }}"
+                <a href="{{ route('documentos.archivo', $doc->id) }}" download="{{ $doc->nombre_original }}"
                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition shadow-sm">
                     <i data-lucide="download" class="w-4 h-4"></i>
                     Descargar
@@ -184,7 +184,7 @@
                     </div>
                 </div>
             @elseif(str_starts_with($doc->tipo_mime, 'image/'))
-                <img src="{{ asset('storage/' . $doc->ruta_almacenamiento) }}" alt="{{ $doc->nombre_original }}">
+                <img src="{{ route('documentos.archivo', $doc->id) }}" alt="{{ $doc->nombre_original }}">
             @else
                 <div class="no-viewer">
                     <div class="file-icon-large">
@@ -192,7 +192,7 @@
                     </div>
                     <h3>Vista previa no disponible</h3>
                     <p class="text-sm text-slate-400 mb-4">Este tipo de archivo no puede visualizarse en el navegador.</p>
-                    <a href="{{ asset('storage/' . $doc->ruta_almacenamiento) }}" download="{{ $doc->nombre_original }}"
+                    <a href="{{ route('documentos.archivo', $doc->id) }}" download="{{ $doc->nombre_original }}"
                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition shadow-sm">
                         <i data-lucide="download" class="w-4 h-4"></i>
                         Descargar archivo
@@ -207,7 +207,7 @@
             lucide.createIcons();
 
             @if(str_starts_with($doc->tipo_mime, 'application/pdf'))
-                const url = '{{ asset('storage/' . $doc->ruta_almacenamiento) }}';
+                const url = '{{ route('documentos.archivo', $doc->id) }}';
                 const container = document.getElementById('pdf-canvas-container');
                 const canvas = document.getElementById('pdf-canvas');
                 const ctx = canvas.getContext('2d');
@@ -222,6 +222,8 @@
                 let pdfDoc = null;
                 let pageNum = 1;
                 let scale = 1.0;
+
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
                 function renderPage(num) {
                     pdfDoc.getPage(num).then(page => {

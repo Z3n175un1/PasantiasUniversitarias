@@ -280,6 +280,10 @@ Route::get('/documentos/{id}/ver', [App\Http\Controllers\DocumentoController::cl
     ->name('documentos.ver')
     ->middleware('auth');
 
+Route::get('/documentos/{id}/archivo', [App\Http\Controllers\DocumentoController::class, 'archivo'])
+    ->name('documentos.archivo')
+    ->middleware('auth');
+
 // ── Dashboards ────────────────────────────────────────────────────────────────
 
 Route::middleware('auth')->group(function () {
