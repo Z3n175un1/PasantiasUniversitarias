@@ -4,13 +4,9 @@
     <link rel="stylesheet" href="{{ vite_asset('resources/css/app.css') }}">
     <link rel="icon" href="{{ asset('ad.ico') }}">
     <style>
-        .chip-option { cursor: pointer; user-select: none; transition: all 0.15s ease; background: white; color: #334155; border-color: #e2e8f0; }
-        .chip-option.selected { background: #4f46e5 !important; color: white !important; border-color: #4f46e5 !important; }
-        .chip-option:not(.selected):hover { background: #eef2ff; border-color: #a5b4fc; }
-        #edit-carrera-chips::-webkit-scrollbar { height: 6px; }
-        #edit-carrera-chips::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
-        #edit-carrera-chips::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        #edit-carrera-chips::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .selector-carrera-item:hover { border-color: #818cf8 !important; }
+        #selector-carrera-lista::-webkit-scrollbar { width: 6px; }
+        #selector-carrera-lista::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     </style>
 @endpush
 
@@ -178,12 +174,12 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <input type="hidden" name="carrera" id="edit-carrera" value="">
-                        <div id="edit-carrera-chips" class="flex gap-2 overflow-x-auto p-3 bg-slate-50 border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
-                            <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="">Todas las carreras</button>
-                            @foreach($carreras as $carrera)
-                                <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
-                            @endforeach
-                        </div>
+                        <button type="button" onclick="abrirSelectorCarrera('edit-carrera', 'edit-carrera-trigger')"
+                            id="edit-carrera-trigger"
+                            class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-left text-sm font-semibold text-slate-500 hover:border-indigo-400 transition flex items-center justify-between gap-2">
+                            <span id="edit-carrera-texto">Todas las carreras</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -235,6 +231,28 @@
             </form>
         </div>
     </div>
+
+    {{-- Modal selector grande de carreras --}}
+    <div id="modal-selector-carrera" class="fixed inset-0 bg-[#0d121f]/50 backdrop-blur-sm z-[60] flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-3xl mx-4 rounded-2xl shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                <h3 class="text-lg font-black text-slate-900">Seleccionar Carrera</h3>
+                <button onclick="cerrarSelectorCarrera()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-4 border-b border-slate-100">
+                <input type="text" id="selector-carrera-buscar" placeholder="Buscar carrera..." oninput="filtrarCarreras()"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-400 transition">
+            </div>
+            <div id="selector-carrera-lista" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                <button type="button" class="selector-carrera-item px-4 py-3 rounded-xl text-left text-sm font-semibold border-2 transition hover:bg-indigo-50 hover:border-indigo-300 border-slate-200 text-slate-600" data-value="">Todas las carreras</button>
+                @foreach($carreras as $carrera)
+                    <button type="button" class="selector-carrera-item px-4 py-3 rounded-xl text-left text-sm font-semibold border-2 transition hover:bg-indigo-50 hover:border-indigo-300 border-slate-200 text-slate-600" data-value="{{ $carrera }}">{{ $carrera }}</button>
+                @endforeach
+            </div>
+        </div>
+    </div>
 @stop
 
 @push('js')
@@ -243,24 +261,51 @@
         $('[data-toggle="popover"]').popover({ trigger: 'hover focus' });
     });
 
-    function initChipSelector(containerId, hiddenInputId) {
-        const container = document.getElementById(containerId);
-        const hidden = document.getElementById(hiddenInputId);
-        if (!container || !hidden) return;
-        container.querySelectorAll('.chip-option').forEach(chip => {
-            chip.addEventListener('click', function () {
-                container.querySelectorAll('.chip-option').forEach(c => {
-                    c.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                    c.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                });
-                this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                this.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                hidden.value = this.dataset.value;
-            });
+    // ─── SELECTOR GRANDE DE CARRERAS ───
+    let selectorCarreraHiddenId = null;
+    let selectorCarreraTriggerId = null;
+
+    function abrirSelectorCarrera(hiddenId, triggerId) {
+        selectorCarreraHiddenId = hiddenId;
+        selectorCarreraTriggerId = triggerId;
+        const modal = document.getElementById('modal-selector-carrera');
+        modal.classList.remove('hidden');
+        document.getElementById('selector-carrera-buscar').value = '';
+        document.querySelectorAll('.selector-carrera-item').forEach(item => {
+            item.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+            item.classList.add('border-slate-200', 'text-slate-600');
+            if (item.dataset.value === document.getElementById(hiddenId).value) {
+                item.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                item.classList.remove('border-slate-200', 'text-slate-600');
+            }
+            item.style.display = '';
         });
     }
 
-    initChipSelector('edit-carrera-chips', 'edit-carrera');
+    function cerrarSelectorCarrera() {
+        document.getElementById('modal-selector-carrera').classList.add('hidden');
+    }
+
+    function filtrarCarreras() {
+        const q = document.getElementById('selector-carrera-buscar').value.toLowerCase();
+        document.querySelectorAll('.selector-carrera-item').forEach(item => {
+            item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    }
+
+    document.addEventListener('click', function (e) {
+        const item = e.target.closest('.selector-carrera-item');
+        if (item) {
+            const hidden = document.getElementById(selectorCarreraHiddenId);
+            const trigger = document.getElementById(selectorCarreraTriggerId);
+            hidden.value = item.dataset.value;
+            const texto = trigger.querySelector('span');
+            texto.textContent = item.dataset.value || 'Todas las carreras';
+            cerrarSelectorCarrera();
+        }
+        const modal = document.getElementById('modal-selector-carrera');
+        if (e.target === modal) cerrarSelectorCarrera();
+    });
 
     const modalEditar = document.getElementById('modal-editar-oferta');
 
@@ -273,14 +318,7 @@
                 document.getElementById('edit-descripcion').value = data.descripcion;
                 document.getElementById('edit-modalidad').value = data.modalidad;
                 document.getElementById('edit-carrera').value = data.carrera || '';
-                document.querySelectorAll('#edit-carrera-chips .chip-option').forEach(chip => {
-                    chip.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                    chip.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                    if (chip.dataset.value === (data.carrera || '')) {
-                        chip.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                        chip.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                    }
-                });
+                document.getElementById('edit-carrera-texto').textContent = data.carrera || 'Todas las carreras';
                 document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
                 document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
                 document.getElementById('edit-fecha_fin').value = data.fecha_fin;

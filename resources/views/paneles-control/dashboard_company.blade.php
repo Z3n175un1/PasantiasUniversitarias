@@ -7,16 +7,9 @@
     <link rel="icon" href="{{ asset('empresa.ico') }}">
     @vite('resources/css/app.css')
     <style>
-        .chip-option, .chip-skill { cursor: pointer; user-select: none; transition: all 0.15s ease; }
-        .chip-option { background: white; color: #334155; border-color: #e2e8f0; }
-        .chip-option.selected, .chip-skill.selected { background: #4f46e5 !important; color: white !important; border-color: #4f46e5 !important; }
-        .chip-option:not(.selected):hover { background: #eef2ff; border-color: #a5b4fc; }
-        .chip-skill { background: white; color: #334155; border-color: #e2e8f0; }
-        .chip-skill:not(.selected):hover { background: #eef2ff; border-color: #a5b4fc; }
-        #crear-carrera-chips::-webkit-scrollbar, #edit-carrera-chips::-webkit-scrollbar, .chip-skill-container::-webkit-scrollbar { height: 6px; }
-        #crear-carrera-chips::-webkit-scrollbar-track, #edit-carrera-chips::-webkit-scrollbar-track, .chip-skill-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 3px; }
-        #crear-carrera-chips::-webkit-scrollbar-thumb, #edit-carrera-chips::-webkit-scrollbar-thumb, .chip-skill-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        #crear-carrera-chips::-webkit-scrollbar-thumb:hover, #edit-carrera-chips::-webkit-scrollbar-thumb:hover, .chip-skill-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .selector-carrera-item:hover, .selector-habilidad-item:hover { border-color: #818cf8 !important; }
+        #selector-carrera-lista::-webkit-scrollbar, #selector-habilidad-lista::-webkit-scrollbar { width: 6px; }
+        #selector-carrera-lista::-webkit-scrollbar-thumb, #selector-habilidad-lista::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -419,12 +412,12 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <input type="hidden" name="carrera" id="crear-carrera" value="">
-                        <div id="crear-carrera-chips" class="flex gap-2 overflow-x-auto p-3 bg-slate-50 border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
-                            <button type="button" class="chip-option selected shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="">Todas las carreras</button>
-                            @foreach($carreras as $carrera)
-                                <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
-                            @endforeach
-                        </div>
+                        <button type="button" onclick="abrirSelectorCarrera('crear-carrera', 'crear-carrera-trigger')"
+                            id="crear-carrera-trigger"
+                            class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-left text-sm font-semibold text-slate-500 hover:border-indigo-400 transition flex items-center justify-between gap-2">
+                            <span id="crear-carrera-texto">Todas las carreras</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -546,12 +539,12 @@
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera afín</label>
                         <input type="hidden" name="carrera" id="edit-carrera" value="">
-                        <div id="edit-carrera-chips" class="flex gap-2 overflow-x-auto p-3 bg-slate-50 border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
-                            <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="">Todas las carreras</button>
-                            @foreach($carreras as $carrera)
-                                <button type="button" class="chip-option shrink-0 px-4 py-2 rounded-lg text-xs font-bold border-2 transition whitespace-nowrap" data-value="{{ $carrera }}">{{ $carrera }}</button>
-                            @endforeach
-                        </div>
+                        <button type="button" onclick="abrirSelectorCarrera('edit-carrera', 'edit-carrera-trigger')"
+                            id="edit-carrera-trigger"
+                            class="w-full px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl text-left text-sm font-semibold text-slate-500 hover:border-indigo-400 transition flex items-center justify-between gap-2">
+                            <span id="edit-carrera-texto">Todas las carreras</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -714,12 +707,51 @@
 
     @include('componentes.footer')
 
+    {{-- Modal selector grande de habilidades (compartido para todas las filas) --}}
+    <div id="modal-selector-habilidad" class="fixed inset-0 bg-[#0d121f]/50 backdrop-blur-sm z-[60] flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-3xl mx-4 rounded-2xl shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                <h3 class="text-lg font-black text-slate-900">Seleccionar Habilidad</h3>
+                <button onclick="cerrarSelectorHabilidad()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-4 border-b border-slate-100">
+                <input type="text" id="selector-habilidad-buscar" placeholder="Buscar habilidad..." oninput="filtrarHabilidades()"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-400 transition">
+            </div>
+            <div id="selector-habilidad-lista" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                @foreach($habilidades as $hab)
+                    <button type="button" class="selector-habilidad-item px-4 py-3 rounded-xl text-left text-sm font-semibold border-2 transition hover:bg-indigo-50 hover:border-indigo-300 border-slate-200 text-slate-600" data-value="{{ $hab->id }}">{{ $hab->nombre }}</button>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal selector grande de carreras --}}
+    <div id="modal-selector-carrera" class="fixed inset-0 bg-[#0d121f]/50 backdrop-blur-sm z-[60] flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-3xl mx-4 rounded-2xl shadow-2xl border border-slate-100 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                <h3 class="text-lg font-black text-slate-900">Seleccionar Carrera</h3>
+                <button onclick="cerrarSelectorCarrera()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-4 border-b border-slate-100">
+                <input type="text" id="selector-carrera-buscar" placeholder="Buscar carrera..." oninput="filtrarCarreras()"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-400 transition">
+            </div>
+            <div id="selector-carrera-lista" class="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                <button type="button" class="selector-carrera-item px-4 py-3 rounded-xl text-left text-sm font-semibold border-2 transition hover:bg-indigo-50 hover:border-indigo-300 border-slate-200 text-slate-600" data-value="">Todas las carreras</button>
+                @foreach($carreras as $carrera)
+                    <button type="button" class="selector-carrera-item px-4 py-3 rounded-xl text-left text-sm font-semibold border-2 transition hover:bg-indigo-50 hover:border-indigo-300 border-slate-200 text-slate-600" data-value="{{ $carrera }}">{{ $carrera }}</button>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     <script>
         lucide.createIcons();
-
-        // Initialiser chip selectors
-        initChipSelector('crear-carrera-chips', 'crear-carrera');
-        initChipSelector('edit-carrera-chips', 'edit-carrera');
 
         const tabsMap = {
             'inicio': document.getElementById('inicio'),
@@ -773,14 +805,7 @@
                     document.getElementById('edit-descripcion').value = data.descripcion;
                     document.getElementById('edit-modalidad').value = data.modalidad || 'Presencial';
                     document.getElementById('edit-carrera').value = data.carrera || '';
-                    document.querySelectorAll('#edit-carrera-chips .chip-option').forEach(chip => {
-                        chip.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                        chip.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                        if (chip.dataset.value === (data.carrera || '')) {
-                            chip.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                            chip.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                        }
-                    });
+                    document.getElementById('edit-carrera-texto').textContent = data.carrera || 'Todas las carreras';
                     document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
                     document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
                     document.getElementById('edit-fecha_fin').value = data.fecha_fin;
@@ -808,40 +833,101 @@
             limpiarErrores('edit');
         }
 
-        // ─── CHIP SELECTOR (horizontal scroll) ───
-        function initChipSelector(containerId, hiddenInputId) {
-            const container = document.getElementById(containerId);
-            const hidden = document.getElementById(hiddenInputId);
-            if (!container || !hidden) return;
+        // ─── SELECTOR GRANDE DE CARRERAS ───
+        let selectorCarreraHiddenId = null;
+        let selectorCarreraTriggerId = null;
 
-            container.querySelectorAll('.chip-option').forEach(chip => {
-                chip.addEventListener('click', function () {
-                    container.querySelectorAll('.chip-option').forEach(c => {
-                        c.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                        c.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                    });
-                    this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                    this.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                    hidden.value = this.dataset.value;
-                });
+        function abrirSelectorCarrera(hiddenId, triggerId) {
+            selectorCarreraHiddenId = hiddenId;
+            selectorCarreraTriggerId = triggerId;
+            const modal = document.getElementById('modal-selector-carrera');
+            modal.classList.remove('hidden');
+            document.getElementById('selector-carrera-buscar').value = '';
+            document.querySelectorAll('.selector-carrera-item').forEach(item => {
+                item.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                item.classList.add('border-slate-200', 'text-slate-600');
+                if (item.dataset.value === document.getElementById(hiddenId).value) {
+                    item.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    item.classList.remove('border-slate-200', 'text-slate-600');
+                }
+                item.style.display = '';
             });
         }
 
-        function initSkillChipSelector(containerEl, hiddenInputName, selectedId) {
-            const chips = containerEl.querySelectorAll('.chip-skill');
-            const hidden = containerEl.querySelector('input[type="hidden"]');
-            chips.forEach(chip => {
-                chip.addEventListener('click', function () {
-                    chips.forEach(c => {
-                        c.classList.remove('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                        c.classList.add('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                    });
-                    this.classList.remove('bg-white', 'text-slate-700', 'border-slate-200', 'hover:bg-slate-50');
-                    this.classList.add('selected', 'bg-indigo-600', 'text-white', 'border-indigo-600');
-                    hidden.value = this.dataset.value;
-                });
+        function cerrarSelectorCarrera() {
+            document.getElementById('modal-selector-carrera').classList.add('hidden');
+        }
+
+        function filtrarCarreras() {
+            const q = document.getElementById('selector-carrera-buscar').value.toLowerCase();
+            document.querySelectorAll('.selector-carrera-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
             });
         }
+
+        document.addEventListener('click', function (e) {
+            const item = e.target.closest('.selector-carrera-item');
+            if (item) {
+                const hidden = document.getElementById(selectorCarreraHiddenId);
+                const trigger = document.getElementById(selectorCarreraTriggerId);
+                hidden.value = item.dataset.value;
+                const texto = trigger.querySelector('span');
+                texto.textContent = item.dataset.value || 'Todas las carreras';
+                cerrarSelectorCarrera();
+            }
+            const modal = document.getElementById('modal-selector-carrera');
+            if (e.target === modal) cerrarSelectorCarrera();
+        });
+
+        // ─── SELECTOR GRANDE DE HABILIDADES ───
+        function abrirSelectorHabilidad(btn) {
+            const container = btn.closest('.fila-habilidad');
+            const hidden = container.querySelector('input[type="hidden"][name*="[habilidad_id]"]');
+            const modal = document.getElementById('modal-selector-habilidad');
+            modal._targetHidden = hidden;
+            modal._targetBtn = btn;
+            modal.classList.remove('hidden');
+            document.getElementById('selector-habilidad-buscar').value = '';
+            document.querySelectorAll('.selector-habilidad-item').forEach(item => {
+                item.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                item.classList.add('border-slate-200', 'text-slate-600');
+                if (item.dataset.value === (hidden ? hidden.value : '')) {
+                    item.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+                    item.classList.remove('border-slate-200', 'text-slate-600');
+                }
+                item.style.display = '';
+            });
+        }
+
+        function cerrarSelectorHabilidad() {
+            document.getElementById('modal-selector-habilidad').classList.add('hidden');
+        }
+
+        function filtrarHabilidades() {
+            const q = document.getElementById('selector-habilidad-buscar').value.toLowerCase();
+            document.querySelectorAll('.selector-habilidad-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+
+        document.addEventListener('click', function (e) {
+            const item = e.target.closest('.selector-habilidad-item');
+            if (item) {
+                const modal = document.getElementById('modal-selector-habilidad');
+                const hidden = modal._targetHidden;
+                const btn = modal._targetBtn;
+                if (hidden) hidden.value = item.dataset.value;
+                if (btn) {
+                    const texto = btn.querySelector('.skill-texto');
+                    if (texto) texto.textContent = item.textContent;
+                    btn.classList.remove('text-slate-500');
+                    btn.classList.add('text-slate-800');
+                }
+                cerrarSelectorHabilidad();
+            }
+            const modal = document.getElementById('modal-selector-habilidad');
+            if (e.target === modal) cerrarSelectorHabilidad();
+        });
 
         // ─── HABILIDADES DINÁMICAS (TOPSIS) ───
         const habilidadesData = @json($habilidades);
@@ -856,19 +942,17 @@
             div.className = 'fila-habilidad bg-slate-50 rounded-xl p-3 mb-2 border border-slate-200';
             div.dataset.index = index;
 
-            let skillChips = '';
-            habilidadesData.forEach(h => {
-                const selected = (data && data.habilidad_id == h.id);
-                skillChips += `<button type="button" class="chip-skill shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold border transition whitespace-nowrap ${selected ? 'selected bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}" data-value="${h.id}">${h.nombre}</button>`;
-            });
+            const skillNombre = data ? (habilidadesData.find(h => h.id == data.habilidad_id)?.nombre || 'Seleccionar habilidad') : 'Seleccionar habilidad';
 
             div.innerHTML = `
                 <div class="space-y-2">
                     <label class="text-[10px] font-extrabold text-slate-400 uppercase">Habilidad</label>
-                    <div class="chip-skill-container flex gap-2 overflow-x-auto p-3 bg-white border-2 border-slate-200 rounded-xl" style="scrollbar-width: thin;">
-                        <input type="hidden" name="habilidades[${index}][habilidad_id]" value="${data ? data.habilidad_id : ''}">
-                        ${skillChips}
-                    </div>
+                    <input type="hidden" name="habilidades[${index}][habilidad_id]" value="${data ? data.habilidad_id : ''}">
+                    <button type="button" onclick="abrirSelectorHabilidad(this)"
+                        class="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-left text-sm font-semibold ${data ? 'text-slate-800' : 'text-slate-500'} hover:border-indigo-400 transition flex items-center justify-between gap-2">
+                        <span class="skill-texto">${skillNombre}</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                    </button>
                     <div class="flex items-start gap-2">
                         <div class="w-28 space-y-1.5">
                             <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nivel Min</label>
