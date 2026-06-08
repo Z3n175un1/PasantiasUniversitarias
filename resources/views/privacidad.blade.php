@@ -202,7 +202,7 @@
     </style>
 </head>
 
-<body class="bg-[#fcfcfc] text-[#1a1a1a]">
+<body class="bg-[#fcfcfc] text-[#1a1a1a] w-full h-screen">
 
     @include('components.navbar')
 
