@@ -25,7 +25,11 @@ Route::get('/', function () {
 })->name('index');
 
 Route::get('/explora', function () {
-    $ofertas = OfertaPasantia::with(['ubicacion', 'perfilEmpresa'])->get();
+    $ofertas = OfertaPasantia::whereHas('estadoPublicacion', function ($q) {
+            $q->where('nombre', 'abierta');
+        })
+        ->with(['ubicacion', 'perfilEmpresa'])
+        ->get();
     $ubicaciones = \App\Models\Ubicacion::orderBy('ciudad')->get();
     $carreras = \App\Models\OfertaPasantia::whereNotNull('carrera')
         ->distinct()->orderBy('carrera')->pluck('carrera');

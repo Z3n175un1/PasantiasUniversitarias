@@ -385,7 +385,7 @@
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Estado</label>
                         <select name="estado_publicacion_id" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
                             @foreach(\App\Models\EstadoPublicacion::all() as $estado)
-                                <option value="{{ $estado->id }}">{{ ucfirst($estado->nombre) }}</option>
+                                <option value="{{ $estado->id }}" {{ $estado->nombre == 'abierta' ? 'selected' : '' }}>{{ ucfirst($estado->nombre) }}</option>
                             @endforeach
                         </select>
                     </div>
