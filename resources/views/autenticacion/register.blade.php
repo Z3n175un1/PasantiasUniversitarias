@@ -210,16 +210,16 @@
                             {{-- Password requirements --}}
                             <div class="mt-2 space-y-1">
                                 <p class="req-item text-xs text-gray-400 flex items-center gap-1.5" id="req-length">
-                                    <i data-lucide="circle" class="w-2.5 h-2.5"></i> Mínimo 8 caracteres
+                                    <span id="ico-length" data-lucide="circle" class="w-2.5 h-2.5"></span> Mínimo 8 caracteres
                                 </p>
                                 <p class="req-item text-xs text-gray-400 flex items-center gap-1.5" id="req-upper">
-                                    <i data-lucide="circle" class="w-2.5 h-2.5"></i> Una mayúscula
+                                    <span id="ico-upper" data-lucide="circle" class="w-2.5 h-2.5"></span> Una mayúscula
                                 </p>
                                 <p class="req-item text-xs text-gray-400 flex items-center gap-1.5" id="req-lower">
-                                    <i data-lucide="circle" class="w-2.5 h-2.5"></i> Una minúscula
+                                    <span id="ico-lower" data-lucide="circle" class="w-2.5 h-2.5"></span> Una minúscula
                                 </p>
                                 <p class="req-item text-xs text-gray-400 flex items-center gap-1.5" id="req-number">
-                                    <i data-lucide="circle" class="w-2.5 h-2.5"></i> Un número
+                                    <span id="ico-number" data-lucide="circle" class="w-2.5 h-2.5"></span> Un número
                                 </p>
                             </div>
                         </div>
@@ -329,61 +329,65 @@
     </div>
 
     <script>
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+
+            // Password strength
+            const passInput = document.getElementById('pass');
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
+
+            if (!passInput || !strengthBar || !strengthText) return;
+
+            passInput.addEventListener('input', function() {
+                const val = this.value;
+                let score = 0;
+
+                if (val.length >= 8) score++;
+                if (/[A-Z]/.test(val)) score++;
+                if (/[a-z]/.test(val)) score++;
+                if (/[0-9]/.test(val)) score++;
+
+                const colors = ['#e5e7eb', '#ef4444', '#f97316', '#eab308', '#10b981'];
+                const labels = ['', 'Débil', 'Regular', 'Buena', 'Fuerte'];
+                const textColors = ['', '#ef4444', '#f97316', '#eab308', '#10b981'];
+
+                strengthBar.style.width = (score / 4 * 100) + '%';
+                strengthBar.style.background = colors[score];
+                strengthText.textContent = score > 0 ? labels[score] : '';
+                strengthText.style.color = textColors[score];
+
+                const checks = [
+                    { id: 'req-length', ico: 'ico-length', ok: val.length >= 8 },
+                    { id: 'req-upper',   ico: 'ico-upper',   ok: /[A-Z]/.test(val) },
+                    { id: 'req-lower',   ico: 'ico-lower',   ok: /[a-z]/.test(val) },
+                    { id: 'req-number',  ico: 'ico-number',  ok: /[0-9]/.test(val) },
+                ];
+                checks.forEach(c => {
+                    const el = document.getElementById(c.id);
+                    const ico = document.getElementById(c.ico);
+                    if (c.ok) {
+                        el.classList.remove('text-gray-400');
+                        el.classList.add('text-green-600');
+                        ico.setAttribute('data-lucide', 'check-circle-2');
+                    } else {
+                        el.classList.remove('text-green-600');
+                        el.classList.add('text-gray-400');
+                        ico.setAttribute('data-lucide', 'circle');
+                    }
+                });
+                lucide.createIcons();
+            });
+        });
 
         function togglePassword(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
+            if (!input || !icon) return;
             input.type = input.type === 'password' ? 'text' : 'password';
             icon.setAttribute('data-lucide', input.type === 'password' ? 'eye' : 'eye-off');
             lucide.createIcons();
         }
-
-        // Password strength
-        const passInput = document.getElementById('pass');
-        const strengthBar = document.getElementById('strength-bar');
-        const strengthText = document.getElementById('strength-text');
-
-        passInput?.addEventListener('input', function() {
-            const val = this.value;
-            let score = 0;
-
-            if (val.length >= 8) score++;
-            if (/[A-Z]/.test(val)) score++;
-            if (/[a-z]/.test(val)) score++;
-            if (/[0-9]/.test(val)) score++;
-
-            const colors = ['#e5e7eb', '#ef4444', '#f97316', '#eab308', '#10b981'];
-            const labels = ['', 'Débil', 'Regular', 'Buena', 'Fuerte'];
-            const textColors = ['', '#ef4444', '#f97316', '#eab308', '#10b981'];
-
-            strengthBar.style.width = (score / 4 * 100) + '%';
-            strengthBar.style.background = colors[score];
-            strengthText.textContent = score > 0 ? labels[score] : '';
-            strengthText.style.color = textColors[score];
-
-            // Update requirements
-            const checks = [
-                { id: 'req-length', ok: val.length >= 8 },
-                { id: 'req-upper', ok: /[A-Z]/.test(val) },
-                { id: 'req-lower', ok: /[a-z]/.test(val) },
-                { id: 'req-number', ok: /[0-9]/.test(val) },
-            ];
-            checks.forEach(c => {
-                const el = document.getElementById(c.id);
-                const icon = el.querySelector('i');
-                if (c.ok) {
-                    el.classList.remove('text-gray-400');
-                    el.classList.add('text-green-600');
-                    icon.setAttribute('data-lucide', 'check-circle-2');
-                } else {
-                    el.classList.remove('text-green-600');
-                    el.classList.add('text-gray-400');
-                    icon.setAttribute('data-lucide', 'circle');
-                }
-            });
-            lucide.createIcons();
-        });
     </script>
     @stack('scripts')
 </body>
