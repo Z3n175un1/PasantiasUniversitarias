@@ -122,6 +122,31 @@ Route::post('/logout', function () {
     return redirect('/')->with('success', 'Has cerrado sesión correctamente.');
 })->name('logout');
 
+// ── Olvidé Contraseña ─────────────────────────────────────────────────────────
+
+Route::get('/olvide-password', function () {
+    return view('autenticacion.olvide-password');
+})->name('password.olvide');
+
+Route::post('/olvide-password', function (Request $request) {
+    $request->validate(['correo' => 'required|email']);
+
+    $usuario = Usuario::where('correo', $request->correo)->first();
+
+    if ($usuario) {
+        RegistroAuditoria::create([
+            'usuario_id' => $usuario->id,
+            'tipo_entidad_id' => 6,
+            'entidad_id' => $usuario->id,
+            'accion' => 'Solicitud de restablecimiento de contraseña',
+            'valor_nuevo' => ['correo' => $request->correo],
+            'creado_en' => now(),
+        ]);
+    }
+
+    return back()->with('success', 'Si el correo existe en nuestro sistema, recibirás instrucciones para restablecer tu contraseña.');
+})->name('password.olvide.enviar');
+
 // ── Registro ──────────────────────────────────────────────────────────────────
 
 Route::get('/seleccion', function () {
