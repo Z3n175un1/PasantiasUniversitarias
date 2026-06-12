@@ -89,7 +89,7 @@
                                 <label class="text-xs font-bold text-gray-700 ml-1">Nombres Completos</label>
                                 <input type="text" name="full_name" value="{{ old('full_name') }}" required
                                     class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium @error('full_name') error-input @enderror"
-                                    placeholder="Ej. Ana María">
+                                    placeholder="Ej. Ana María" pattern="[A-Za-zÁáÉéÍíÓóÚúÜüÑñ\s]+" title="Solo letras y espacios">
                                 @error('full_name') <p class="text-red-500 text-xs font-bold ml-1 mt-1">{{ $message }}</p> @enderror
                             </div>
                             <div class="grid grid-cols-2 gap-3">
@@ -97,14 +97,14 @@
                                     <label class="text-xs font-bold text-gray-700 ml-1">Apellido Paterno</label>
                                     <input type="text" name="paternal_surname" value="{{ old('paternal_surname') }}" required
                                         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium @error('paternal_surname') error-input @enderror"
-                                        placeholder="López">
+                                        placeholder="López" pattern="[A-Za-zÁáÉéÍíÓóÚúÜüÑñ\s]+" title="Solo letras y espacios">
                                     @error('paternal_surname') <p class="text-red-500 text-xs font-bold ml-1 mt-1">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="text-xs font-bold text-gray-700 ml-1">Apellido Materno</label>
                                     <input type="text" name="maternal_surname" value="{{ old('maternal_surname') }}"
                                         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium @error('maternal_surname') error-input @enderror"
-                                        placeholder="Pinto">
+                                        placeholder="Pinto" pattern="[A-Za-zÁáÉéÍíÓóÚúÜüÑñ\s]+" title="Solo letras y espacios">
                                     @error('maternal_surname') <p class="text-red-500 text-xs font-bold ml-1 mt-1">{{ $message }}</p> @enderror
                                 </div>
                             </div>
@@ -112,8 +112,9 @@
                                 <div>
                                     <label class="text-xs font-bold text-gray-700 ml-1">Celular (8 dígitos)</label>
                                     <input type="tel" name="phone" value="{{ old('phone') }}" required
-                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium"
-                                        placeholder="76543210" maxlength="8">
+                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium @error('phone') error-input @enderror"
+                                        placeholder="76543210" maxlength="8" pattern="[0-9]{8}" title="Debe tener 8 dígitos">
+                                    @error('phone') <p class="text-red-500 text-xs font-bold ml-1 mt-1">{{ $message }}</p> @enderror
                                 </div>
                                 <div>
                                     <label class="text-xs font-bold text-gray-700 ml-1">Carrera</label>
@@ -143,8 +144,9 @@
                                 <div>
                                     <label class="text-xs font-bold text-gray-700 ml-1">Celular (8 dígitos)</label>
                                     <input type="tel" name="phone" value="{{ old('phone') }}" required
-                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium"
-                                        placeholder="70001234" maxlength="8">
+                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium @error('phone') error-input @enderror"
+                                        placeholder="70001234" maxlength="8" pattern="[0-9]{8}" title="Debe tener 8 dígitos">
+                                    @error('phone') <p class="text-red-500 text-xs font-bold ml-1 mt-1">{{ $message }}</p> @enderror
                                 </div>
                             </div>
                             <div class="pt-3 border-t border-gray-100">
@@ -154,19 +156,19 @@
                                         <label class="text-xs font-bold text-gray-700 ml-1">Nombres</label>
                                         <input type="text" name="hr_name" value="{{ old('hr_name') }}" required
                                             class="w-full px-3 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium"
-                                            placeholder="Juan">
+                                            placeholder="Juan" pattern="[A-Za-zÁáÉéÍíÓóÚúÜüÑñ\s]+" title="Solo letras y espacios">
                                     </div>
                                     <div>
                                         <label class="text-xs font-bold text-gray-700 ml-1">A. Paterno</label>
                                         <input type="text" name="hr_paternal" value="{{ old('hr_paternal') }}" required
                                             class="w-full px-3 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium"
-                                            placeholder="Pérez">
+                                            placeholder="Pérez" pattern="[A-Za-zÁáÉéÍíÓóÚúÜüÑñ\s]+" title="Solo letras y espacios">
                                     </div>
                                     <div>
                                         <label class="text-xs font-bold text-gray-700 ml-1">A. Materno</label>
                                         <input type="text" name="hr_maternal" value="{{ old('hr_maternal') }}"
                                             class="w-full px-3 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium"
-                                            placeholder="Quispe">
+                                            placeholder="Quispe" pattern="[A-Za-zÁáÉéÍíÓóÚúÜüÑñ\s]*" title="Solo letras y espacios">
                                     </div>
                                 </div>
                             </div>

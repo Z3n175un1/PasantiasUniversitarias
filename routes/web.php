@@ -165,6 +165,7 @@ Route::post('/register', function (Request $request) {
         'email' => 'required|email|unique:usuarios,correo',
         'password' => 'required|min:8|confirmed',
         'role' => 'required|in:student,company',
+        'phone' => 'required|digits:8',
     ];
 
     if ($request->role === 'student') {
@@ -186,6 +187,13 @@ Route::post('/register', function (Request $request) {
 
     $request->validate($rules, [
         'email.unique' => '¡Ups! Parece que ya registraste esta cuenta. Intenta iniciar sesión.',
+        'full_name.regex' => 'El nombre solo puede contener letras y espacios.',
+        'paternal_surname.regex' => 'El apellido paterno solo puede contener letras y espacios.',
+        'maternal_surname.regex' => 'El apellido materno solo puede contener letras y espacios.',
+        'hr_name.regex' => 'El nombre solo puede contener letras y espacios.',
+        'hr_paternal.regex' => 'El apellido paterno solo puede contener letras y espacios.',
+        'hr_maternal.regex' => 'El apellido materno solo puede contener letras y espacios.',
+        'phone.digits' => 'El celular debe tener exactamente 8 dígitos.',
     ]);
 
     $rolId = $request->role === 'student' ? 1 : 2;
