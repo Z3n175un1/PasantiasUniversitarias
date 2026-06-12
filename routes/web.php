@@ -297,6 +297,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
 
     // Estadísticas
     Route::get('/estadisticas', [AdminController::class, 'estadisticas'])->name('estadisticas');
+
+    // Respaldos
+    Route::get('/respaldos', [AdminController::class, 'respaldos'])->name('respaldos');
+    Route::post('/respaldos/generar', [AdminController::class, 'generarRespaldo'])->name('respaldos.generar');
+    Route::get('/respaldos/descargar/{archivo}', [AdminController::class, 'descargarRespaldo'])->name('respaldos.descargar');
+
+    // Exportar reportes
+    Route::get('/reportes/exportar/{formato}', [AdminController::class, 'exportarReportes'])->name('reportes.exportar');
+    Route::get('/logs/exportar/{formato}', [LogController::class, 'exportar'])->name('logs.exportar');
 });
 
 // ── Documentos ────────────────────────────────────────────────────────────────

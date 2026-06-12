@@ -12,7 +12,10 @@
         <h1 class="font-weight-bold mb-0">
             <i class="fas fa-history mr-2"></i>Logs del Sistema
         </h1>
-        <div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ route('admin.logs.exportar', 'csv') }}?{{ http_build_query(request()->except('page')) }}" class="btn btn-sm btn-success mr-2">
+                <i class="fas fa-download mr-1"></i>Exportar CSV
+            </a>
             <span class="badge badge-danger px-3 py-2">
                 <i class="fas fa-lock mr-1"></i>Acceso restringido
             </span>

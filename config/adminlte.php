@@ -14,9 +14,9 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'UWorkFlow - Admin',
     'title_prefix' => '',
-    'title_postfix' => '',
+    'title_postfix' => ' | Admin',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
+    'logo' => '<b>UWork</b>Flow',
+    'logo_img' => null,
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo_img_alt' => 'UWorkFlow Logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -86,8 +86,8 @@ return [
     'auth_logo' => [
         'enabled' => false,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'Auth Logo',
+            'path' => null,
+            'alt' => 'UWorkFlow',
             'class' => '',
             'width' => 50,
             'height' => 50,
@@ -374,14 +374,13 @@ return [
             'active' => ['admin/logs*'],
         ],
 
-        ['header' => 'NAVEGACIÓN'],
-
         [
-            'text' => 'Volver al Sitio',
-            'icon' => 'fas fa-fw fa-arrow-left',
-            'url' => '/',
-            'target' => '_blank',
+            'text' => 'Respaldos',
+            'icon' => 'fas fa-fw fa-database',
+            'route' => 'admin.respaldos',
+            'active' => ['admin/respaldos*'],
         ],
+
     ],
 
     /*

@@ -512,4 +512,165 @@ class AdminController extends Controller
             'distribucion_roles', 'ofertas_por_mes'
         ));
     }
+
+    // ── Respaldos ───────────────────────────────────────────────────────────────
+
+    public function respaldos()
+    {
+        $backupPath = storage_path('app/backups');
+        $backups = [];
+        if (is_dir($backupPath)) {
+            $files = \File::files($backupPath);
+            $backups = array_map(function ($file) {
+                return [
+                    'name' => $file->getFilename(),
+                    'size' => $file->getSize(),
+                    'date' => date('d/m/Y H:i', $file->getMTime()),
+                ];
+            }, $files);
+            rsort($backups);
+        }
+
+        $dbSize = 0;
+        try {
+            $dbSize = \DB::select("SELECT pg_database_size(current_database()) as size")[0]->size ?? 0;
+        } catch (\Exception $e) {
+            $dbSize = 0;
+        }
+
+        return view('admin.respaldos', compact('backups', 'dbSize'));
+    }
+
+    public function generarRespaldo(Request $request)
+    {
+        $dbName = env('DB_DATABASE', 'pasantias_db');
+        $dbUser = env('DB_USERNAME', 'postgres');
+        $dbPass = env('DB_PASSWORD', '');
+        $dbHost = env('DB_HOST', '127.0.0.1');
+        $dbPort = env('DB_PORT', '5432');
+
+        $backupDir = storage_path('app/backups');
+        if (!is_dir($backupDir)) {
+            mkdir($backupDir, 0755, true);
+        }
+
+        $filename = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
+        $filepath = $backupDir . '/' . $filename;
+
+        $command = sprintf(
+            'pg_dump --host=%s --port=%s --username=%s --dbname=%s --no-password --file=%s 2>&1',
+            escapeshellarg($dbHost),
+            escapeshellarg($dbPort),
+            escapeshellarg($dbUser),
+            escapeshellarg($dbName),
+            escapeshellarg($filepath)
+        );
+
+        putenv("PGPASSWORD={$dbPass}");
+        $output = null;
+        $returnCode = null;
+        exec($command, $output, $returnCode);
+        putenv('PGPASSWORD');
+
+        if ($returnCode === 0 && file_exists($filepath)) {
+            RegistroAuditoria::create([
+                'usuario_id' => Auth::id(),
+                'tipo_entidad_id' => 6,
+                'entidad_id' => 0,
+                'accion' => 'Respaldo de base de datos generado',
+                'valor_nuevo' => ['archivo' => $filename, 'tamano' => filesize($filepath)],
+                'creado_en' => now(),
+            ]);
+
+            return redirect()->route('admin.respaldos')->with('success', 'Respaldo generado correctamente: ' . $filename);
+        }
+
+        return redirect()->route('admin.respaldos')->with('error', 'Error al generar el respaldo: ' . implode("\n", $output));
+    }
+
+    public function descargarRespaldo($archivo)
+    {
+        $backupDir = storage_path('app/backups');
+        $filepath = $backupDir . '/' . basename($archivo);
+
+        if (!file_exists($filepath)) {
+            return back()->with('error', 'El archivo de respaldo no existe.');
+        }
+
+        return response()->download($filepath, basename($archivo));
+    }
+
+    // ── Exportar Reportes ───────────────────────────────────────────────────────
+
+    public function exportarReportes($formato, Request $request)
+    {
+        $tipo = $request->query('tipo', 'usuarios');
+        $fecha_desde = $request->query('fecha_desde');
+        $fecha_hasta = $request->query('fecha_hasta');
+
+        $query = Usuario::query();
+        $headers = ['ID', 'Nombre', 'Correo', 'Rol', 'Activo', 'Fecha Registro'];
+        $rows = [];
+
+        switch ($tipo) {
+            case 'usuarios':
+                $query = Usuario::with('rol');
+                if ($fecha_desde) $query->whereDate('creado_en', '>=', $fecha_desde);
+                if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
+                $items = $query->orderBy('id', 'desc')->get();
+                foreach ($items as $item) {
+                    $rows[] = [
+                        $item->id,
+                        $item->nombre . ' ' . $item->ap_paterno,
+                        $item->correo,
+                        $item->rol->nombre ?? 'N/A',
+                        $item->activo ? 'Sí' : 'No',
+                        $item->creado_en ? \Carbon\Carbon::parse($item->creado_en)->format('d/m/Y') : 'N/A',
+                    ];
+                }
+                $filename = 'reporte_usuarios';
+                break;
+
+            case 'ofertas':
+                $query = OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion']);
+                if ($fecha_desde) $query->whereDate('fecha_inicio', '>=', $fecha_desde);
+                if ($fecha_hasta) $query->whereDate('fecha_inicio', '<=', $fecha_hasta);
+                $items = $query->orderBy('id', 'desc')->get();
+                $headers = ['ID', 'Título', 'Empresa', 'Ubicación', 'Estado', 'Fecha Inicio'];
+                foreach ($items as $item) {
+                    $rows[] = [
+                        $item->id,
+                        $item->titulo,
+                        $item->perfilEmpresa->nombre_empresa ?? 'N/A',
+                        $item->ubicacion->ciudad ?? 'Remoto',
+                        $item->estadoPublicacion->nombre ?? 'N/A',
+                        $item->fecha_inicio ? \Carbon\Carbon::parse($item->fecha_inicio)->format('d/m/Y') : 'N/A',
+                    ];
+                }
+                $filename = 'reporte_ofertas';
+                break;
+
+            default:
+                return back()->with('error', 'Tipo de reporte no válido para exportación.');
+        }
+
+        if ($formato === 'csv') {
+            $callback = function () use ($headers, $rows) {
+                $file = fopen('php://output', 'w');
+                fputs($file, "\xEF\xBB\xBF");
+                fputcsv($file, $headers, ',');
+                foreach ($rows as $row) {
+                    fputcsv($file, $row, ',');
+                }
+                fclose($file);
+            };
+
+            return response()->stream($callback, 200, [
+                'Content-Type' => 'text/csv; charset=utf-8',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '_' . date('Y-m-d') . '.csv"',
+            ]);
+        }
+
+        return back()->with('error', 'Formato no soportado.');
+    }
 }

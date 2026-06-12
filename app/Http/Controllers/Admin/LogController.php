@@ -111,4 +111,54 @@ class LogController extends Controller
             'url' => route('pasantia.show', $oferta->id),
         ];
     }
+
+    public function exportar($formato, Request $request)
+    {
+        $usuario = Auth::user();
+        if ($usuario->correo !== 'prueba@edu.bo') {
+            abort(403);
+        }
+
+        $query = RegistroAuditoria::with(['usuario', 'tipoEntidad']);
+
+        if ($request->filled('usuario')) $query->where('usuario_id', $request->usuario);
+        if ($request->filled('tipo_entidad')) $query->where('tipo_entidad_id', $request->tipo_entidad);
+        if ($request->filled('accion')) $query->where('accion', 'like', "%{$request->accion}%");
+        if ($request->filled('fecha_desde')) $query->whereDate('creado_en', '>=', $request->fecha_desde);
+        if ($request->filled('fecha_hasta')) $query->whereDate('creado_en', '<=', $request->fecha_hasta);
+
+        $items = $query->orderBy('creado_en', 'desc')->get();
+
+        $headers = ['ID', 'Usuario', 'Acción', 'Tipo Entidad', 'Entidad ID', 'Fecha'];
+        $rows = [];
+        foreach ($items as $item) {
+            $rows[] = [
+                $item->id,
+                $item->usuario->nombre ?? 'N/A',
+                $item->accion,
+                $item->tipoEntidad->nombre ?? 'N/A',
+                $item->entidad_id,
+                $item->creado_en ? \Carbon\Carbon::parse($item->creado_en)->format('d/m/Y H:i') : 'N/A',
+            ];
+        }
+
+        if ($formato === 'csv') {
+            $callback = function () use ($headers, $rows) {
+                $file = fopen('php://output', 'w');
+                fputs($file, "\xEF\xBB\xBF");
+                fputcsv($file, $headers, ',');
+                foreach ($rows as $row) {
+                    fputcsv($file, $row, ',');
+                }
+                fclose($file);
+            };
+
+            return response()->stream($callback, 200, [
+                'Content-Type' => 'text/csv; charset=utf-8',
+                'Content-Disposition' => 'attachment; filename="logs_sistema_' . date('Y-m-d') . '.csv"',
+            ]);
+        }
+
+        return back()->with('error', 'Formato no soportado.');
+    }
 }
