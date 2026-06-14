@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>UWork</b>Flow',
+    'logo' => '',
     'logo_img' => 'images/uworkflow-logo.svg',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
@@ -84,12 +84,12 @@ return [
     */
 
     'auth_logo' => [
-        'enabled' => false,
+        'enabled' => true,
         'img' => [
-            'path' => null,
+            'path' => 'images/uworkflow-logo.svg',
             'alt' => 'UWorkFlow',
-            'class' => '',
-            'width' => 50,
+            'class' => 'mb-3',
+            'width' => 200,
             'height' => 50,
         ],
     ],
