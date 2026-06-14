@@ -153,7 +153,7 @@ class AdminController extends Controller
         $estudiante = PerfilEstudiante::where('usuario_id', $id)->first();
         $ubicaciones = \App\Models\Ubicacion::all();
         $carreras = \App\Models\Habilidad::select('categoria')->whereNotNull('categoria')->distinct()->pluck('categoria');
-        return view('admin.usuarios-editar', compact('usuario', 'roles', 'empresa', 'estudiante', 'ubicaciones', 'carreras'));
+        return view('admin.usuarios-editar', compact('usuario', 'roles', 'empresa', 'estudiante', 'ubicaciones', 'carreras', 'esSuperAdmin'));
     }
 
     public function actualizarUsuario(Request $request, $id)
@@ -204,7 +204,7 @@ class AdminController extends Controller
         $usuario->correo = $request->correo;
         $usuario->rol_id = $request->rol_id;
 
-        if ($request->filled('password')) {
+        if ($request->filled('password') && !($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin)) {
             $usuario->contrasena_hash = Hash::make($request->password);
             $cambios['contrasena_hash'] = $usuario->contrasena_hash;
         }

@@ -71,10 +71,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="password">Nueva contraseña <small class="text-muted">(dejar vacío para mantener)</small></label>
-                            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror">
+                            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" {{ $usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin ? 'disabled' : '' }}>
                             @error('password')
                                 <span class="invalid-feedback">{{ $message }}</span>
                             @enderror
+                            @if($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin)
+                                <small class="text-warning"><i class="fas fa-exclamation-triangle mr-1"></i>Solo el superadministrador puede cambiar su propia contraseña.</small>
+                            @endif
                         </div>
                     </div>
                 </div>
