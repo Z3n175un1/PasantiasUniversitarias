@@ -86,6 +86,11 @@
                             </td>
                             <td>{{ $usuario->creado_en ? $usuario->creado_en->format('d/m/Y') : 'N/A' }}</td>
                             <td>
+                                @if($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin)
+                                    <span class="text-muted" title="No puedes modificar al superadministrador">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                @else
                                 <a href="{{ route('admin.usuarios.editar', $usuario->id) }}" class="btn btn-sm btn-info" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -97,6 +102,7 @@
                                         <i class="fas {{ $usuario->activo ? 'fa-ban' : 'fa-check' }}"></i>
                                     </button>
                                 </form>
+                                @endif
                                 @if($usuario->correo !== 'prueba@edu.bo')
                                 <form action="{{ route('admin.usuarios.eliminar', $usuario->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.');">
                                     @csrf

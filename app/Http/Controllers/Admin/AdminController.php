@@ -49,7 +49,8 @@ class AdminController extends Controller
     public function usuarios()
     {
         $usuarios = Usuario::with('rol')->latest('creado_en')->paginate(20);
-        return view('admin.usuarios', compact('usuarios'));
+        $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
+        return view('admin.usuarios', compact('usuarios', 'esSuperAdmin'));
     }
 
     public function crearUsuario()
@@ -146,6 +147,10 @@ class AdminController extends Controller
     {
         $usuario = Usuario::with('rol')->findOrFail($id);
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
+
+        if ($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin) {
+            return redirect()->route('admin.usuarios')->with('error', 'No tienes permiso para editar al superadministrador.');
+        }
         $roles = $esSuperAdmin
             ? Rol::all()
             : Rol::whereIn('id', [1, 2])->get();
@@ -162,6 +167,10 @@ class AdminController extends Controller
         $original = $usuario->getOriginal();
 
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
+
+        if ($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin) {
+            return redirect()->route('admin.usuarios')->with('error', 'No tienes permiso para editar al superadministrador.');
+        }
         $rolPermitido = $esSuperAdmin ? [1, 2, 3] : [1, 2];
 
         $request->validate([
@@ -204,7 +213,7 @@ class AdminController extends Controller
         $usuario->correo = $request->correo;
         $usuario->rol_id = $request->rol_id;
 
-        if ($request->filled('password') && !($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin)) {
+        if ($request->filled('password')) {
             $usuario->contrasena_hash = Hash::make($request->password);
             $cambios['contrasena_hash'] = $usuario->contrasena_hash;
         }
