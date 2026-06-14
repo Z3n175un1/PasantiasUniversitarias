@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '',
-    'logo_img' => 'images/uworkflow-logo.svg',
+    'logo' => '<b>UWork</b>Flow',
+    'logo_img' => 'images/uworkflow-icon.svg',
     'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'UWorkFlow Logo',
+    'logo_img_alt' => 'UWorkFlow',
 
     /*
     |--------------------------------------------------------------------------
@@ -88,7 +88,7 @@ return [
         'img' => [
             'path' => 'images/uworkflow-logo.svg',
             'alt' => 'UWorkFlow',
-            'class' => 'mb-3',
+            'class' => 'img-fluid mb-3',
             'width' => 200,
             'height' => 50,
         ],
@@ -113,8 +113,8 @@ return [
         'enabled' => true,
         'mode' => 'fullscreen',
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'AdminLTE Preloader Image',
+            'path' => 'images/uworkflow-icon.svg',
+            'alt' => 'UWorkFlow',
             'effect' => 'animation__shake',
             'width' => 60,
             'height' => 60,
