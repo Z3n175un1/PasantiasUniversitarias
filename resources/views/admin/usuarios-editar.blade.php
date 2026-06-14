@@ -69,16 +69,30 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="password">Nueva contraseña <small class="text-muted">(dejar vacío para mantener)</small></label>
-                            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" {{ $usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin ? 'disabled' : '' }}>
-                            @error('password')
-                                <span class="invalid-feedback">{{ $message }}</span>
-                            @enderror
-                            @if($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin)
-                                <small class="text-warning"><i class="fas fa-exclamation-triangle mr-1"></i>Solo el superadministrador puede cambiar su propia contraseña.</small>
-                            @endif
-                        </div>
+                        @if($usuario->correo === 'prueba@edu.bo' && !$esSuperAdmin)
+                            <div class="alert alert-warning mb-0 py-3 h-100 d-flex flex-column justify-content-center">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="fas fa-shield-alt fa-2x mr-3"></i>
+                                    <div>
+                                        <strong class="d-block">Acción restringida</strong>
+                                        <span>Solo el superadministrador puede cambiar su propia contraseña.</span>
+                                    </div>
+                                </div>
+                                <hr class="my-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Selecciona otra cuenta para realizar el cambio deseado.
+                                </small>
+                            </div>
+                        @else
+                            <div class="form-group">
+                                <label for="password">Nueva contraseña <small class="text-muted">(dejar vacío para mantener)</small></label>
+                                <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror">
+                                @error('password')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        @endif
                     </div>
                 </div>
 
