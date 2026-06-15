@@ -167,7 +167,7 @@ class StudentController extends Controller
             'carrera' => 'required|string|max:200',
             'fecha_nacimiento' => 'nullable|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d') . '|after_or_equal:' . now()->subYears(30)->format('Y-m-d'),
             'semestre_actual' => 'nullable|integer|min:1|max:12',
-            'anio_graduacion' => 'nullable|integer|min:1900|max:2100',
+            'anio_graduacion' => 'nullable|integer|min:' . now()->subYears(6)->year . '|max:' . now()->addYears(5)->year,
             'biografia' => 'nullable|string|max:1000',
         ]);
 

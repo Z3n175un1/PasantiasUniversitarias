@@ -453,9 +453,9 @@
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Año de Graduación</label>
-                                    <input type="number" name="anio_graduacion" id="perfil-anio" value="{{ old('anio_graduacion', $estudiante->anio_graduacion) }}" min="1900" max="2100"
+                                    <input type="number" name="anio_graduacion" id="perfil-anio" value="{{ old('anio_graduacion', $estudiante->anio_graduacion) }}" min="{{ now()->subYears(6)->year }}" max="{{ now()->addYears(5)->year }}"
                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
-                                    <div class="error-text" id="perfil-anio-error">Ingresa un año válido (1900-2100)</div>
+                                    <div class="error-text" id="perfil-anio-error">Ingresa un año entre {{ now()->subYears(6)->year }} y {{ now()->addYears(5)->year }}</div>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Correo Electrónico</label>
