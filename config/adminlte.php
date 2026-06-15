@@ -257,7 +257,7 @@ return [
     */
 
     'use_route_url' => false,
-    'dashboard_url' => 'home',
+    'dashboard_url' => 'admin.dashboard',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',
@@ -299,12 +299,6 @@ return [
     */
 
     'menu' => [
-        [
-            'type' => 'navbar-search',
-            'text' => 'Buscar...',
-            'topnav_right' => false,
-            'topnav' => true,
-        ],
         [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
