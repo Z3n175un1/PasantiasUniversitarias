@@ -666,7 +666,7 @@ class AdminController extends Controller
                 foreach ($items as $item) {
                     $rows[] = [
                         $item->id,
-                        $item->nombre . ' ' . $item->ap_paterno,
+                        trim(($item->nombre ?? '') . ' ' . ($item->ap_paterno ?? '') . ' ' . ($item->ap_materno ?? '')),
                         $item->correo,
                         $item->rol->nombre ?? 'N/A',
                         $item->activo ? 'Sí' : 'No',
@@ -704,7 +704,7 @@ class AdminController extends Controller
                 foreach ($items as $item) {
                     $rows[] = [
                         $item->id,
-                        $item->perfilEstudiante->usuario->nombre ?? 'N/A',
+                        trim(($item->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($item->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($item->perfilEstudiante->usuario->ap_materno ?? '')),
                         $item->ofertaPasantia->titulo ?? 'N/A',
                         $item->estadoPostulacion->nombre ?? 'N/A',
                         $item->puntaje_topsis ?? '—',
@@ -723,7 +723,7 @@ class AdminController extends Controller
                 foreach ($items as $item) {
                     $rows[] = [
                         $item->id,
-                        $item->usuario->nombre ?? 'N/A',
+                        trim(($item->usuario->nombre ?? '') . ' ' . ($item->usuario->ap_paterno ?? '') . ' ' . ($item->usuario->ap_materno ?? '')),
                         $item->accion,
                         $item->tipoEntidad->nombre ?? 'N/A',
                         $item->entidad_id ?? '—',
