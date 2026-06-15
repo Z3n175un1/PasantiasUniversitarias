@@ -963,8 +963,8 @@
                             <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nivel Min</label>
                             <select name="habilidades[${index}][nivel_minimo]" required
                                 class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
-                                <option value="1" ${data && data.nivel_minimo == 1 ? 'selected' : ''}>1 - Inexperto</option>
-                                <option value="2" ${data && data.nivel_minimo == 2 ? 'selected' : ''}>2 - Básico</option>
+                                <option value="1" ${data && data.nivel_minimo == 1 ? 'selected' : ''}>1 - Basico</option>
+                                <option value="2" ${data && data.nivel_minimo == 2 ? 'selected' : ''}>2 - Inicial</option>
                                 <option value="3" ${data && data.nivel_minimo == 3 ? 'selected' : ''}>3 - Intermedio</option>
                                 <option value="4" ${data && data.nivel_minimo == 4 ? 'selected' : ''}>4 - Alto</option>
                                 <option value="5" ${data && data.nivel_minimo == 5 ? 'selected' : ''}>5 - Experto</option>
@@ -975,14 +975,7 @@
                             <input type="number" name="habilidades[${index}][peso]" min="0" max="100" step="1" required value="${data ? data.peso : 50}"
                                 class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
                         </div>
-                        <div class="w-24 space-y-1.5">
-                            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Criterio</label>
-                            <select name="habilidades[${index}][tipo_criterio]" required
-                                class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
-                                <option value="benefit" ${data && data.tipo_criterio === 'benefit' ? 'selected' : ''}>Beneficio 👍</option>
-                                <option value="cost" ${data && data.tipo_criterio === 'cost' ? 'selected' : ''}>Costo 👎</option>
-                            </select>
-                        </div>
+                        <input type="hidden" name="habilidades[${index}][tipo_criterio]" value="benefit">
                         <button type="button" onclick="this.closest('.fila-habilidad').remove()"
                             class="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
                             <i data-lucide="x" class="w-4 h-4"></i>
@@ -990,6 +983,7 @@
                     </div>
                 </div>
             `;
+            // prueba de cambios de git
             container.appendChild(div);
             const chipContainer = div.querySelector('.chip-skill-container');
             if (chipContainer) initSkillChipSelector(chipContainer);
