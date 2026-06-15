@@ -43,7 +43,7 @@ class CompanyController extends Controller
             $queryPostulaciones->where('oferta_pasantia_id', $pasantiaFiltro);
         }
 
-        $todas_postulaciones = $queryPostulaciones->orderBy('id', 'desc')->get();
+        $todas_postulaciones = $queryPostulaciones->orderByRaw('puntaje_topsis DESC NULLS LAST')->get();
         $postulaciones_recientes = $todas_postulaciones->take(5);
         $estados_postulacion = EstadoPostulacion::all();
         $ubicaciones = Ubicacion::all();

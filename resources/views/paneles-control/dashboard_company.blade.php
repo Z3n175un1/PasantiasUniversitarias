@@ -200,7 +200,7 @@
                 {{-- Postulantes --}}
                 <section id="postulantes" class="tab-content space-y-6">
                     <div class="flex items-center justify-between">
-                        <h2 class="text-xl font-bold text-slate-900">Postulantes Recibidos</h2>
+                        <h2 class="text-xl font-bold text-slate-900">Cola Priorizada de Postulantes</h2>
                         <form method="GET" action="{{ route('dashboard.company') }}#postulantes" class="flex items-center gap-2">
                             <select name="pasantia_id" onchange="this.form.submit()"
                                 class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-indigo-400 cursor-pointer">
@@ -211,15 +211,15 @@
                             </select>
                         </form>
                     </div>
-                    @if($todas_postulaciones->count() > 0)
+                    @if($todas_postulaciones->count() > 5)
                         <div class="space-y-4">
-                            @foreach($todas_postulaciones as $post)
+                            @foreach($todas_postulaciones as $index => $post)
                                 <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
                                     <div class="p-5">
                                         <div class="flex items-center justify-between mb-4">
                                             <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-bold text-sm text-slate-700">
-                                                    {{ strtoupper(substr($post->perfilEstudiante->usuario->nombre ?? '?', 0, 1) . substr($post->perfilEstudiante->usuario->ap_paterno ?? '?', 0, 1)) }}
+                                                <div class="w-10 h-10 {{ $index == 0 ? 'bg-amber-100 text-amber-700 ring-2 ring-amber-400' : 'bg-slate-100 text-slate-700' }} rounded-xl flex items-center justify-center font-bold text-sm">
+                                                    {{ $loop->iteration }}
                                                 </div>
                                                 <div>
                                                     <h4 class="font-bold text-slate-900">{{ trim(($post->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_materno ?? '')) }}</h4>
@@ -228,8 +228,8 @@
                                             </div>
                                             <div class="flex items-center gap-2">
                                                 @if($post->puntaje_topsis !== null)
-                                                    <div class="px-3 py-1.5 bg-indigo-50 text-indigo-700 font-extrabold rounded-xl text-xs flex items-center gap-1.5">
-                                                        <i data-lucide="trophy" class="w-3.5 h-3.5"></i>
+                                                    <div class="px-3 py-1.5 {{ $index == 0 ? 'bg-amber-50 text-amber-700' : ($index == 1 ? 'bg-slate-50 text-slate-700' : ($index == 2 ? 'bg-orange-50 text-orange-700' : 'bg-indigo-50 text-indigo-700')) }} font-extrabold rounded-xl text-xs flex items-center gap-1.5">
+                                                        <i data-lucide="{{ $index == 0 ? 'crown' : 'trophy' }}" class="w-3.5 h-3.5"></i>
                                                         TOPSIS: {{ round($post->puntaje_topsis) }}%
                                                     </div>
                                                 @endif
@@ -290,6 +290,12 @@
                                     </div>
                                 </div>
                             @endforeach
+                        </div>
+                    @elseif($todas_postulaciones->count() > 0)
+                        <div class="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center">
+                            <i data-lucide="clock" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                            <h3 class="font-bold text-slate-500">En espera de más candidatos</h3>
+                            <p class="text-sm text-slate-400 mt-1">Se necesitan al menos 6 postulantes para generar una cola priorizada con una buena elección. Actualmente hay {{ $todas_postulaciones->count() }}.</p>
                         </div>
                     @else
                         <div class="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center">
