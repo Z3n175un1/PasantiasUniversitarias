@@ -566,6 +566,13 @@
                     </div>
                 </div>
 
+                <div class="space-y-1.5" id="edit-estado-container">
+                    <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Estado</label>
+                    <select name="estado_publicacion_id" id="edit-estado_publicacion_id" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all appearance-none cursor-pointer">
+                        <option value="2">Abierta</option>
+                    </select>
+                </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Fecha de Fin</label>
@@ -818,6 +825,23 @@
                     document.getElementById('edit-requisitos').value = data.requisitos || '';
                     document.getElementById('edit-beneficios').value = data.beneficios || '';
                     document.getElementById('form-editar-oferta').action = '/company/ofertas/' + id + '/actualizar';
+
+                    const estadoSelect = document.getElementById('edit-estado_publicacion_id');
+                    estadoSelect.innerHTML = '';
+                    if (data.estado_publicacion_id == 1) {
+                        const opt = document.createElement('option');
+                        opt.value = 2; opt.textContent = 'Abierta';
+                        estadoSelect.appendChild(opt);
+                        estadoSelect.value = 2;
+                    } else {
+                        @foreach(\App\Models\EstadoPublicacion::all() as $estado)
+                            const opt{{ $estado->id }} = document.createElement('option');
+                            opt{{ $estado->id }}.value = {{ $estado->id }};
+                            opt{{ $estado->id }}.textContent = '{{ ucfirst($estado->nombre) }}';
+                            if ({{ $estado->id }} == data.estado_publicacion_id) opt{{ $estado->id }}.selected = true;
+                            estadoSelect.appendChild(opt{{ $estado->id }});
+                        @endforeach
+                    }
 
                     const container = document.getElementById('edit-habilidades-container');
                     container.innerHTML = '';
@@ -1104,7 +1128,7 @@
         function validarPerfilEmpresa() {
             const tel = document.getElementById('perfil-telefono');
             const telError = document.getElementById('perfil-telefono-error');
-            if (tel && tel.value && !/^\d{8,}$/.test(tel.value.replace(/\s/g, ''))) {
+            if (tel && tel.value && !/^\d{8}$/.test(tel.value.replace(/\s/g, ''))) {
                 tel.classList.add('input-error');
                 if (telError) telError.classList.add('visible');
                 return false;

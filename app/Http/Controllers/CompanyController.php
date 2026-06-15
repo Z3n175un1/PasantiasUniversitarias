@@ -240,6 +240,11 @@ class CompanyController extends Controller
             }
         }
 
+        $estadoAnterior = $oferta->estado_publicacion_id;
+        if ($estadoAnterior == 1 && $request->estado_publicacion_id != 2) {
+            return back()->withErrors(['estado_publicacion_id' => 'Una pasantía en borrador solo puede cambiarse a activa.'])->withInput();
+        }
+
         $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'requisitos', 'beneficios', 'vacantes_disponibles', 'duracion_semanas', 'fecha_inicio', 'fecha_fin', 'estado_publicacion_id'];
         $nuevos = $request->only($campos);
         $oferta->update($nuevos);
@@ -308,7 +313,7 @@ class CompanyController extends Controller
             'nombre_empresa' => 'required|string|max:200',
             'industria' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:2000',
-            'telefono' => 'nullable|numeric|digits_between:8,20',
+            'telefono' => 'nullable|numeric|digits:8',
             'direccion' => 'nullable|string|max:255',
             'tamano_empresa' => 'nullable|string|in:Pequeña,Mediana,Grande',
             'anio_fundacion' => 'nullable|integer|min:1800|max:' . date('Y'),

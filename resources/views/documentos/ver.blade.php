@@ -145,7 +145,7 @@
                         <span class="text-slate-300">•</span>
                         <span class="badge-size">{{ round($doc->tamano_bytes / 1024, 1) }} KB</span>
                         <span class="text-slate-300">•</span>
-                        <span class="text-xs">{{ $doc->perfilEstudiante->usuario->nombre ?? '' }} {{ $doc->perfilEstudiante->usuario->apellidos ?? '' }}</span>
+                        <span class="text-xs">{{ $doc->perfilEstudiante->usuario->nombre ?? '' }} {{ $doc->perfilEstudiante->usuario->ap_paterno ?? '' }} {{ $doc->perfilEstudiante->usuario->ap_materno ?? '' }}</span>
                     </p>
                 </div>
             </div>
@@ -198,6 +198,8 @@
                 </div>
             @elseif(str_starts_with($doc->tipo_mime, 'image/'))
                 <img src="{{ route('documentos.archivo', $doc->id) }}" alt="{{ $doc->nombre_original }}">
+            @elseif(str_starts_with($doc->tipo_mime, 'application/msword') || str_starts_with($doc->tipo_mime, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') || str_starts_with($doc->tipo_mime, 'application/vnd.ms-excel') || str_starts_with($doc->tipo_mime, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') || str_starts_with($doc->tipo_mime, 'application/vnd.ms-powerpoint') || str_starts_with($doc->tipo_mime, 'application/vnd.openxmlformats-officedocument.presentationml.presentation'))
+                <iframe src="{{ route('documentos.archivo', $doc->id) }}" width="100%" height="600px" style="border:none;"></iframe>
             @else
                 <div class="no-viewer">
                     <div class="file-icon-large">

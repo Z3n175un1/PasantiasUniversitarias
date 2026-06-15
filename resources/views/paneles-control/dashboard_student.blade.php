@@ -254,7 +254,7 @@
                                     <div class="flex items-center justify-between py-3">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-500">
-                                                <i data-lucide="{{ $doc->tipo_mime == 'application/pdf' ? 'file' : 'file-image' }}" class="w-5 h-5"></i>
+                                                <i data-lucide="{{ str_starts_with($doc->tipo_mime, 'application/pdf') ? 'file-text' : (str_starts_with($doc->tipo_mime, 'image/') ? 'file-image' : 'file') }}" class="w-5 h-5"></i>
                                             </div>
                                             <div>
                                                 <h4 class="text-sm font-bold text-slate-900">{{ $doc->nombre_original }}</h4>

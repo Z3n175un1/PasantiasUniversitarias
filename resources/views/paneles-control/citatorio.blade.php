@@ -42,7 +42,7 @@
         <div class="titulo">C I T A T O R I O</div>
 
         <div class="contenido">
-            <p>Señor(es): <strong>{{ $postulacion->perfilEstudiante->usuario->nombre ?? 'N/A' }}</strong></p>
+            <p>Señor(es): <strong>{{ trim(($postulacion->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($postulacion->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($postulacion->perfilEstudiante->usuario->ap_materno ?? '')) }}</strong></p>
             <p>Estudiante de: <strong>{{ $postulacion->perfilEstudiante->carrera ?? 'N/A' }}</strong> - {{ $postulacion->perfilEstudiante->universidad ?? 'N/A' }}</p>
 
             <p>Por medio del presente, la empresa <strong>{{ $empresa->nombre_empresa ?? $postulacion->ofertaPasantia->perfilEmpresa->nombre_empresa }}</strong>, 
