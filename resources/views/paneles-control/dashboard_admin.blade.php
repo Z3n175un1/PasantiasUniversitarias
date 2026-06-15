@@ -68,7 +68,7 @@
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
                         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-center card-neo">
                             <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-2">
                                 <i data-lucide="users" class="w-5 h-5"></i>
@@ -103,6 +103,13 @@
                             </div>
                             <p class="text-2xl font-black text-slate-900">{{ $stats['postulaciones'] }}</p>
                             <p class="text-xs font-bold text-slate-400 uppercase">Postulaciones</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm text-center card-neo">
+                            <div class="w-10 h-10 bg-red-50 text-red-600 rounded-xl flex items-center justify-center mx-auto mb-2">
+                                <i data-lucide="shield" class="w-5 h-5"></i>
+                            </div>
+                            <p class="text-2xl font-black text-slate-900">{{ $stats['admins'] }}</p>
+                            <p class="text-xs font-bold text-slate-400 uppercase">Administradores</p>
                         </div>
                     </div>
 
@@ -303,8 +310,8 @@
                         </div>
                         <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                             <h3 class="font-bold mb-4 flex items-center gap-2">
-                                <i data-lucide="bar-chart-3" class="w-5 h-5 text-indigo-600"></i>
-                                Ofertas por Estado
+                                <i data-lucide="pie-chart" class="w-5 h-5 text-indigo-600"></i>
+                                Pasantías del Mes ({{ now()->locale('es')->monthName }})
                             </h3>
                             <canvas id="ofertasChart" style="height: 260px;"></canvas>
                         </div>
@@ -324,10 +331,6 @@
                                 <div class="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
                                     <span class="w-3 h-3 rounded-full bg-green-500"></span>
                                     <span class="text-sm font-semibold text-slate-600">Usuarios: <strong class="text-slate-900">{{ $stats['resumen_mes']['usuarios'] }}</strong></span>
-                                </div>
-                                <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-xl">
-                                    <span class="w-3 h-3 rounded-full bg-purple-500"></span>
-                                    <span class="text-sm font-semibold text-slate-600">Postulaciones: <strong class="text-slate-900">{{ $stats['resumen_mes']['postulaciones'] }}</strong></span>
                                 </div>
                                 <div class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl">
                                     <span class="w-3 h-3 rounded-full bg-amber-500"></span>
@@ -433,14 +436,13 @@
         const resumenMesCtx = document.getElementById('resumenMesChart')?.getContext('2d');
         if (resumenMesCtx) {
             const resumen = @json($stats['resumen_mes']);
-            const total = Object.values(resumen).reduce((a, b) => a + b, 0);
             new Chart(resumenMesCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Ofertas', 'Usuarios', 'Postulaciones', 'Empresas'],
+                    labels: ['Ofertas', 'Usuarios', 'Empresas'],
                     datasets: [{
-                        data: [resumen.ofertas, resumen.usuarios, resumen.postulaciones, resumen.empresas],
-                        backgroundColor: ['#3b82f6', '#22c55e', '#a855f7', '#f59e0b'],
+                        data: [resumen.ofertas, resumen.usuarios, resumen.empresas],
+                        backgroundColor: ['#3b82f6', '#22c55e', '#f59e0b'],
                         borderWidth: 0,
                     }]
                 },
@@ -456,19 +458,23 @@
 
         const ofertasCtx = document.getElementById('ofertasChart')?.getContext('2d');
         if (ofertasCtx) {
+            const totalOfertas = {{ $stats['ofertas'] }};
+            const ofertasMes = {{ $stats['ofertas_mes'] }};
+            const resto = Math.max(0, totalOfertas - ofertasMes);
             new Chart(ofertasCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Abiertas', 'Borrador', 'Cerradas'],
+                    labels: ['Este Mes (' + totalOfertas + ')', 'Meses Anteriores (' + resto + ')'],
                     datasets: [{
-                        data: [{{ $stats['ofertas_activas']->count() }}, {{ $stats['ofertas_borrador'] }}, {{ $stats['ofertas_cerradas'] }}],
-                        backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
+                        data: [ofertasMes, resto],
+                        backgroundColor: ['#6366f1', '#e2e8f0'],
                         borderWidth: 0,
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '65%',
                     plugins: {
                         legend: { position: 'bottom', labels: { font: { size: 11, family: 'Inter' }, padding: 16 } }
                     }

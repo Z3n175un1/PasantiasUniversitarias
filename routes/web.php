@@ -375,7 +375,6 @@ Route::middleware('auth')->group(function () {
         $resumenMes = [
             'ofertas' => OfertaPasantia::whereRaw("to_char(fecha_inicio, 'YYYY-MM') = ?", [$mesActual])->count(),
             'usuarios' => Usuario::whereRaw("to_char(creado_en, 'YYYY-MM') = ?", [$mesActual])->count(),
-            'postulaciones' => Postulacion::whereRaw("to_char(creado_en, 'YYYY-MM') = ?", [$mesActual])->count(),
             'empresas' => PerfilEmpresa::whereHas('usuario', function ($q) use ($mesActual) {
                 $q->whereRaw("to_char(creado_en, 'YYYY-MM') = ?", [$mesActual]);
             })->count(),
@@ -400,6 +399,7 @@ Route::middleware('auth')->group(function () {
                 ->where('estado_publicacion_id', 1)->count(),
             'ofertas_cerradas' => OfertaPasantia::with(['perfilEmpresa'])
                 ->where('estado_publicacion_id', 3)->count(),
+            'ofertas_mes' => OfertaPasantia::whereRaw("to_char(fecha_inicio, 'YYYY-MM') = ?", [$mesActual])->count(),
             'ofertas_por_estado' => $ofertasPorEstado,
             'postulaciones_por_estado' => $postulacionesPorEstado,
             'resumen_mes' => $resumenMes,
