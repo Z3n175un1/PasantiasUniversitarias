@@ -189,6 +189,10 @@ class StudentController extends Controller
         $archivo = $request->file('archivo');
         $ruta = $archivo->store('documentos/' . $estudiante->id, 'public');
 
+        if (!$ruta || !Storage::disk('public')->exists($ruta)) {
+            return back()->with('error', 'Ocurrió un error al guardar el archivo. Intenta nuevamente.')->withInput();
+        }
+
         DocumentoEstudiante::create([
             'perfil_estudiante_id' => $estudiante->id,
             'tipo_documento_id' => $request->tipo_documento_id,
