@@ -975,14 +975,16 @@
 
             div.innerHTML = `
                 <div class="space-y-2">
-                    <label class="text-[10px] font-extrabold text-slate-400 uppercase">Habilidad</label>
-                    <input type="hidden" name="habilidades[${index}][habilidad_id]" value="${data ? data.habilidad_id : ''}">
-                    <button type="button" onclick="abrirSelectorHabilidad(this)"
-                        class="w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl text-left text-sm font-semibold ${data ? 'text-slate-800' : 'text-slate-500'} hover:border-indigo-400 transition flex items-center justify-between gap-2">
-                        <span class="skill-texto">${skillNombre}</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0"></i>
-                    </button>
                     <div class="flex items-start gap-2">
+                        <div class="flex-1 space-y-1.5">
+                            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Habilidad</label>
+                            <input type="hidden" name="habilidades[${index}][habilidad_id]" value="${data ? data.habilidad_id : ''}">
+                            <button type="button" onclick="abrirSelectorHabilidad(this)"
+                                class="w-full px-3 py-2 bg-white border-2 border-slate-200 rounded-lg text-left text-xs font-semibold ${data ? 'text-slate-800' : 'text-slate-500'} hover:border-indigo-400 transition flex items-center justify-between gap-1">
+                                <span class="skill-texto">${skillNombre}</span>
+                                <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+                            </button>
+                        </div>
                         <div class="w-28 space-y-1.5">
                             <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nivel Min</label>
                             <select name="habilidades[${index}][nivel_minimo]" required
