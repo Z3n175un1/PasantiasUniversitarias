@@ -975,14 +975,7 @@
                             <input type="number" name="habilidades[${index}][peso]" min="0" max="100" step="1" required value="${data ? data.peso : 50}"
                                 class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
                         </div>
-                        <div class="w-24 space-y-1.5">
-                            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Criterio</label>
-                            <select name="habilidades[${index}][tipo_criterio]" required
-                                class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium">
-                                <option value="benefit" ${data && data.tipo_criterio === 'benefit' ? 'selected' : ''}>Beneficio 👍</option>
-                                <option value="cost" ${data && data.tipo_criterio === 'cost' ? 'selected' : ''}>Costo 👎</option>
-                            </select>
-                        </div>
+                        <input type="hidden" name="habilidades[${index}][tipo_criterio]" value="benefit">
                         <button type="button" onclick="this.closest('.fila-habilidad').remove()"
                             class="mt-5 p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition">
                             <i data-lucide="x" class="w-4 h-4"></i>
