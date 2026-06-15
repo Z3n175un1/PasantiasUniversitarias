@@ -38,8 +38,19 @@
     <div class="card card-outline card-primary">
         <div class="card-header">
             <h3 class="card-title font-weight-bold">Listado de Usuarios</h3>
-            <div class="card-tools">
+            <div class="card-tools d-flex gap-2">
+                <form action="{{ route('admin.usuarios') }}" method="GET" class="input-group input-group-sm" style="width: 160px;">
+                    <select name="rol" class="form-control form-control-sm" onchange="this.form.submit()">
+                        <option value="">Todos los roles</option>
+                        <option value="1" {{ $rolFiltro == '1' ? 'selected' : '' }}>Estudiantes</option>
+                        <option value="2" {{ $rolFiltro == '2' ? 'selected' : '' }}>Empresas</option>
+                        <option value="3" {{ $rolFiltro == '3' ? 'selected' : '' }}>Administradores</option>
+                    </select>
+                </form>
                 <form action="{{ route('admin.usuarios') }}" method="GET" class="input-group input-group-sm" style="width: 250px;">
+                    @if($rolFiltro)
+                        <input type="hidden" name="rol" value="{{ $rolFiltro }}">
+                    @endif
                     <input type="text" name="search" class="form-control float-right" placeholder="Buscar usuarios..." value="{{ request('search') }}">
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>

@@ -27,6 +27,18 @@
     <div class="card card-outline card-success">
         <div class="card-header">
             <h3 class="card-title font-weight-bold">Listado de Estudiantes</h3>
+            <div class="card-tools">
+                <form method="GET" action="{{ route('admin.estudiantes') }}" class="input-group input-group-sm" style="width: 350px;">
+                    <select name="pasantia_id" class="form-control form-control-sm" onchange="this.form.submit()">
+                        <option value="">Todas las pasantías</option>
+                        @foreach($pasantias as $pas)
+                            <option value="{{ $pas->id }}" {{ $pasantiaId == $pas->id ? 'selected' : '' }}>
+                                {{ $pas->titulo }} - {{ $pas->perfilEmpresa->nombre_empresa ?? 'Sin empresa' }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
         </div>
         <div class="card-body p-0">
             <table class="table table-hover mb-0">

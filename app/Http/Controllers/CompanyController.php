@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CompanyController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
         abort_if(Auth::user()->rol_id != 2, 403);
         $empresa = PerfilEmpresa::with('usuario')->where('usuario_id', Auth::id())->firstOrFail();
@@ -26,18 +26,24 @@ class CompanyController extends Controller
             ->orderBy('id', 'desc')
             ->get();
 
-        $total_postulantes = Postulacion::whereIn('oferta_pasantia_id', $ofertas->pluck('id'))->count();
-        $todas_postulaciones = Postulacion::with([
+        $pasantiaFiltro = $request->get('pasantia_id');
+        $ofertasIds = $ofertas->pluck('id');
+
+        $total_postulantes = Postulacion::whereIn('oferta_pasantia_id', $ofertasIds)->count();
+        $queryPostulaciones = Postulacion::with([
                 'perfilEstudiante.usuario',
                 'perfilEstudiante.documentos.tipoDocumento',
                 'perfilEstudiante.habilidades.habilidad',
                 'ofertaPasantia',
                 'estadoPostulacion'
             ])
-            ->whereIn('oferta_pasantia_id', $ofertas->pluck('id'))
-            ->orderBy('id', 'desc')
-            ->get();
+            ->whereIn('oferta_pasantia_id', $ofertasIds);
 
+        if ($pasantiaFiltro) {
+            $queryPostulaciones->where('oferta_pasantia_id', $pasantiaFiltro);
+        }
+
+        $todas_postulaciones = $queryPostulaciones->orderBy('id', 'desc')->get();
         $postulaciones_recientes = $todas_postulaciones->take(5);
         $estados_postulacion = EstadoPostulacion::all();
         $ubicaciones = Ubicacion::all();
@@ -121,7 +127,7 @@ class CompanyController extends Controller
             'empresa', 'ofertas', 'total_postulantes',
             'todas_postulaciones', 'postulaciones_recientes',
             'estados_postulacion', 'ubicaciones', 'carreras', 'modalidades',
-            'habilidades'
+            'habilidades', 'pasantiaFiltro'
         ));
     }
 

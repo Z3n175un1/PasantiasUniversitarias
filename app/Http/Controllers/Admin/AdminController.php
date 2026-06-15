@@ -51,6 +51,7 @@ class AdminController extends Controller
     public function usuarios(Request $request)
     {
         $search = $request->get('search');
+        $rolFiltro = $request->get('rol');
         $usuarios = Usuario::with('rol')
             ->when($search, function ($q, $search) {
                 $q->where('nombre', 'ilike', "%{$search}%")
@@ -58,9 +59,12 @@ class AdminController extends Controller
                   ->orWhere('ap_materno', 'ilike', "%{$search}%")
                   ->orWhere('correo', 'ilike', "%{$search}%");
             })
+            ->when($rolFiltro, function ($q, $rolFiltro) {
+                $q->where('rol_id', $rolFiltro);
+            })
             ->latest('creado_en')->paginate(20);
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
-        return view('admin.usuarios', compact('usuarios', 'esSuperAdmin'));
+        return view('admin.usuarios', compact('usuarios', 'esSuperAdmin', 'search', 'rolFiltro'));
     }
 
     public function crearUsuario()
@@ -352,10 +356,20 @@ class AdminController extends Controller
 
     // ── Estudiantes ────────────────────────────────────────────────────────────
 
-    public function estudiantes()
+    public function estudiantes(Request $request)
     {
-        $estudiantes = PerfilEstudiante::with('usuario')->get();
-        return view('admin.estudiantes', compact('estudiantes'));
+        $pasantiaId = $request->get('pasantia_id');
+        $query = PerfilEstudiante::with('usuario');
+
+        if ($pasantiaId) {
+            $estudiantesIds = Postulacion::where('oferta_pasantia_id', $pasantiaId)
+                ->pluck('perfil_estudiante_id');
+            $query->whereIn('id', $estudiantesIds);
+        }
+
+        $estudiantes = $query->get();
+        $pasantias = OfertaPasantia::with('perfilEmpresa')->orderBy('titulo')->get();
+        return view('admin.estudiantes', compact('estudiantes', 'pasantias', 'pasantiaId'));
     }
 
     // ── Ofertas ────────────────────────────────────────────────────────────────

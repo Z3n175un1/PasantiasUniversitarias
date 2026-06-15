@@ -199,7 +199,18 @@
 
                 {{-- Postulantes --}}
                 <section id="postulantes" class="tab-content space-y-6">
-                    <h2 class="text-xl font-bold text-slate-900">Postulantes Recibidos</h2>
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold text-slate-900">Postulantes Recibidos</h2>
+                        <form method="GET" action="{{ route('dashboard.company') }}#postulantes" class="flex items-center gap-2">
+                            <select name="pasantia_id" onchange="this.form.submit()"
+                                class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-indigo-400 cursor-pointer">
+                                <option value="">Todas las pasantías</option>
+                                @foreach($ofertas as $of)
+                                    <option value="{{ $of->id }}" {{ $pasantiaFiltro == $of->id ? 'selected' : '' }}>{{ $of->titulo }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
                     @if($todas_postulaciones->count() > 0)
                         <div class="space-y-4">
                             @foreach($todas_postulaciones as $post)
