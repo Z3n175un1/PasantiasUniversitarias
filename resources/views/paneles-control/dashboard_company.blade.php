@@ -983,6 +983,7 @@
                     </div>
                 </div>
             `;
+            // prueba de cambios de git
             container.appendChild(div);
             const chipContainer = div.querySelector('.chip-skill-container');
             if (chipContainer) initSkillChipSelector(chipContainer);
