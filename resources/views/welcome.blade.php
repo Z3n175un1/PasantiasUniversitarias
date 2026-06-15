@@ -84,19 +84,19 @@
         <div class="flex-1 relative animate-float flex justify-center lg:justify-end">
             <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800"
                 alt="Students working" class="w-full max-w-[550px] rounded-[32px] shadow-2xl border-4 border-white">
-            <div
+{{--             <div
                 class="absolute bottom-8 -left-8 bg-white p-5 rounded-2xl flex items-center gap-4 shadow-[0_15px_40px_rgba(0,0,0,0.1)] border border-gray-100">
                 <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100">
                     <div class="w-6 h-6 border-2 border-[#2b6df2] rounded-full border-t-transparent animate-spin"></div>
                 </div>
-{{--                 <div class="flex flex-col">
+                <div class="flex flex-col">
                     <span class="text-xs text-[#666] font-medium uppercase tracking-wider">Tasa de Éxito</span>
                     <strong class="text-2xl text-[#0d121f] font-extrabold">87%</strong>
                     <div class="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1.5">
                         <div class="h-full bg-[#2b6df2] animate-progress rounded-full"></div>
                     </div>
-                </div> --}}
-            </div>
+                </div>
+            </div> --}}
         </div>
     </section>
 
