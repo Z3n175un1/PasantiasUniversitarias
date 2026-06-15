@@ -85,11 +85,15 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <div class="text-center mb-3">
-                        <h2 class="font-weight-bold text-info" style="font-size: 3rem;">{{ $ofertas_mes }}</h2>
-                        <p class="text-muted">pasantías publicadas en {{ now()->locale('es')->monthName }} {{ now()->year }}</p>
+                    <div class="row align-items-center">
+                        <div class="col-4 text-center">
+                            <span class="font-weight-bold text-info" style="font-size: 3.5rem;">{{ $ofertas_mes }}</span>
+                            <p class="text-muted small mb-0">de {{ $total_ofertas }} totales</p>
+                        </div>
+                        <div class="col-8">
+                            <canvas id="ofertasChart" style="height: 180px;"></canvas>
+                        </div>
                     </div>
-                    <canvas id="ofertasChart" style="height: 250px;"></canvas>
                 </div>
             </div>
         </div>
