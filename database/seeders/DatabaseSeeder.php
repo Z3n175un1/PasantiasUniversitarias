@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-        public function run(): void
-        {
+    public function run(): void
+    {
+        $this->call(NuevasOfertasSeeder::class);
                 DB::statement(<<<EOT
 INSERT INTO "roles" ("id", "nombre", "descripcion") VALUES (1, 'estudiante', 'Estudiante universitario'),
 (2, 'empresa', 'Empresa registrada'),

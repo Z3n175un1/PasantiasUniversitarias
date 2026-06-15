@@ -45,7 +45,7 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>Título</th>
                         <th>Empresa</th>
                         <th>Ubicación</th>
@@ -320,8 +320,8 @@
                 document.getElementById('edit-carrera').value = data.carrera || '';
                 document.getElementById('edit-carrera-texto').textContent = data.carrera || 'Todas las carreras';
                 document.getElementById('edit-ubicacion_id').value = data.ubicacion_id;
-                document.getElementById('edit-fecha_inicio').value = data.fecha_inicio;
-                document.getElementById('edit-fecha_fin').value = data.fecha_fin;
+                document.getElementById('edit-fecha_inicio').value = data.fecha_inicio ? data.fecha_inicio.substring(0, 10) : '';
+                document.getElementById('edit-fecha_fin').value = data.fecha_fin ? data.fecha_fin.substring(0, 10) : '';
                 document.getElementById('edit-vacantes').value = data.vacantes_disponibles || '';
                 document.getElementById('edit-duracion').value = data.duracion_semanas || '';
                 document.getElementById('edit-requisitos').value = data.requisitos || '';

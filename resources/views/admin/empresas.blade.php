@@ -36,7 +36,7 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>Empresa</th>
                         <th>Industria</th>
                         <th>Contacto</th>

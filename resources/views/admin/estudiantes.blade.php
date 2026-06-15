@@ -32,7 +32,7 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>Nombre</th>
                         <th>Correo</th>
                         <th>Universidad</th>
