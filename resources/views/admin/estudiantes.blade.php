@@ -32,14 +32,13 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Nombre(s)</th>
+                        <th>ID</th>
+                        <th>Nombre</th>
                         <th>Ap. Paterno</th>
                         <th>Ap. Materno</th>
                         <th>Correo</th>
-                        <th>Universidad</th>
-                        <th>Carrera</th>
-                        <th>Año Graduación</th>
+                        <th>Rol</th>
+                        <th>Activo</th>
                         <th>Registro</th>
                     </tr>
                 </thead>
@@ -51,14 +50,19 @@
                             <td>{{ $estudiante->usuario->ap_paterno ?? 'N/A' }}</td>
                             <td>{{ $estudiante->usuario->ap_materno ?? 'N/A' }}</td>
                             <td>{{ $estudiante->usuario->correo ?? 'N/A' }}</td>
-                            <td>{{ $estudiante->universidad }}</td>
-                            <td>{{ $estudiante->carrera }}</td>
-                            <td>{{ $estudiante->anio_graduacion ?? '—' }}</td>
+                            <td><span class="badge badge-info">Estudiante</span></td>
+                            <td>
+                                @if($estudiante->usuario->activo)
+                                    <span class="badge badge-success">Activo</span>
+                                @else
+                                    <span class="badge badge-danger">Inactivo</span>
+                                @endif
+                            </td>
                             <td>{{ $estudiante->usuario->creado_en ? $estudiante->usuario->creado_en->format('d/m/Y') : 'N/A' }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center text-muted py-4">No hay estudiantes registrados</td>
+                            <td colspan="8" class="text-center text-muted py-4">No hay estudiantes registrados</td>
                         </tr>
                     @endforelse
                 </tbody>
