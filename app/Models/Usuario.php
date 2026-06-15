@@ -83,6 +83,16 @@ class Usuario extends Authenticatable
         return $this->correo;
     }
 
+    public function getEmailForPasswordReset()
+    {
+        return $this->correo;
+    }
+
+    public function routeNotificationForMail()
+    {
+        return $this->correo;
+    }
+
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPassword($token));

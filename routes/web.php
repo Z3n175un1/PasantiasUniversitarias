@@ -149,7 +149,7 @@ Route::post('/olvide-password', function (Request $request) {
             'creado_en' => now(),
         ]);
 
-        $status = Password::sendResetLink(['email' => $request->correo]);
+        $status = Password::sendResetLink(['correo' => $request->correo]);
 
         return $status === Password::RESET_LINK_SENT
             ? back()->with('success', 'Te hemos enviado un enlace de recuperación a tu correo electrónico.')
@@ -171,7 +171,7 @@ Route::post('/reset-password', function (Request $request) {
     ]);
 
     $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
+        ['correo' => $request->email, 'password' => $request->password, 'password_confirmation' => $request->password_confirmation, 'token' => $request->token],
         function (Usuario $user) use ($request) {
             $user->forceFill([
                 'contrasena_hash' => Hash::make($request->password),
