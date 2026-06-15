@@ -77,20 +77,6 @@
                 </a>
             </div>
         </div>
-        <div class="col-lg-3 col-6">
-            <div class="small-box bg-dark">
-                <div class="inner">
-                    <h3>{{ $stats['admins'] }}</h3>
-                    <p>Administradores</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <a href="{{ route('admin.usuarios') }}" class="small-box-footer">
-                    Ver detalles <i class="fas fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
     </div>
 
     <div class="row">
@@ -110,13 +96,15 @@
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title font-weight-bold">
-                        <i class="fas fa-chart-pie mr-2"></i>Pasantías {{ now()->locale('es')->monthName }}
+                        <i class="fas fa-chart-pie mr-2"></i>Resumen
                     </h3>
                 </div>
-                <div class="card-body text-center">
-                    <h2 class="font-weight-bold text-info" style="font-size: 2.5rem;">{{ $ofertas_mes }}</h2>
-                    <p class="text-muted">de {{ $stats['ofertas'] }} totales</p>
-                    <canvas id="rolesChart" style="height: 180px;"></canvas>
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <span class="font-weight-bold text-info" style="font-size: 2rem;">{{ $ofertas_mes }}</span>
+                        <span class="text-muted">pasantías en {{ now()->locale('es')->monthName }}</span>
+                    </div>
+                    <canvas id="rolesChart" style="height: 120px;"></canvas>
                 </div>
             </div>
         </div>
