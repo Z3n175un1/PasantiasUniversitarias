@@ -256,21 +256,21 @@ INSERT INTO "perfiles_estudiante" ("id", "usuario_id", "universidad", "carrera",
 EOT
                 );
                 DB::statement(<<<EOT
-INSERT INTO "ofertas_pasantia" ("id", "perfil_empresa_id", "ubicacion_id", "estado_publicacion_id", "titulo", "descripcion", "modalidad", "carrera", "requisitos", "beneficios", "vacantes_disponibles", "duracion_semanas", "fecha_inicio", "fecha_fin") VALUES (1, 1, 1, 2, 'Backend Laravel', 'Pasantía backend', 'Presencial', 'Ingeniería de Sistemas', 'Conocimientos en Laravel', 'Certificado', 1, 24, '2026-06-01', '2026-12-01'),
+INSERT INTO "ofertas_pasantia" ("id", "perfil_empresa_id", "ubicacion_id", "estado_publicacion_id", "titulo", "descripcion", "modalidad", "carrera", "requisitos", "beneficios", "vacantes_disponibles", "duracion_semanas", "fecha_inicio", "fecha_fin") VALUES (1, 1, 3, 2, 'Backend Laravel', 'Pasantía backend', 'Presencial', 'Ingeniería de Sistemas', 'Conocimientos en Laravel', 'Certificado', 1, 24, '2026-06-01', '2026-12-01'),
 (2, 2, 3, 2, 'Frontend React', 'Frontend web', 'Presencial', 'Ingeniería Informática', 'Conocimientos en React', 'Certificado', 1, 22, '2026-06-01', '2026-11-01'),
 (3, 3, 4, 2, 'Analista BI', 'Power BI y Excel', 'Presencial', 'Ingeniería Comercial', 'Excel avanzado', 'Certificado', 1, 26, '2026-07-01', '2026-12-30'),
-(4, 4, 2, 1, 'Soporte TI', 'Infraestructura TI', 'Presencial', 'Ingeniería de Sistemas', 'Conocimientos en redes', 'Certificado', 1, 18, '2026-06-15', '2026-10-15'),
-(5, 5, 5, 2, 'QA Tester', 'Control de calidad', 'Presencial', 'Ingeniería Informática', 'Pruebas de software', 'Certificado', 1, 18, '2026-08-01', '2026-12-01'),
-(6, 1, 6, 2, 'DevOps Junior', 'Docker y Linux', 'Presencial', 'Ingeniería de Sistemas', 'Linux y Docker', 'Certificado', 1, 18, '2026-07-10', '2026-11-10'),
-(7, 2, 7, 2, 'Data Analyst', 'Análisis de datos', 'Presencial', 'Estadística', 'Python y SQL', 'Certificado', 1, 26, '2026-06-20', '2026-12-20'),
-(8, 3, 8, 2, 'Node.js Developer', 'Backend Node', 'Presencial', 'Ingeniería de Sistemas', 'Node.js', 'Certificado', 1, 18, '2026-06-01', '2026-10-01'),
-(9, 4, 9, 2, 'UX/UI Designer', 'Figma y UX', 'Remoto', 'Diseño Digital', 'Figma', 'Certificado', 1, 22, '2026-07-01', '2026-12-01'),
-(10, 5, 10, 2, 'Redes', 'Administración redes', 'Presencial', 'Redes y Telecomunicaciones', 'CCNA', 'Certificado', 1, 22, '2026-08-01', '2026-12-31'),
-(11, 1, 11, 2, 'Java Developer', 'Spring Boot', 'Híbrido', 'Ingeniería de Sistemas', 'Java y Spring', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
-(12, 2, 12, 2, 'Cybersecurity Intern', 'Seguridad TI', 'Presencial', 'Ciberseguridad', 'Seguridad informática', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
-(13, 3, 13, 2, 'Cloud Assistant', 'AWS y Docker', 'Remoto', 'Ingeniería de Sistemas', 'AWS y Docker', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
-(14, 4, 14, 2, 'Marketing BI', 'Power BI', 'Presencial', 'Marketing', 'Power BI', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
-(15, 5, 15, 2, 'Fullstack Developer', 'Laravel y React', 'Presencial', 'Ingeniería Informática', 'Laravel y React', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
+(4, 4, 3, 1, 'Soporte TI', 'Infraestructura TI', 'Presencial', 'Ingeniería de Sistemas', 'Conocimientos en redes', 'Certificado', 1, 18, '2026-06-15', '2026-10-15'),
+(5, 5, 3, 2, 'QA Tester', 'Control de calidad', 'Presencial', 'Ingeniería Informática', 'Pruebas de software', 'Certificado', 1, 18, '2026-08-01', '2026-12-01'),
+(6, 1, 7, 2, 'DevOps Junior', 'Docker y Linux', 'Presencial', 'Ingeniería de Sistemas', 'Linux y Docker', 'Certificado', 1, 18, '2026-07-10', '2026-11-10'),
+(7, 2, 3, 2, 'Data Analyst', 'Análisis de datos', 'Presencial', 'Estadística', 'Python y SQL', 'Certificado', 1, 26, '2026-06-20', '2026-12-20'),
+(8, 3, 3, 2, 'Node.js Developer', 'Backend Node', 'Presencial', 'Ingeniería de Sistemas', 'Node.js', 'Certificado', 1, 18, '2026-06-01', '2026-10-01'),
+(9, 4, 3, 2, 'UX/UI Designer', 'Figma y UX', 'Remoto', 'Diseño Digital', 'Figma', 'Certificado', 1, 22, '2026-07-01', '2026-12-01'),
+(10, 5, 5, 2, 'Redes', 'Administración redes', 'Presencial', 'Redes y Telecomunicaciones', 'CCNA', 'Certificado', 1, 22, '2026-08-01', '2026-12-31'),
+(11, 1, 3, 2, 'Java Developer', 'Spring Boot', 'Híbrido', 'Ingeniería de Sistemas', 'Java y Spring', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
+(12, 2, 4, 2, 'Cybersecurity Intern', 'Seguridad TI', 'Presencial', 'Ciberseguridad', 'Seguridad informática', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
+(13, 3, 3, 2, 'Cloud Assistant', 'AWS y Docker', 'Remoto', 'Ingeniería de Sistemas', 'AWS y Docker', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
+(14, 4, 3, 2, 'Marketing BI', 'Power BI', 'Presencial', 'Marketing', 'Power BI', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
+(15, 5, 7, 2, 'Fullstack Developer', 'Laravel y React', 'Presencial', 'Ingeniería Informática', 'Laravel y React', 'Certificado', 1, 26, '2026-06-01', '2026-12-01'),
 (16, 2, 3, 2, 'Pasante Ingeniería de Redes y Telecomunicaciones', 'Buscamos un pasante apasionado por las telecomunicaciones para unirse al equipo de infraestructura de red de Tigo Bolivia. Apoyarás en la configuración, monitoreo y mantenimiento de la red de telecomunicaciones, así como en la implementación de nuevas tecnologías de conectividad.', 'Presencial', 'Ingeniería de Sistemas, Redes, Telecomunicaciones', 'Conocimientos básicos de redes TCP/IP, protocolos de enrutamiento, experiencia con equipos Cisco (deseable), disponibilidad presencial en Santa Cruz.', 'Certificado de pasantía, experiencia laboral en una de las telecomunicaciones más grandes de Bolivia, horario flexible, compensación económica.', 2, 16, '2026-08-01', '2026-11-30'),
 (17, 2, 1, 2, 'Pasante Marketing Digital y Redes Sociales', 'Apoyarás al equipo de marketing digital en la creación de contenido, gestión de redes sociales, análisis de métricas y campañas publicitarias para la marca Tigo.', 'Presencial', 'Marketing, Publicidad, Comunicación Social', 'Conocimientos en redes sociales, herramientas de métricas (Meta Business Suite, Google Analytics), creatividad, manejo de Canva o Adobe Suite.', 'Certificado, experiencia en marketing digital, ambiente corporativo dinámico, capacitaciones internas.', 1, 12, '2026-08-15', '2026-11-15'),
 (18, 2, 4, 2, 'Pasante Desarrollo Android Kotlin', 'Te unirás al equipo de desarrollo mobile para crear y mantener aplicaciones Android para los servicios digitales de Tigo Bolivia.', 'Híbrido', 'Ingeniería de Sistemas, Informática', 'Conocimientos en Kotlin o Java, experiencia con Android Studio, APIs REST, Git. Deseable: experiencia con Firebase.', 'Certificado, posibilidad de contratación, trabajo híbrido, beneficios corporativos, coaching con desarrolladores seniors.', 2, 24, '2026-09-01', '2027-02-28'),
@@ -291,6 +291,36 @@ EOT
 
                 DB::statement(<<<EOT
 INSERT INTO "requisitos_habilidad_oferta" ("oferta_pasantia_id", "habilidad_id", "peso", "nivel_minimo", "tipo_criterio") VALUES
+-- JALASOFT: Oferta 1 - Backend Laravel
+(1, 1, 30, 3, 'benefit'), (1, 2, 20, 2, 'benefit'), (1, 11, 20, 2, 'benefit'), (1, 5, 15, 2, 'benefit'), (1, 10, 15, 2, 'benefit'),
+-- TIGO: Oferta 2 - Frontend React
+(2, 5, 30, 3, 'benefit'), (2, 6, 25, 2, 'benefit'), (2, 101, 15, 2, 'benefit'), (2, 104, 15, 2, 'benefit'), (2, 11, 15, 2, 'benefit'),
+-- BANCO MERCANTIL: Oferta 3 - Analista BI
+(3, 7, 30, 3, 'benefit'), (3, 8, 25, 2, 'benefit'), (3, 111, 20, 2, 'benefit'), (3, 3, 15, 2, 'benefit'), (3, 125, 10, 1, 'benefit'),
+-- DATEC: Oferta 4 - Soporte TI
+(4, 9, 30, 3, 'benefit'), (4, 15, 25, 2, 'benefit'), (4, 2, 20, 2, 'benefit'), (4, 48, 15, 2, 'benefit'), (4, 113, 10, 1, 'benefit'),
+-- JATUN CODE: Oferta 5 - QA Tester
+(5, 5, 25, 2, 'benefit'), (5, 11, 20, 2, 'benefit'), (5, 10, 20, 2, 'benefit'), (5, 116, 20, 2, 'benefit'), (5, 64, 15, 1, 'benefit'),
+-- JALASOFT: Oferta 6 - DevOps Junior
+(6, 10, 30, 3, 'benefit'), (6, 9, 25, 2, 'benefit'), (6, 11, 20, 2, 'benefit'), (6, 113, 15, 2, 'benefit'), (6, 116, 10, 1, 'benefit'),
+-- TIGO: Oferta 7 - Data Analyst
+(7, 3, 25, 2, 'benefit'), (7, 111, 25, 2, 'benefit'), (7, 7, 20, 2, 'benefit'), (7, 8, 15, 2, 'benefit'), (7, 125, 15, 2, 'benefit'),
+-- BANCO MERCANTIL: Oferta 8 - Node.js Developer
+(8, 13, 30, 3, 'benefit'), (8, 5, 20, 2, 'benefit'), (8, 2, 20, 2, 'benefit'), (8, 11, 15, 2, 'benefit'), (8, 110, 15, 2, 'benefit'),
+-- DATEC: Oferta 9 - UX/UI Designer
+(9, 12, 35, 3, 'benefit'), (9, 5, 20, 2, 'benefit'), (9, 104, 15, 2, 'benefit'), (9, 105, 15, 2, 'benefit'), (9, 106, 15, 2, 'benefit'),
+-- JATUN CODE: Oferta 10 - Redes
+(10, 15, 30, 3, 'benefit'), (10, 9, 20, 2, 'benefit'), (10, 118, 20, 2, 'benefit'), (10, 11, 15, 2, 'benefit'), (10, 113, 15, 2, 'benefit'),
+-- JALASOFT: Oferta 11 - Java Developer
+(11, 4, 30, 3, 'benefit'), (11, 40, 20, 2, 'benefit'), (11, 110, 20, 2, 'benefit'), (11, 11, 15, 2, 'benefit'), (11, 2, 15, 2, 'benefit'),
+-- TIGO: Oferta 12 - Cybersecurity Intern
+(12, 118, 30, 3, 'benefit'), (12, 119, 25, 2, 'benefit'), (12, 9, 20, 2, 'benefit'), (12, 15, 15, 2, 'benefit'), (12, 120, 10, 1, 'benefit'),
+-- BANCO MERCANTIL: Oferta 13 - Cloud Assistant
+(13, 113, 30, 3, 'benefit'), (13, 10, 25, 2, 'benefit'), (13, 9, 20, 2, 'benefit'), (13, 11, 15, 2, 'benefit'), (13, 116, 10, 1, 'benefit'),
+-- DATEC: Oferta 14 - Marketing BI
+(14, 8, 30, 3, 'benefit'), (14, 7, 25, 2, 'benefit'), (14, 47, 20, 2, 'benefit'), (14, 48, 15, 2, 'benefit'), (14, 125, 10, 1, 'benefit'),
+-- JATUN CODE: Oferta 15 - Fullstack Developer
+(15, 1, 25, 3, 'benefit'), (15, 6, 25, 2, 'benefit'), (15, 2, 20, 2, 'benefit'), (15, 5, 15, 2, 'benefit'), (15, 11, 15, 2, 'benefit'),
 -- TIGO BOLIVIA: Oferta 16 - Redes
 (16, 15, 35, 3, 'benefit'),
 (16, 9, 20, 2, 'benefit'),
