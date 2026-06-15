@@ -6,3 +6,5 @@ A project designed for students in the final stages of their career, specificall
 -> https://iconscout.com/es
 
 # CREDITOS A ELLOS PORFA 
+
+owozu malo
