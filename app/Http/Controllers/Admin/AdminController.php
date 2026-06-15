@@ -89,7 +89,7 @@ class AdminController extends Controller
             $request->validate([
                 'universidad' => 'required|string|max:200',
                 'carrera' => 'required|string|max:200',
-                'fecha_nacimiento' => 'nullable|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+                'fecha_nacimiento' => 'nullable|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d') . '|after_or_equal:' . now()->subYears(30)->format('Y-m-d'),
             ]);
         }
 
@@ -195,7 +195,7 @@ class AdminController extends Controller
             $request->validate([
                 'universidad' => 'required|string|max:200',
                 'carrera' => 'required|string|max:200',
-                'fecha_nacimiento' => 'nullable|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d'),
+                'fecha_nacimiento' => 'nullable|date|before_or_equal:' . now()->subYears(18)->format('Y-m-d') . '|after_or_equal:' . now()->subYears(30)->format('Y-m-d'),
             ]);
         }
 
