@@ -44,6 +44,7 @@ class CompanyController extends Controller
         }
 
         $todas_postulaciones = $queryPostulaciones->orderByRaw('puntaje_topsis DESC NULLS LAST')->get();
+        $postulaciones_por_oferta = $todas_postulaciones->groupBy('oferta_pasantia_id');
         $postulaciones_recientes = $todas_postulaciones->take(5);
         $estados_postulacion = EstadoPostulacion::all();
         $ubicaciones = Ubicacion::all();
@@ -126,6 +127,7 @@ class CompanyController extends Controller
         return view('paneles-control.dashboard_company', compact(
             'empresa', 'ofertas', 'total_postulantes',
             'todas_postulaciones', 'postulaciones_recientes',
+            'postulaciones_por_oferta',
             'estados_postulacion', 'ubicaciones', 'carreras', 'modalidades',
             'habilidades', 'pasantiaFiltro'
         ));
