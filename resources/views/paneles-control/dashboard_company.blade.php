@@ -116,10 +116,10 @@
                                 <div class="flex items-center justify-between py-3.5 first:pt-0 last:pb-0">
                                     <div class="flex items-center gap-3">
                                         <div class="w-9 h-9 bg-slate-100 rounded-lg flex items-center justify-center font-bold text-xs text-slate-700">
-                                            {{ strtoupper(substr($post->perfilEstudiante->usuario->nombre ?? '?', 0, 2)) }}
+                                            {{ strtoupper(substr($post->perfilEstudiante->usuario->nombre ?? '?', 0, 1) . substr($post->perfilEstudiante->usuario->ap_paterno ?? '?', 0, 1)) }}
                                         </div>
                                         <div>
-                                            <h4 class="text-sm font-bold text-slate-900">{{ $post->perfilEstudiante->usuario->nombre ?? 'N/A' }}</h4>
+                                            <h4 class="text-sm font-bold text-slate-900">{{ trim(($post->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_materno ?? '')) }}</h4>
                                             <p class="text-xs text-slate-400">{{ $post->perfilEstudiante->carrera ?? '' }} • {{ $post->ofertaPasantia->titulo ?? '' }}</p>
                                         </div>
                                     </div>
@@ -208,10 +208,10 @@
                                         <div class="flex items-center justify-between mb-4">
                                             <div class="flex items-center gap-3">
                                                 <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center font-bold text-sm text-slate-700">
-                                                    {{ strtoupper(substr($post->perfilEstudiante->usuario->nombre ?? '?', 0, 2)) }}
+                                                    {{ strtoupper(substr($post->perfilEstudiante->usuario->nombre ?? '?', 0, 1) . substr($post->perfilEstudiante->usuario->ap_paterno ?? '?', 0, 1)) }}
                                                 </div>
                                                 <div>
-                                                    <h4 class="font-bold text-slate-900">{{ $post->perfilEstudiante->usuario->nombre ?? 'N/A' }}</h4>
+                                                    <h4 class="font-bold text-slate-900">{{ trim(($post->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_materno ?? '')) }}</h4>
                                                     <p class="text-xs text-slate-400">{{ $post->perfilEstudiante->carrera ?? 'N/A' }} - {{ $post->perfilEstudiante->universidad ?? '' }}</p>
                                                 </div>
                                             </div>
@@ -1110,7 +1110,7 @@
         function validarPerfilEmpresa() {
             const tel = document.getElementById('perfil-telefono');
             const telError = document.getElementById('perfil-telefono-error');
-            if (tel && tel.value && !/^\d{7,15}$/.test(tel.value.replace(/\s/g, ''))) {
+            if (tel && tel.value && !/^\d{8,}$/.test(tel.value.replace(/\s/g, ''))) {
                 tel.classList.add('input-error');
                 if (telError) telError.classList.add('visible');
                 return false;

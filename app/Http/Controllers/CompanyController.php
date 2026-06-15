@@ -308,7 +308,7 @@ class CompanyController extends Controller
             'nombre_empresa' => 'required|string|max:200',
             'industria' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:2000',
-            'telefono' => 'nullable|numeric|digits_between:7,15',
+            'telefono' => 'nullable|numeric|digits_between:8,20',
             'direccion' => 'nullable|string|max:255',
             'tamano_empresa' => 'nullable|string|in:Pequeña,Mediana,Grande',
             'anio_fundacion' => 'nullable|integer|min:1800|max:' . date('Y'),
