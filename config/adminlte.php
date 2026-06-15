@@ -257,7 +257,7 @@ return [
     */
 
     'use_route_url' => true,
-    'dashboard_url' => 'dashboard.admin',
+    'dashboard_url' => 'admin.dashboard',
     'logout_url' => 'logout',
     'login_url' => 'login',
     'register_url' => 'register',

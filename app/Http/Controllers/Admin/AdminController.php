@@ -20,20 +20,25 @@ class AdminController extends Controller
 {
     public function dashboard()
     {
+        $admins = Usuario::where('rol_id', 3)->count();
         $stats = [
             'usuarios' => Usuario::count(),
             'empresas' => PerfilEmpresa::count(),
             'estudiantes' => PerfilEstudiante::count(),
             'ofertas' => OfertaPasantia::count(),
             'postulaciones' => Postulacion::count(),
+            'admins' => $admins,
             'ultimos_usuarios' => Usuario::with('rol')->latest('creado_en')->take(10)->get(),
         ];
 
         $distribucion = [
             'estudiantes' => PerfilEstudiante::count(),
             'empresas' => PerfilEmpresa::count(),
-            'admins' => Usuario::where('rol_id', 3)->count(),
+            'admins' => $admins,
         ];
+
+        $mesActual = now()->format('Y-m');
+        $ofertas_mes = OfertaPasantia::whereRaw("to_char(fecha_inicio, 'YYYY-MM') = ?", [$mesActual])->count();
 
         $ofertas_recientes = OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])
             ->orderBy('id', 'desc')->take(5)->get();
@@ -41,7 +46,7 @@ class AdminController extends Controller
         $ultimos_logs = RegistroAuditoria::with('usuario')
             ->orderBy('creado_en', 'desc')->take(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'distribucion', 'ofertas_recientes', 'ultimos_logs'));
+        return view('admin.dashboard', compact('stats', 'distribucion', 'ofertas_recientes', 'ultimos_logs', 'ofertas_mes'));
     }
 
     // ── CRUD Usuarios ──────────────────────────────────────────────────────────

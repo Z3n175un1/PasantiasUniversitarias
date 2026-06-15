@@ -67,12 +67,26 @@
             <div class="small-box bg-danger">
                 <div class="inner">
                     <h3>{{ $stats['ofertas'] }}</h3>
-                    <p>Ofertas Activas</p>
+                    <p>Ofertas</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-briefcase"></i>
                 </div>
                 <a href="{{ route('admin.ofertas') }}" class="small-box-footer">
+                    Ver detalles <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-3 col-6">
+            <div class="small-box bg-dark">
+                <div class="inner">
+                    <h3>{{ $stats['admins'] }}</h3>
+                    <p>Administradores</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <a href="{{ route('admin.usuarios') }}" class="small-box-footer">
                     Ver detalles <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -96,11 +110,13 @@
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title font-weight-bold">
-                        <i class="fas fa-chart-pie mr-2"></i>Resumen
+                        <i class="fas fa-chart-pie mr-2"></i>Pasantías {{ now()->locale('es')->monthName }}
                     </h3>
                 </div>
-                <div class="card-body">
-                    <canvas id="rolesChart" style="height: 250px;"></canvas>
+                <div class="card-body text-center">
+                    <h2 class="font-weight-bold text-info" style="font-size: 2.5rem;">{{ $ofertas_mes }}</h2>
+                    <p class="text-muted">de {{ $stats['ofertas'] }} totales</p>
+                    <canvas id="rolesChart" style="height: 180px;"></canvas>
                 </div>
             </div>
         </div>
@@ -291,18 +307,22 @@ $(function() {
     });
 
     var ctxPie = document.getElementById('rolesChart').getContext('2d');
+    var ofertasMes = {{ $ofertas_mes }};
+    var resto = Math.max(0, {{ $stats['ofertas'] }} - ofertasMes);
     new Chart(ctxPie, {
         type: 'doughnut',
         data: {
-            labels: ['Estudiantes', 'Empresas', 'Postulaciones', 'Ofertas'],
+            labels: ['Este Mes (' + ofertasMes + ')', 'Resto (' + resto + ')'],
             datasets: [{
-                data: [{{ $stats['estudiantes'] }}, {{ $stats['empresas'] }}, {{ $stats['postulaciones'] }}, {{ $stats['ofertas'] }}],
-                backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545'],
+                data: [ofertasMes, resto],
+                backgroundColor: ['#17a2b8', '#e9ecef'],
+                borderWidth: 0,
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            cutout: '70%',
             legend: { position: 'bottom' },
         }
     });
