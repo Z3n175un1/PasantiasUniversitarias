@@ -291,7 +291,7 @@
                 <ul class="mt-8 space-y-3 text-left max-w-xs mx-auto fade-in">
                     <li class="flex items-center gap-3 text-blue-100 text-sm">
                         <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-300 flex-shrink-0"></i>
-                        Accede a +500 pasantías verificadas
+                        Accede a +{{ $ofertas_count }} pasantías verificadas
                     </li>
                     <li class="flex items-center gap-3 text-blue-100 text-sm">
                         <i data-lucide="check-circle-2" class="w-5 h-5 text-blue-300 flex-shrink-0"></i>

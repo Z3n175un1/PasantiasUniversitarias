@@ -64,7 +64,7 @@
                     @forelse($usuarios as $usuario)
                         <tr>
                             <td>{{ $usuario->id }}</td>
-                            <td class="font-weight-bold">{{ $usuario->nombre }}</td>
+                            <td class="font-weight-bold">{{ $usuario->nombre }} {{ $usuario->ap_paterno }} {{ $usuario->ap_materno }}</td>
                             <td>{{ $usuario->correo }}</td>
                             <td>
                                 @php

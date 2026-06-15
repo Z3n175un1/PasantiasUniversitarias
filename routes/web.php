@@ -61,7 +61,9 @@ Route::get('/comofunciona', function () {
 })->name('comofunciona');
 
 Route::get('/sobrenosotros', function () {
-    return view('sobrenosotros');
+    $estudiantes_count = PerfilEstudiante::count();
+    $empresas_count = PerfilEmpresa::count();
+    return view('sobrenosotros', compact('estudiantes_count', 'empresas_count'));
 })->name('sobrenosotros');
 
 Route::get('/contacto', function () {
@@ -75,7 +77,10 @@ Route::get('/privacidad', function () {
 // ── Login ─────────────────────────────────────────────────────────────────────
 
 Route::get('/login', function () {
-    return view('autenticacion.login');
+    $ofertas_count = OfertaPasantia::count();
+    $empresas_count = PerfilEmpresa::count();
+    $estudiantes_count = PerfilEstudiante::count();
+    return view('autenticacion.login', compact('ofertas_count', 'empresas_count', 'estudiantes_count'));
 })->name('login');
 
 Route::post('/login', function (Request $request) {
@@ -157,7 +162,8 @@ Route::get('/register/{rol}', function ($rol) {
     if (!in_array($rol, ['student', 'company'])) {
         abort(404);
     }
-    return view('autenticacion.register', compact('rol'));
+    $ofertas_count = OfertaPasantia::count();
+    return view('autenticacion.register', compact('rol', 'ofertas_count'));
 })->name('register')->where('rol', 'student|company');
 
 Route::post('/register', function (Request $request) {
@@ -345,8 +351,12 @@ Route::middleware('auth')->group(function () {
         $postulacionesPorEstado = Postulacion::selectRaw('estado_postulacion_id, count(*) as total')
             ->groupBy('estado_postulacion_id')->pluck('total', 'estado_postulacion_id');
 
-        $usuariosPorMes = Usuario::selectRaw("strftime('%m', creado_en) as mes, count(*) as total")
-            ->whereYear('creado_en', '>=', now()->subYear()->year)
+        $usuariosPorMes = Usuario::selectRaw("EXTRACT(MONTH FROM creado_en) as mes, count(*) as total")
+            ->where('creado_en', '>=', now()->subYear())
+            ->groupBy('mes')->orderBy('mes')->pluck('total', 'mes');
+
+        $ofertasPorMes = OfertaPasantia::selectRaw("EXTRACT(MONTH FROM fecha_inicio) as mes, count(*) as total")
+            ->where('fecha_inicio', '>=', now()->subYear())
             ->groupBy('mes')->orderBy('mes')->pluck('total', 'mes');
 
         $ultimosLogs = RegistroAuditoria::with('usuario')
@@ -371,6 +381,7 @@ Route::middleware('auth')->group(function () {
             'ofertas_por_estado' => $ofertasPorEstado,
             'postulaciones_por_estado' => $postulacionesPorEstado,
             'usuarios_por_mes' => $usuariosPorMes,
+            'ofertas_por_mes' => $ofertasPorMes,
             'ultimos_logs' => $ultimosLogs,
         ];
         return view('paneles-control.dashboard_admin', compact('stats'));

@@ -140,11 +140,11 @@
 
             <div class="grid grid-cols-3 gap-6 pt-8 border-t border-gray-200">
                 <div class="stat-reveal">
-                    <strong class="block text-4xl font-extrabold text-[#2b6df2]">+200</strong>
+                    <strong class="block text-4xl font-extrabold text-[#2b6df2]">+{{ $estudiantes_count }}</strong>
                     <span class="text-sm text-[#888] font-medium uppercase tracking-wider">Estudiantes</span>
                 </div>
                 <div class="stat-reveal" style="animation-delay: 0.2s;">
-                    <strong class="block text-4xl font-extrabold text-[#2b6df2]">+10</strong>
+                    <strong class="block text-4xl font-extrabold text-[#2b6df2]">+{{ $empresas_count }}</strong>
                     <span class="text-sm text-[#888] font-medium uppercase tracking-wider">Empresas</span>
                 </div>
 

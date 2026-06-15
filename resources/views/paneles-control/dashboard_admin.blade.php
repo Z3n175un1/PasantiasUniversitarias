@@ -120,7 +120,7 @@
                                                 {{ strtoupper(substr($usuario->nombre, 0, 1)) }}
                                             </div>
                                             <div>
-                                                <p class="text-sm font-semibold">{{ $usuario->nombre }}</p>
+                                                <p class="text-sm font-semibold">{{ $usuario->nombre }} {{ $usuario->ap_paterno }} {{ $usuario->ap_materno }}</p>
                                                 <p class="text-xs text-slate-400">{{ $usuario->correo }}</p>
                                             </div>
                                         </div>
@@ -300,6 +300,22 @@
                             <canvas id="ofertasChart" style="height: 260px;"></canvas>
                         </div>
                     </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 class="font-bold mb-4 flex items-center gap-2">
+                                <i data-lucide="trending-up" class="w-5 h-5 text-blue-600"></i>
+                                Ofertas por Mes (último año)
+                            </h3>
+                            <canvas id="ofertasMesChart" style="height: 260px;"></canvas>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <h3 class="font-bold mb-4 flex items-center gap-2">
+                                <i data-lucide="users" class="w-5 h-5 text-green-600"></i>
+                                Usuarios por Mes (último año)
+                            </h3>
+                            <canvas id="usuariosMesChart" style="height: 260px;"></canvas>
+                        </div>
+                    </div>
                     <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
                         <h3 class="font-bold mb-4 flex items-center gap-2">
                             <i data-lucide="activity" class="w-5 h-5 text-green-600"></i>
@@ -389,6 +405,71 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { position: 'bottom', labels: { font: { size: 11, family: 'Inter' }, padding: 16 } }
+                    }
+                }
+            });
+        }
+
+        const ofertasMesCtx = document.getElementById('ofertasMesChart')?.getContext('2d');
+        if (ofertasMesCtx) {
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const dataMap = @json($stats['ofertas_por_mes']);
+            const values = meses.map((_, i) => dataMap[i + 1] || 0);
+            new Chart(ofertasMesCtx, {
+                type: 'line',
+                data: {
+                    labels: meses,
+                    datasets: [{
+                        label: 'Ofertas',
+                        data: values,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59,130,246,0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3b82f6',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Inter' } } },
+                        x: { ticks: { font: { family: 'Inter' } } }
+                    }
+                }
+            });
+        }
+
+        const usuariosMesCtx = document.getElementById('usuariosMesChart')?.getContext('2d');
+        if (usuariosMesCtx) {
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const dataMap = @json($stats['usuarios_por_mes']);
+            const values = meses.map((_, i) => dataMap[i + 1] || 0);
+            new Chart(usuariosMesCtx, {
+                type: 'bar',
+                data: {
+                    labels: meses,
+                    datasets: [{
+                        label: 'Usuarios',
+                        data: values,
+                        backgroundColor: '#22c55e',
+                        borderRadius: 6,
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Inter' } } },
+                        x: { ticks: { font: { family: 'Inter' } } }
                     }
                 }
             });

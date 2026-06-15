@@ -86,15 +86,15 @@
             {{-- Stats --}}
             <div class="grid grid-cols-3 gap-6 mt-12 fade-in">
                 <div class="text-center">
-                    <p class="text-2xl font-extrabold text-white">+500</p>
+                    <p class="text-2xl font-extrabold text-white">+{{ $ofertas_count }}</p>
                     <p class="text-xs text-blue-200/60 font-medium">Pasantías</p>
                 </div>
                 <div class="text-center">
-                    <p class="text-2xl font-extrabold text-white">+200</p>
+                    <p class="text-2xl font-extrabold text-white">+{{ $empresas_count }}</p>
                     <p class="text-xs text-blue-200/60 font-medium">Empresas</p>
                 </div>
                 <div class="text-center">
-                    <p class="text-2xl font-extrabold text-white">+1K</p>
+                    <p class="text-2xl font-extrabold text-white">+{{ $estudiantes_count }}</p>
                     <p class="text-xs text-blue-200/60 font-medium">Estudiantes</p>
                 </div>
             </div>
