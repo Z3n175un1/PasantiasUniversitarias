@@ -89,13 +89,13 @@
                 <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center border border-blue-100">
                     <div class="w-6 h-6 border-2 border-[#2b6df2] rounded-full border-t-transparent animate-spin"></div>
                 </div>
-                <div class="flex flex-col">
+{{--                 <div class="flex flex-col">
                     <span class="text-xs text-[#666] font-medium uppercase tracking-wider">Tasa de Éxito</span>
                     <strong class="text-2xl text-[#0d121f] font-extrabold">87%</strong>
                     <div class="w-20 h-1.5 bg-gray-100 rounded-full overflow-hidden mt-1.5">
                         <div class="h-full bg-[#2b6df2] animate-progress rounded-full"></div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </section>
