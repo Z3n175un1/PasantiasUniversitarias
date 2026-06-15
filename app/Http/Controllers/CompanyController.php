@@ -209,7 +209,7 @@ class CompanyController extends Controller
             'creado_en' => now(),
         ]);
 
-        return redirect()->route('dashboard.company')->with('success', '¡Bien hecho! Publicaste tu oferta correctamente. :D');
+        return back()->with('success', '¡Bien hecho! Publicaste tu oferta correctamente. :D');
     }
 
     public function actualizarOferta(Request $request, $id)
@@ -282,7 +282,7 @@ class CompanyController extends Controller
             'creado_en' => now(),
         ]);
 
-        return redirect()->route('dashboard.company')->with('success', '¡Bien hecho! Actualizaste tu oferta correctamente. :D');
+        return back()->with('success', '¡Bien hecho! Actualizaste tu oferta correctamente. :D');
     }
 
     public function eliminarOferta($id)
@@ -307,7 +307,7 @@ class CompanyController extends Controller
 
         $oferta->delete();
 
-        return redirect()->route('dashboard.company')->with('success', 'Oferta eliminada correctamente.');
+        return back()->with('success', 'Oferta eliminada correctamente.');
     }
 
     public function actualizarPerfil(Request $request)
