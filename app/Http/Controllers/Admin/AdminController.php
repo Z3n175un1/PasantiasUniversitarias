@@ -566,8 +566,11 @@ class AdminController extends Controller
         $filename = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
         $filepath = $backupDir . '/' . $filename;
 
+        $pgDumpPath = 'C:\Program Files\PostgreSQL\17\bin\pg_dump.exe';
+
         $command = sprintf(
-            'pg_dump --host=%s --port=%s --username=%s --dbname=%s --no-password --file=%s 2>&1',
+            '%s --host=%s --port=%s --username=%s --dbname=%s --no-password --file=%s 2>&1',
+            $pgDumpPath,
             escapeshellarg($dbHost),
             escapeshellarg($dbPort),
             escapeshellarg($dbUser),
