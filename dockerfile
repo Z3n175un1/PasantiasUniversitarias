@@ -36,6 +36,7 @@ WORKDIR /app
 
 # Dependencias del sistema
 RUN apk add --no-cache \
+    postgresql-client \
     libpq-dev \
     libzip-dev \
     libpng-dev \
