@@ -163,7 +163,27 @@ Route::get('/register/{rol}', function ($rol) {
         abort(404);
     }
     $ofertas_count = OfertaPasantia::count();
-    return view('autenticacion.register', compact('rol', 'ofertas_count'));
+    $carreras = [
+        'Administración de Empresas', 'Administración Turística y Hotelera', 'Agronomía',
+        'Antropología', 'Arqueología', 'Arquitectura', 'Artes Plásticas', 'Auditoría',
+        'Bioquímica', 'Biotecnología', 'Ciencia de la Computación', 'Ciencia Política',
+        'Ciencias de la Comunicación', 'Ciencias de la Educación', 'Ciencias del Deporte',
+        'Contabilidad', 'Derecho', 'Diseño de Interiores', 'Diseño Digital', 'Diseño Gráfico',
+        'Economía', 'Enfermería', 'Filosofía', 'Física', 'Fisioterapia', 'Geografía',
+        'Historia', 'Idiomas / Lingüística', 'Ingeniería Agroindustrial', 'Ingeniería Agronómica',
+        'Ingeniería Ambiental', 'Ingeniería Biomédica', 'Ingeniería Civil', 'Ingeniería Comercial',
+        'Ingeniería de Alimentos', 'Ingeniería de Sistemas', 'Ingeniería de Telecomunicaciones',
+        'Ingeniería Económica', 'Ingeniería Eléctrica', 'Ingeniería Electrónica',
+        'Ingeniería en Biotecnología', 'Ingeniería en Energías Renovables', 'Ingeniería Forestal',
+        'Ingeniería Geológica', 'Ingeniería Industrial', 'Ingeniería Informática',
+        'Ingeniería Mecánica', 'Ingeniería Mecatrónica', 'Ingeniería Metalúrgica',
+        'Ingeniería Petrolera', 'Ingeniería Química', 'Ingeniería Textil', 'Ingeniería Topográfica',
+        'Literatura', 'Marketing', 'Matemáticas', 'Medicina', 'Medicina Veterinaria', 'Música',
+        'Negocios Internacionales', 'Nutrición', 'Odontología', 'Pedagogía', 'Periodismo',
+        'Psicología', 'Química', 'Relaciones Internacionales', 'Sociología', 'Trabajo Social',
+        'Turismo y Hotelería',
+    ];
+    return view('autenticacion.register', compact('rol', 'ofertas_count', 'carreras'));
 })->name('register')->where('rol', 'student|company');
 
 Route::post('/register', function (Request $request) {
@@ -336,7 +356,7 @@ Route::get('/documentos/{id}/archivo', [App\Http\Controllers\DocumentoController
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/dashboard/admin', function () {
+    Route::get('/dashboard/admin', function (Request $request) {
         abort_if(Auth::user()->rol_id != 3, 403);
 
         $admins = Usuario::where('rol_id', 3)->count();
@@ -372,10 +392,10 @@ Route::middleware('auth')->group(function () {
             'ofertas' => $totalOfertas,
             'postulaciones' => $totalPostulaciones,
             'ultimos_usuarios' => Usuario::with('rol')->latest('creado_en')->take(10)->get(),
-            'todas_empresas' => PerfilEmpresa::with('usuario')->orderBy('nombre_empresa')->get(),
-            'todos_estudiantes' => PerfilEstudiante::with('usuario')->orderBy('carrera')->get(),
+            'todas_empresas' => PerfilEmpresa::with('usuario')->orderBy('nombre_empresa')->paginate(10, ['*'], 'empresas_page'),
+            'todos_estudiantes' => PerfilEstudiante::with('usuario')->orderBy('carrera')->paginate(10, ['*'], 'estudiantes_page'),
             'ofertas_activas' => OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])
-                ->where('estado_publicacion_id', 2)->orderBy('id', 'desc')->take(15)->get(),
+                ->where('estado_publicacion_id', 2)->orderBy('id', 'desc')->paginate(8, ['*'], 'ofertas_page'),
             'ofertas_borrador' => OfertaPasantia::with(['perfilEmpresa'])
                 ->where('estado_publicacion_id', 1)->count(),
             'ofertas_cerradas' => OfertaPasantia::with(['perfilEmpresa'])

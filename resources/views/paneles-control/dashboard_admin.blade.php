@@ -202,6 +202,9 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="p-4 border-t border-slate-100">
+                            {{ $stats['todas_empresas']->links() }}
+                        </div>
                     </div>
 
                     <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
@@ -234,6 +237,9 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="p-4 border-t border-slate-100">
+                            {{ $stats['todos_estudiantes']->links() }}
                         </div>
                     </div>
                 </section>
@@ -278,6 +284,9 @@
                                 <p class="text-sm text-slate-400 mt-1">Las empresas aún no han publicado ofertas.</p>
                             </div>
                         @endforelse
+                    </div>
+                    <div class="p-4">
+                        {{ $stats['ofertas_activas']->links() }}
                     </div>
                 </section>
 
@@ -448,14 +457,12 @@
         const ofertasCtx = document.getElementById('ofertasChart')?.getContext('2d');
         if (ofertasCtx) {
             new Chart(ofertasCtx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
                     labels: ['Abiertas', 'Borrador', 'Cerradas'],
                     datasets: [{
-                        label: 'Cantidad',
                         data: [{{ $stats['ofertas_activas']->count() }}, {{ $stats['ofertas_borrador'] }}, {{ $stats['ofertas_cerradas'] }}],
                         backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
-                        borderRadius: 6,
                         borderWidth: 0,
                     }]
                 },
@@ -463,11 +470,7 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Inter' } } },
-                        x: { ticks: { font: { family: 'Inter' } } }
+                        legend: { position: 'bottom', labels: { font: { size: 11, family: 'Inter' }, padding: 16 } }
                     }
                 }
             });

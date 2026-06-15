@@ -55,7 +55,7 @@
                     <i data-lucide="file-text" class="w-5 h-5"></i>
                     Documentos y Habilidades
                 </button>
-                <button data-tab="ofertas" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all text-left text-sm w-full">
+                <button data-tab="ofertas" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all text-left text-sm w-full hidden">
                     <i data-lucide="briefcase" class="w-5 h-5"></i>
                     Ofertas Disponibles
                 </button>
@@ -115,14 +115,14 @@
                                         <li class="text-xs text-amber-700 flex items-center gap-2">
                                             <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
                                             Sube al menos un documento (CV, certificado, etc.)
-                                            <a href="#" onclick="event.preventDefault(); document.querySelector('[data-tab=\"documentos\"]').click();" class="underline font-bold hover:text-amber-900">Ir a Documentos</a>
+                                            <a href="#" onclick="event.preventDefault(); cambiarTab('documentos');" class="underline font-bold hover:text-amber-900">Ir a Documentos</a>
                                         </li>
                                     @endif
                                     @if($sinHabilidades)
                                         <li class="text-xs text-amber-700 flex items-center gap-2">
                                             <span class="w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
                                             Registra al menos una habilidad técnica o blanda
-                                            <a href="#" onclick="event.preventDefault(); document.querySelector('[data-tab=\"documentos\"]').click();" class="underline font-bold hover:text-amber-900">Ir a Habilidades</a>
+                                            <a href="#" onclick="event.preventDefault(); cambiarTab('documentos');" class="underline font-bold hover:text-amber-900">Ir a Habilidades</a>
                                         </li>
                                     @endif
                                 </ul>
@@ -145,7 +145,7 @@
                                 <p class="text-sm font-semibold text-slate-400">En Entrevista</p>
                             </div>
                         </div>
-                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4">
+                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center gap-4 hidden">
                             <div class="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center"><i data-lucide="briefcase" class="w-6 h-6"></i></div>
                             <div>
                                 <h3 class="text-2xl font-black text-slate-900">{{ $ofertas_disponibles->count() }}</h3>
@@ -352,7 +352,7 @@
                 </section>
 
                 {{-- Ofertas Disponibles --}}
-                <section id="ofertas" class="tab-content space-y-6">
+                <section id="ofertas" class="tab-content space-y-6 hidden">
                     <h2 class="text-xl font-bold text-slate-900">Ofertas de Pasantía Disponibles</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         @forelse($ofertas_disponibles as $oferta)
@@ -422,13 +422,12 @@
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Carrera</label>
-                                    <select name="carrera" id="perfil-carrera"
-                                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium appearance-none cursor-pointer">
-                                        <option value="">Seleccionar carrera...</option>
-                                        @foreach($carreras as $carrera)
-                                            <option value="{{ $carrera }}" @selected(old('carrera', $estudiante->carrera) === $carrera)>{{ $carrera }}</option>
-                                        @endforeach
-                                    </select>
+                                    <input type="hidden" name="carrera" id="perfil-carrera" value="{{ old('carrera', $estudiante->carrera) }}">
+                                    <button type="button" onclick="abrirSelectorCarreraPerfil()"
+                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none text-sm font-medium text-left flex items-center justify-between focus:bg-white focus:border-blue-400 transition-all">
+                                        <span id="perfil-carrera-texto" class="{{ old('carrera', $estudiante->carrera) ? 'text-slate-900' : 'text-slate-400' }}">{{ old('carrera', $estudiante->carrera) ?: 'Seleccionar carrera...' }}</span>
+                                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                                    </button>
                                     <div class="error-text" id="perfil-carrera-error">La carrera es obligatoria</div>
                                 </div>
                             </div>
@@ -607,23 +606,25 @@
         };
         const tabButtons = document.querySelectorAll('.tab-btn');
 
-        tabButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const targetTab = btn.getAttribute('data-tab');
-                tabButtons.forEach(b => {
-                    b.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-200');
-                    b.classList.add('text-slate-600', 'hover:bg-slate-100');
-                    b.classList.remove('font-bold');
-                    b.classList.add('font-semibold');
-                });
-                btn.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-200');
-                btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
-                btn.classList.add('font-bold');
-                btn.classList.remove('font-semibold');
-
-                Object.values(tabsMap).forEach(section => section.classList.remove('active'));
-                if (tabsMap[targetTab]) tabsMap[targetTab].classList.add('active');
+        function cambiarTab(tabName) {
+            const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+            if (!btn) return;
+            tabButtons.forEach(b => {
+                b.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-200');
+                b.classList.add('text-slate-600', 'hover:bg-slate-100');
+                b.classList.remove('font-bold');
+                b.classList.add('font-semibold');
             });
+            btn.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg', 'shadow-blue-200');
+            btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+            btn.classList.add('font-bold');
+            btn.classList.remove('font-semibold');
+            Object.values(tabsMap).forEach(section => section.classList.remove('active'));
+            if (tabsMap[tabName]) tabsMap[tabName].classList.add('active');
+        }
+
+        tabButtons.forEach(btn => {
+            btn.addEventListener('click', () => cambiarTab(btn.getAttribute('data-tab')));
         });
 
         // Modal Documento
@@ -815,11 +816,51 @@
             return true;
         }
 
+        // ── Selector de Carreras (Chiplike) ──
+        const carrerasList = @json($carreras);
+
+        function abrirSelectorCarreraPerfil() {
+            const modal = document.getElementById('modal-selector-carrera-perfil');
+            modal.classList.remove('hidden');
+            document.getElementById('selector-carrera-perfil-buscar').value = '';
+            document.getElementById('selector-carrera-perfil-buscar').focus();
+            document.querySelectorAll('.selector-carrera-perfil-item').forEach(item => {
+                item.style.display = '';
+                const selected = document.getElementById('perfil-carrera').value;
+                if (selected && item.dataset.value === selected) {
+                    item.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+                    item.classList.remove('border-slate-200', 'text-slate-600');
+                } else {
+                    item.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                    item.classList.add('border-slate-200', 'text-slate-600');
+                }
+            });
+        }
+
+        function cerrarSelectorCarreraPerfil() {
+            document.getElementById('modal-selector-carrera-perfil').classList.add('hidden');
+        }
+
+        function seleccionarCarreraPerfil(valor, nombre) {
+            document.getElementById('perfil-carrera').value = valor;
+            const texto = document.getElementById('perfil-carrera-texto');
+            texto.textContent = nombre;
+            texto.classList.remove('text-slate-400');
+            texto.classList.add('text-slate-900');
+            cerrarSelectorCarreraPerfil();
+        }
+
+        function filtrarCarrerasPerfil() {
+            const q = document.getElementById('selector-carrera-perfil-buscar').value.toLowerCase();
+            document.querySelectorAll('.selector-carrera-perfil-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+
         // Limpiar errores al interactuar
         document.addEventListener('input', function(e) {
             const id = e.target.id;
             if (id === 'perfil-universidad') limpiarError(id, 'perfil-universidad-error');
-            if (id === 'perfil-carrera') limpiarError(id, 'perfil-carrera-error');
             if (id === 'perfil-anio') limpiarError(id, 'perfil-anio-error');
         });
 
@@ -829,5 +870,39 @@
             if (id === 'hab-select') limpiarError(id, 'hab-select-error');
         });
     </script>
+
+    {{-- Modal Selector Carreras (Perfil Estudiante) --}}
+    <script>
+        document.addEventListener('click', function (e) {
+            const modal = document.getElementById('modal-selector-carrera-perfil');
+            if (e.target === modal) cerrarSelectorCarreraPerfil();
+            const item = e.target.closest('.selector-carrera-perfil-item');
+            if (item && item.closest('#modal-selector-carrera-perfil')) {
+                seleccionarCarreraPerfil(item.dataset.value, item.textContent);
+            }
+        });
+    </script>
+
+    {{-- Modal Selector Carreras (Perfil Estudiante) --}}
+    <div id="modal-selector-carrera-perfil" class="fixed inset-0 bg-[#0d121f]/50 backdrop-blur-sm z-[60] flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-3xl mx-4 rounded-2xl shadow-2xl border max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                <h3 class="text-lg font-black text-slate-900">Seleccionar Carrera</h3>
+                <button type="button" onclick="cerrarSelectorCarreraPerfil()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-4 border-b border-slate-100">
+                <input type="text" id="selector-carrera-perfil-buscar" placeholder="Buscar carrera..." oninput="filtrarCarrerasPerfil()"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 transition-all text-sm font-medium">
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                @foreach($carreras as $carrera)
+                    <button type="button" class="selector-carrera-perfil-item px-4 py-3 rounded-xl text-left text-sm font-semibold border-2 transition hover:bg-blue-50 hover:border-blue-300 border-slate-200 text-slate-600"
+                        data-value="{{ $carrera }}">{{ $carrera }}</button>
+                @endforeach
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -159,6 +159,15 @@ class LogController extends Controller
             ]);
         }
 
+        if ($formato === 'html') {
+            $html = view('admin.reportes_printable', compact('headers', 'rows'))->render();
+            $filename = 'logs_sistema_' . date('Y-m-d');
+            return response($html, 200, [
+                'Content-Type' => 'text/html; charset=utf-8',
+                'Content-Disposition' => 'inline; filename="' . $filename . '.html"',
+            ]);
+        }
+
         return back()->with('error', 'Formato no soportado.');
     }
 }

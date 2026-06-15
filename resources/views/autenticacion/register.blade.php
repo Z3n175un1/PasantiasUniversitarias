@@ -118,9 +118,14 @@
                                 </div>
                                 <div>
                                     <label class="text-xs font-bold text-gray-700 ml-1">Carrera</label>
-                                    <input type="text" name="career" value="{{ old('career') }}" required
-                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none input-focus text-sm font-medium"
-                                        placeholder="Ej. Ingeniería de Sistemas">
+                                    <input type="hidden" name="career" id="register-carrera" value="{{ old('career') }}">
+                                    <button type="button" onclick="abrirSelectorCarreraRegistro()"
+                                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50/30 outline-none text-sm font-medium text-left flex items-center justify-between @error('career') error-input @enderror"
+                                        style="border-color: {{ $errors->has('career') ? '#ef4444' : '' }};">
+                                        <span id="register-carrera-texto" class="text-gray-400">{{ old('career') ?: 'Seleccionar carrera...' }}</span>
+                                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 shrink-0"></i>
+                                    </button>
+                                    @error('career') <p class="text-red-500 text-xs font-bold ml-1 mt-1">{{ $message }}</p> @enderror
                                 </div>
                             </div>
                         </div>
@@ -388,7 +393,81 @@
             icon.setAttribute('data-lucide', input.type === 'password' ? 'eye' : 'eye-off');
             lucide.createIcons();
         }
+
+        // ── Selector de Carreras (Chiplike) ──
+        const carrerasList = @json($carreras);
+
+        function abrirSelectorCarreraRegistro() {
+            const modal = document.getElementById('modal-selector-carrera-registro');
+            modal.classList.remove('hidden');
+            document.getElementById('selector-carrera-buscar').value = '';
+            document.getElementById('selector-carrera-buscar').focus();
+            document.querySelectorAll('.selector-carrera-item').forEach(item => {
+                item.style.display = '';
+                const selected = document.getElementById('register-carrera').value;
+                if (selected && item.dataset.value === selected) {
+                    item.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+                    item.classList.remove('border-gray-200', 'text-gray-700');
+                } else {
+                    item.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                    item.classList.add('border-gray-200', 'text-gray-700');
+                }
+            });
+        }
+
+        function cerrarSelectorCarrera() {
+            document.getElementById('modal-selector-carrera-registro').classList.add('hidden');
+        }
+
+        function seleccionarCarreraRegistro(valor, nombre) {
+            document.getElementById('register-carrera').value = valor;
+            const texto = document.getElementById('register-carrera-texto');
+            texto.textContent = nombre;
+            texto.classList.remove('text-gray-400');
+            texto.classList.add('text-gray-900');
+            cerrarSelectorCarrera();
+        }
+
+        function filtrarCarrerasRegistro() {
+            const q = document.getElementById('selector-carrera-buscar').value.toLowerCase();
+            document.querySelectorAll('.selector-carrera-item').forEach(item => {
+                item.style.display = item.textContent.toLowerCase().includes(q) ? '' : 'none';
+            });
+        }
+
+    </script>
+
+    {{-- Modal Selector Carreras (Registro) --}}
+    <script>
+        document.addEventListener('click', function (e) {
+            const modal = document.getElementById('modal-selector-carrera-registro');
+            if (e.target === modal) cerrarSelectorCarrera();
+            const item = e.target.closest('.selector-carrera-item');
+            if (item && item.closest('#modal-selector-carrera-registro')) {
+                seleccionarCarreraRegistro(item.dataset.value, item.textContent);
+            }
+        });
     </script>
     @stack('scripts')
+    <div id="modal-selector-carrera-registro" class="fixed inset-0 bg-[#0d121f]/50 backdrop-blur-sm z-[60] flex items-center justify-center hidden">
+        <div class="bg-white w-full max-w-3xl mx-4 rounded-2xl shadow-2xl border max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                <h3 class="text-lg font-black text-slate-900">Seleccionar Carrera</h3>
+                <button type="button" onclick="cerrarSelectorCarrera()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-4 border-b border-slate-100">
+                <input type="text" id="selector-carrera-buscar" placeholder="Buscar carrera..." oninput="filtrarCarrerasRegistro()"
+                    class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-400 transition-all text-sm font-medium">
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+                @foreach($carreras as $carrera)
+                    <button type="button" class="selector-carrera-item px-4 py-3 rounded-xl text-left text-sm font-semibold border-2 transition hover:bg-blue-50 hover:border-blue-300 border-gray-200 text-gray-700"
+                        data-value="{{ $carrera }}">{{ $carrera }}</button>
+                @endforeach
+            </div>
+        </div>
+    </div>
 </body>
 </html>

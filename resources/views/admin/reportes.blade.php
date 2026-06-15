@@ -70,18 +70,19 @@
             </h3>
             <div class="card-tools">
                 <span class="badge badge-primary">{{ $data['items']->count() }} registros</span>
-                @if(in_array($tipo, ['usuarios', 'ofertas']))
-                    <div class="btn-group ml-2">
-                        <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fas fa-download mr-1"></i>Exportar
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="{{ route('admin.reportes.exportar', 'csv') }}?tipo={{ $tipo }}&fecha_desde={{ $fecha_desde }}&fecha_hasta={{ $fecha_hasta }}">
-                                <i class="fas fa-file-csv mr-2 text-success"></i>CSV
-                            </a>
-                        </div>
+                <div class="btn-group ml-2">
+                    <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-download mr-1"></i>Exportar
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="{{ route('admin.reportes.exportar', 'csv') }}?tipo={{ $tipo }}&fecha_desde={{ $fecha_desde }}&fecha_hasta={{ $fecha_hasta }}">
+                            <i class="fas fa-file-csv mr-2 text-success"></i>CSV
+                        </a>
+                        <a class="dropdown-item" href="{{ route('admin.reportes.exportar', 'html') }}?tipo={{ $tipo }}&fecha_desde={{ $fecha_desde }}&fecha_hasta={{ $fecha_hasta }}" target="_blank">
+                            <i class="fas fa-file-pdf mr-2 text-danger"></i>PDF (Vista Imprimible)
+                        </a>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
         <div class="card-body p-0">

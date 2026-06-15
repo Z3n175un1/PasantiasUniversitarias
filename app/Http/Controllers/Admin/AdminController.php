@@ -649,9 +649,9 @@ class AdminController extends Controller
         $fecha_desde = $request->query('fecha_desde');
         $fecha_hasta = $request->query('fecha_hasta');
 
-        $query = Usuario::query();
-        $headers = ['ID', 'Nombre', 'Correo', 'Rol', 'Activo', 'Fecha Registro'];
+        $headers = [];
         $rows = [];
+        $filename = '';
 
         switch ($tipo) {
             case 'usuarios':
@@ -659,6 +659,7 @@ class AdminController extends Controller
                 if ($fecha_desde) $query->whereDate('creado_en', '>=', $fecha_desde);
                 if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
                 $items = $query->orderBy('id', 'desc')->get();
+                $headers = ['ID', 'Nombre', 'Correo', 'Rol', 'Activo', 'Fecha Registro'];
                 foreach ($items as $item) {
                     $rows[] = [
                         $item->id,
@@ -666,7 +667,7 @@ class AdminController extends Controller
                         $item->correo,
                         $item->rol->nombre ?? 'N/A',
                         $item->activo ? 'Sí' : 'No',
-                        $item->creado_en ? \Carbon\Carbon::parse($item->creado_en)->format('d/m/Y') : 'N/A',
+                        $item->creado_en ? \Carbon\Carbon::parse($item->creado_en)->format('d/m/Y H:i') : 'N/A',
                     ];
                 }
                 $filename = 'reporte_usuarios';
@@ -691,6 +692,46 @@ class AdminController extends Controller
                 $filename = 'reporte_ofertas';
                 break;
 
+            case 'postulaciones':
+                $query = Postulacion::with(['perfilEstudiante.usuario', 'ofertaPasantia']);
+                if ($fecha_desde) $query->whereDate('creado_en', '>=', $fecha_desde);
+                if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
+                $items = $query->orderBy('id', 'desc')->get();
+                $headers = ['ID', 'Estudiante', 'Oferta', 'Estado', 'Puntaje TOPSIS', 'Fecha'];
+                foreach ($items as $item) {
+                    $rows[] = [
+                        $item->id,
+                        $item->perfilEstudiante->usuario->nombre ?? 'N/A',
+                        $item->ofertaPasantia->titulo ?? 'N/A',
+                        $item->estadoPostulacion->nombre ?? 'N/A',
+                        $item->puntaje_topsis ?? '—',
+                        $item->creado_en ? \Carbon\Carbon::parse($item->creado_en)->format('d/m/Y H:i') : 'N/A',
+                    ];
+                }
+                $filename = 'reporte_postulaciones';
+                break;
+
+            case 'logs':
+                $query = RegistroAuditoria::with(['usuario', 'tipoEntidad']);
+                if ($fecha_desde) $query->whereDate('creado_en', '>=', $fecha_desde);
+                if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
+                $items = $query->orderBy('creado_en', 'desc')->get();
+                $headers = ['ID', 'Usuario', 'Acción', 'Tipo Entidad', 'Entidad ID', 'Valor Anterior', 'Valor Nuevo', 'Fecha'];
+                foreach ($items as $item) {
+                    $rows[] = [
+                        $item->id,
+                        $item->usuario->nombre ?? 'N/A',
+                        $item->accion,
+                        $item->tipoEntidad->nombre ?? 'N/A',
+                        $item->entidad_id ?? '—',
+                        is_array($item->valor_anterior) ? json_encode($item->valor_anterior) : ($item->valor_anterior ?? '—'),
+                        is_array($item->valor_nuevo) ? json_encode($item->valor_nuevo) : ($item->valor_nuevo ?? '—'),
+                        $item->creado_en ? \Carbon\Carbon::parse($item->creado_en)->format('d/m/Y H:i') : 'N/A',
+                    ];
+                }
+                $filename = 'reporte_logs';
+                break;
+
             default:
                 return back()->with('error', 'Tipo de reporte no válido para exportación.');
         }
@@ -709,6 +750,14 @@ class AdminController extends Controller
             return response()->stream($callback, 200, [
                 'Content-Type' => 'text/csv; charset=utf-8',
                 'Content-Disposition' => 'attachment; filename="' . $filename . '_' . date('Y-m-d') . '.csv"',
+            ]);
+        }
+
+        if ($formato === 'html') {
+            $html = view('admin.reportes_printable', compact('headers', 'rows', 'tipo', 'filename'))->render();
+            return response($html, 200, [
+                'Content-Type' => 'text/html; charset=utf-8',
+                'Content-Disposition' => 'inline; filename="' . $filename . '_' . date('Y-m-d') . '.html"',
             ]);
         }
 
