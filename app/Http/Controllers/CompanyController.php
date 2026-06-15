@@ -150,6 +150,13 @@ class CompanyController extends Controller
             'habilidades.*.tipo_criterio' => 'required|in:benefit,cost',
         ]);
 
+        if ($request->has('habilidades')) {
+            $suma = collect($request->habilidades)->sum('peso');
+            if (round($suma) != 100) {
+                return back()->withErrors(['habilidades' => 'Los pesos de las habilidades deben sumar 100%'])->withInput();
+            }
+        }
+
         $oferta = OfertaPasantia::create([
             'perfil_empresa_id' => $empresa->id,
             'ubicacion_id' => $request->ubicacion_id,
@@ -221,6 +228,13 @@ class CompanyController extends Controller
             'habilidades.*.peso' => 'required|numeric|min:0|max:100',
             'habilidades.*.tipo_criterio' => 'required|in:benefit,cost',
         ]);
+
+        if ($request->has('habilidades')) {
+            $suma = collect($request->habilidades)->sum('peso');
+            if (round($suma) != 100) {
+                return back()->withErrors(['habilidades' => 'Los pesos de las habilidades deben sumar 100%'])->withInput();
+            }
+        }
 
         $campos = ['titulo', 'descripcion', 'ubicacion_id', 'modalidad', 'carrera', 'requisitos', 'beneficios', 'vacantes_disponibles', 'duracion_semanas', 'fecha_inicio', 'fecha_fin', 'estado_publicacion_id'];
         $nuevos = $request->only($campos);

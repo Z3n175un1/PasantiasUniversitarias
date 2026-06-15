@@ -495,6 +495,7 @@
                         </div>
                     </div>
                     <div class="error-text" id="crear-habilidades-error">Agrega al menos una habilidad requerida</div>
+                    <div class="error-text" id="crear-peso-sum-error">Los pesos deben sumar 100%</div>
                 </div>
 
                 <div class="flex gap-3 pt-2">
@@ -612,6 +613,7 @@
                         </div>
                     </div>
                     <div class="error-text" id="edit-habilidades-error">Agrega al menos una habilidad requerida</div>
+                    <div class="error-text" id="edit-peso-sum-error">Los pesos deben sumar 100%</div>
                 </div>
 
                 <div class="flex gap-3 pt-2">
@@ -968,7 +970,7 @@
                         </div>
                         <div class="w-20 space-y-1.5">
                             <label class="text-[10px] font-extrabold text-slate-400 uppercase">Peso (%)</label>
-                            <input type="number" name="habilidades[${index}][peso]" min="0" max="100" step="0.1" required value="${data ? data.peso : 50}"
+                            <input type="number" name="habilidades[${index}][peso]" min="0" max="100" step="1" required value="${data ? data.peso : 50}"
                                 class="w-full px-2 py-2 bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-400 text-xs font-medium text-center">
                         </div>
                         <div class="w-24 space-y-1.5">
@@ -1048,13 +1050,24 @@
                 return false;
             }
             let valido = true;
+            let suma = 0;
             filas.forEach(fila => {
                 const hidden = fila.querySelector('input[type="hidden"][name*="[habilidad_id]"]');
                 if (hidden && !hidden.value) {
                     fila.querySelector('.chip-skill-container')?.classList.add('input-error');
                     valido = false;
                 }
+                const peso = fila.querySelector('input[name*="[peso]"]');
+                if (peso) suma += parseFloat(peso.value) || 0;
             });
+            if (Math.round(suma) !== 100) {
+                valido = false;
+                const pesoError = document.getElementById(prefix + '-peso-sum-error');
+                if (pesoError) pesoError.classList.add('visible');
+            } else {
+                const pesoError = document.getElementById(prefix + '-peso-sum-error');
+                if (pesoError) pesoError.classList.remove('visible');
+            }
             if (!valido && error) error.classList.add('visible');
             else if (error) error.classList.remove('visible');
             return valido;
