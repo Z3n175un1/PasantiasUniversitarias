@@ -521,12 +521,13 @@ class AdminController extends Controller
             ],
         ];
 
-        $ofertas_por_mes = collect();
+        $mesActual = now()->format('Y-m');
+        $ofertas_mes = OfertaPasantia::whereRaw("to_char(fecha_inicio, 'YYYY-MM') = ?", [$mesActual])->count();
 
         return view('admin.estadisticas', compact(
             'total_usuarios', 'total_empresas', 'total_estudiantes',
             'total_ofertas', 'total_postulaciones',
-            'distribucion_roles', 'ofertas_por_mes'
+            'distribucion_roles', 'ofertas_mes'
         ));
     }
 

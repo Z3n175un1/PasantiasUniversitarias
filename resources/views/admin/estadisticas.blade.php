@@ -53,6 +53,15 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-3 col-6">
+            <div class="info-box">
+                <span class="info-box-icon bg-dark"><i class="fas fa-shield-alt"></i></span>
+                <div class="info-box-content">
+                    <span class="info-box-text">Administradores</span>
+                    <span class="info-box-number">{{ $distribucion_roles['data'][2] }}</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
@@ -72,11 +81,15 @@
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title font-weight-bold">
-                        <i class="fas fa-chart-bar mr-2"></i>Ofertas por Mes
+                        <i class="fas fa-chart-pie mr-2"></i>Pasantías del Mes Actual
                     </h3>
                 </div>
                 <div class="card-body">
-                    <canvas id="ofertasChart" style="height: 300px;"></canvas>
+                    <div class="text-center mb-3">
+                        <h2 class="font-weight-bold text-info" style="font-size: 3rem;">{{ $ofertas_mes }}</h2>
+                        <p class="text-muted">pasantías publicadas en {{ now()->locale('es')->monthName }} {{ now()->year }}</p>
+                    </div>
+                    <canvas id="ofertasChart" style="height: 250px;"></canvas>
                 </div>
             </div>
         </div>
@@ -149,31 +162,24 @@ $(function() {
         }
     });
 
-    var ctxBar = document.getElementById('ofertasChart').getContext('2d');
-    new Chart(ctxBar, {
-        type: 'bar',
+    var ctxPie2 = document.getElementById('ofertasChart').getContext('2d');
+    var ofertasMes = {{ $ofertas_mes }};
+    var resto = Math.max(0, {{ $total_ofertas }} - ofertasMes);
+    new Chart(ctxPie2, {
+        type: 'doughnut',
         data: {
-            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            labels: ['Este Mes (' + ofertasMes + ')', 'Meses Anteriores (' + resto + ')'],
             datasets: [{
-                label: 'Ofertas',
-                data: [
-                    @for($i = 1; $i <= 12; $i++)
-                        {{ $ofertas_por_mes->firstWhere('mes', $i)->total ?? 0 }},
-                    @endfor
-                ],
-                backgroundColor: '#17a2b8',
+                data: [ofertasMes, resto],
+                backgroundColor: ['#17a2b8', '#e9ecef'],
                 borderWidth: 0,
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            legend: { display: false },
-            scales: {
-                yAxes: [{
-                    ticks: { beginAtZero: true, stepSize: 1 }
-                }]
-            }
+            cutout: '60%',
+            legend: { position: 'bottom' },
         }
     });
 });
