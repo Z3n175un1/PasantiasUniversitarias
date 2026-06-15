@@ -100,11 +100,7 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3 mb-2">
-                        <span class="font-weight-bold text-info" style="font-size: 2rem;">{{ $ofertas_mes }}</span>
-                        <span class="text-muted">pasantías en {{ now()->locale('es')->monthName }}</span>
-                    </div>
-                    <canvas id="rolesChart" style="height: 120px;"></canvas>
+                    <canvas id="rolesChart" style="height: 250px;"></canvas>
                 </div>
             </div>
         </div>
@@ -295,22 +291,18 @@ $(function() {
     });
 
     var ctxPie = document.getElementById('rolesChart').getContext('2d');
-    var ofertasMes = {{ $ofertas_mes }};
-    var resto = Math.max(0, {{ $stats['ofertas'] }} - ofertasMes);
     new Chart(ctxPie, {
         type: 'doughnut',
         data: {
-            labels: ['Este Mes (' + ofertasMes + ')', 'Resto (' + resto + ')'],
+            labels: ['Estudiantes', 'Empresas', 'Postulaciones', 'Ofertas'],
             datasets: [{
-                data: [ofertasMes, resto],
-                backgroundColor: ['#17a2b8', '#e9ecef'],
-                borderWidth: 0,
+                data: [{{ $stats['estudiantes'] }}, {{ $stats['empresas'] }}, {{ $stats['postulaciones'] }}, {{ $stats['ofertas'] }}],
+                backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545'],
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '70%',
             legend: { position: 'bottom' },
         }
     });

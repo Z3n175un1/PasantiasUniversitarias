@@ -37,16 +37,13 @@ class AdminController extends Controller
             'admins' => $admins,
         ];
 
-        $mesActual = now()->format('Y-m');
-        $ofertas_mes = OfertaPasantia::whereRaw("to_char(fecha_inicio, 'YYYY-MM') = ?", [$mesActual])->count();
-
         $ofertas_recientes = OfertaPasantia::with(['perfilEmpresa', 'ubicacion', 'estadoPublicacion'])
             ->orderBy('id', 'desc')->take(5)->get();
 
         $ultimos_logs = RegistroAuditoria::with('usuario')
             ->orderBy('creado_en', 'desc')->take(5)->get();
 
-        return view('admin.dashboard', compact('stats', 'distribucion', 'ofertas_recientes', 'ultimos_logs', 'ofertas_mes'));
+        return view('admin.dashboard', compact('stats', 'distribucion', 'ofertas_recientes', 'ultimos_logs'));
     }
 
     // ── CRUD Usuarios ──────────────────────────────────────────────────────────
