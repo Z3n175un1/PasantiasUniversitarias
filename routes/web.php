@@ -7,6 +7,7 @@ use App\Models\TipoEntidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use App\Models\OfertaPasantia;
 use App\Models\Usuario;
@@ -147,10 +148,43 @@ Route::post('/olvide-password', function (Request $request) {
             'valor_nuevo' => ['correo' => $request->correo],
             'creado_en' => now(),
         ]);
+
+        $status = Password::sendResetLink(['email' => $request->correo]);
+
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('success', 'Te hemos enviado un enlace de recuperación a tu correo electrónico.')
+            : back()->withInput()->withErrors(['correo' => 'No pudimos enviar el enlace. Intenta de nuevo más tarde.']);
     }
 
     return back()->with('success', 'Si el correo existe en nuestro sistema, recibirás instrucciones para restablecer tu contraseña.');
 })->name('password.olvide.enviar');
+
+Route::get('/reset-password/{token}', function (Request $request, $token) {
+    return view('auth.reset-password', ['token' => $token, 'email' => $request->email]);
+})->name('password.reset')->middleware('guest');
+
+Route::post('/reset-password', function (Request $request) {
+    $request->validate([
+        'token' => 'required',
+        'email' => 'required|email',
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+    $status = Password::reset(
+        $request->only('email', 'password', 'password_confirmation', 'token'),
+        function (Usuario $user) use ($request) {
+            $user->forceFill([
+                'contrasena_hash' => Hash::make($request->password),
+            ])->save();
+            event(new \Illuminate\Auth\Events\PasswordReset($user));
+        }
+    );
+
+    return $status === Password::PASSWORD_RESET
+        ? redirect()->route('login')->with('success', 'Contraseña restablecida correctamente. Inicia sesión.')
+        : back()->withInput($request->only('email'))
+            ->withErrors(['email' => 'El enlace ha expirado o es inválido. Solicita uno nuevo.']);
+})->name('password.update')->middleware('guest');
 
 // ── Registro ──────────────────────────────────────────────────────────────────
 
