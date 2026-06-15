@@ -632,7 +632,7 @@
                 <button onclick="closeModalEditarPerfil()" class="p-1.5 hover:bg-slate-100 rounded-full text-slate-400"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
 
-            <form action="{{ route('company.perfil.actualizar') }}" method="POST" class="space-y-4 text-sm font-semibold">
+            <form action="{{ route('company.perfil.actualizar') }}" method="POST" class="space-y-4 text-sm font-semibold" onsubmit="return validarPerfilEmpresa()">
                 @csrf
                 @method('PATCH')
 
@@ -660,6 +660,7 @@
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Teléfono</label>
                         <input type="text" name="telefono" id="perfil-telefono" value="{{ $empresa->telefono }}"
                             class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:bg-white focus:border-blue-400 transition-all font-medium">
+                        <div class="error-text" id="perfil-telefono-error">El teléfono solo debe contener números (7-15 dígitos)</div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Tamaño de Empresa</label>
@@ -1103,6 +1104,18 @@
                 document.getElementById('edit-titulo').focus();
                 return false;
             }
+            return true;
+        }
+
+        function validarPerfilEmpresa() {
+            const tel = document.getElementById('perfil-telefono');
+            const telError = document.getElementById('perfil-telefono-error');
+            if (tel && tel.value && !/^\d{7,15}$/.test(tel.value.replace(/\s/g, ''))) {
+                tel.classList.add('input-error');
+                if (telError) telError.classList.add('visible');
+                return false;
+            }
+            if (telError) telError.classList.remove('visible');
             return true;
         }
 

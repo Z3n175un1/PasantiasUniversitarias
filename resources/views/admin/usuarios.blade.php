@@ -53,6 +53,8 @@
                     <tr>
                         <th>#</th>
                         <th>Nombre</th>
+                        <th>Ap. Paterno</th>
+                        <th>Ap. Materno</th>
                         <th>Correo</th>
                         <th>Rol</th>
                         <th>Estado</th>
@@ -64,7 +66,9 @@
                     @forelse($usuarios as $usuario)
                         <tr>
                             <td>{{ $usuario->id }}</td>
-                            <td class="font-weight-bold">{{ $usuario->nombre }} {{ $usuario->ap_paterno }} {{ $usuario->ap_materno }}</td>
+                            <td class="font-weight-bold">{{ $usuario->nombre }}</td>
+                            <td>{{ $usuario->ap_paterno }}</td>
+                            <td>{{ $usuario->ap_materno }}</td>
                             <td>{{ $usuario->correo }}</td>
                             <td>
                                 @php
@@ -116,7 +120,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No se encontraron usuarios</td>
+                            <td colspan="9" class="text-center text-muted py-4">No se encontraron usuarios</td>
                         </tr>
                     @endforelse
                 </tbody>

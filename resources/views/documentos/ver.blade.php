@@ -56,6 +56,8 @@
             display: block;
             margin: 0 auto;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 100%;
+            height: auto !important;
         }
         .pdf-toolbar {
             display: flex;
@@ -239,6 +241,8 @@
                 function renderPage(num) {
                     pdfDoc.getPage(num).then(page => {
                         const viewport = page.getViewport({ scale });
+                        canvas.style.width = viewport.width + 'px';
+                        canvas.style.height = viewport.height + 'px';
                         canvas.width = viewport.width;
                         canvas.height = viewport.height;
                         const renderCtx = { canvasContext: ctx, viewport };
@@ -247,6 +251,9 @@
                         pageNumSpan.textContent = num;
                         prevBtn.disabled = num <= 1;
                         nextBtn.disabled = num >= pdfDoc.numPages;
+                    }).catch(err => {
+                        container.innerHTML = '<div class="no-viewer"><div class="file-icon-large"><i data-lucide="file-x" class="w-7 h-7"></i></div><h3>Error al cargar el PDF</h3><p class="text-sm text-slate-400">' + err.message + '</p></div>';
+                        lucide.createIcons();
                     });
                 }
 
@@ -259,6 +266,9 @@
                     pdfDoc = pdf;
                     pageCountSpan.textContent = pdf.numPages;
                     renderPage(1);
+                }).catch(err => {
+                    container.innerHTML = '<div class="no-viewer"><div class="file-icon-large"><i data-lucide="file-x" class="w-7 h-7"></i></div><h3>Error al cargar el PDF</h3><p class="text-sm text-slate-400">' + err.message + '</p></div>';
+                    lucide.createIcons();
                 });
 
                 prevBtn.addEventListener('click', () => {

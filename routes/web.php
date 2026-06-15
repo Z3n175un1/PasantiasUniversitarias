@@ -351,13 +351,15 @@ Route::middleware('auth')->group(function () {
         $postulacionesPorEstado = Postulacion::selectRaw('estado_postulacion_id, count(*) as total')
             ->groupBy('estado_postulacion_id')->pluck('total', 'estado_postulacion_id');
 
-        $usuariosPorMes = Usuario::selectRaw("EXTRACT(MONTH FROM creado_en) as mes, count(*) as total")
-            ->where('creado_en', '>=', now()->subYear())
-            ->groupBy('mes')->orderBy('mes')->pluck('total', 'mes');
-
-        $ofertasPorMes = OfertaPasantia::selectRaw("EXTRACT(MONTH FROM fecha_inicio) as mes, count(*) as total")
-            ->where('fecha_inicio', '>=', now()->subYear())
-            ->groupBy('mes')->orderBy('mes')->pluck('total', 'mes');
+        $mesActual = now()->format('Y-m');
+        $resumenMes = [
+            'ofertas' => OfertaPasantia::whereRaw("to_char(fecha_inicio, 'YYYY-MM') = ?", [$mesActual])->count(),
+            'usuarios' => Usuario::whereRaw("to_char(creado_en, 'YYYY-MM') = ?", [$mesActual])->count(),
+            'postulaciones' => Postulacion::whereRaw("to_char(creado_en, 'YYYY-MM') = ?", [$mesActual])->count(),
+            'empresas' => PerfilEmpresa::whereHas('usuario', function ($q) use ($mesActual) {
+                $q->whereRaw("to_char(creado_en, 'YYYY-MM') = ?", [$mesActual]);
+            })->count(),
+        ];
 
         $ultimosLogs = RegistroAuditoria::with('usuario')
             ->latest('creado_en')->take(8)->get();
@@ -380,8 +382,7 @@ Route::middleware('auth')->group(function () {
                 ->where('estado_publicacion_id', 3)->count(),
             'ofertas_por_estado' => $ofertasPorEstado,
             'postulaciones_por_estado' => $postulacionesPorEstado,
-            'usuarios_por_mes' => $usuariosPorMes,
-            'ofertas_por_mes' => $ofertasPorMes,
+            'resumen_mes' => $resumenMes,
             'ultimos_logs' => $ultimosLogs,
         ];
         return view('paneles-control.dashboard_admin', compact('stats'));

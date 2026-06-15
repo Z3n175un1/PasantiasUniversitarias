@@ -300,20 +300,31 @@
                             <canvas id="ofertasChart" style="height: 260px;"></canvas>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                            <h3 class="font-bold mb-4 flex items-center gap-2">
-                                <i data-lucide="trending-up" class="w-5 h-5 text-blue-600"></i>
-                                Ofertas por Mes (último año)
-                            </h3>
-                            <canvas id="ofertasMesChart" style="height: 260px;"></canvas>
-                        </div>
-                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
-                            <h3 class="font-bold mb-4 flex items-center gap-2">
-                                <i data-lucide="users" class="w-5 h-5 text-green-600"></i>
-                                Usuarios por Mes (último año)
-                            </h3>
-                            <canvas id="usuariosMesChart" style="height: 260px;"></canvas>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                        <h3 class="font-bold mb-4 flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-5 h-5 text-blue-600"></i>
+                            Resumen del mes de {{ now()->locale('es')->monthName }}
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <canvas id="resumenMesChart" style="height: 260px; max-width: 320px; margin: 0 auto;"></canvas>
+                            <div class="flex flex-col justify-center gap-3">
+                                <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-xl">
+                                    <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                                    <span class="text-sm font-semibold text-slate-600">Ofertas: <strong class="text-slate-900">{{ $stats['resumen_mes']['ofertas'] }}</strong></span>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-green-50 rounded-xl">
+                                    <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                                    <span class="text-sm font-semibold text-slate-600">Usuarios: <strong class="text-slate-900">{{ $stats['resumen_mes']['usuarios'] }}</strong></span>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-xl">
+                                    <span class="w-3 h-3 rounded-full bg-purple-500"></span>
+                                    <span class="text-sm font-semibold text-slate-600">Postulaciones: <strong class="text-slate-900">{{ $stats['resumen_mes']['postulaciones'] }}</strong></span>
+                                </div>
+                                <div class="flex items-center gap-3 p-3 bg-amber-50 rounded-xl">
+                                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                    <span class="text-sm font-semibold text-slate-600">Empresas: <strong class="text-slate-900">{{ $stats['resumen_mes']['empresas'] }}</strong></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
@@ -410,54 +421,17 @@
             });
         }
 
-        const ofertasMesCtx = document.getElementById('ofertasMesChart')?.getContext('2d');
-        if (ofertasMesCtx) {
-            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            const dataMap = @json($stats['ofertas_por_mes']);
-            const values = meses.map((_, i) => dataMap[i + 1] || 0);
-            new Chart(ofertasMesCtx, {
-                type: 'line',
+        const resumenMesCtx = document.getElementById('resumenMesChart')?.getContext('2d');
+        if (resumenMesCtx) {
+            const resumen = @json($stats['resumen_mes']);
+            const total = Object.values(resumen).reduce((a, b) => a + b, 0);
+            new Chart(resumenMesCtx, {
+                type: 'doughnut',
                 data: {
-                    labels: meses,
+                    labels: ['Ofertas', 'Usuarios', 'Postulaciones', 'Empresas'],
                     datasets: [{
-                        label: 'Ofertas',
-                        data: values,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59,130,246,0.1)',
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#3b82f6',
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Inter' } } },
-                        x: { ticks: { font: { family: 'Inter' } } }
-                    }
-                }
-            });
-        }
-
-        const usuariosMesCtx = document.getElementById('usuariosMesChart')?.getContext('2d');
-        if (usuariosMesCtx) {
-            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-            const dataMap = @json($stats['usuarios_por_mes']);
-            const values = meses.map((_, i) => dataMap[i + 1] || 0);
-            new Chart(usuariosMesCtx, {
-                type: 'bar',
-                data: {
-                    labels: meses,
-                    datasets: [{
-                        label: 'Usuarios',
-                        data: values,
-                        backgroundColor: '#22c55e',
-                        borderRadius: 6,
+                        data: [resumen.ofertas, resumen.usuarios, resumen.postulaciones, resumen.empresas],
+                        backgroundColor: ['#3b82f6', '#22c55e', '#a855f7', '#f59e0b'],
                         borderWidth: 0,
                     }]
                 },
@@ -466,10 +440,6 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, ticks: { stepSize: 1, font: { family: 'Inter' } } },
-                        x: { ticks: { font: { family: 'Inter' } } }
                     }
                 }
             });

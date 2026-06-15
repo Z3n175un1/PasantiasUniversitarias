@@ -46,9 +46,17 @@ class AdminController extends Controller
 
     // ── CRUD Usuarios ──────────────────────────────────────────────────────────
 
-    public function usuarios()
+    public function usuarios(Request $request)
     {
-        $usuarios = Usuario::with('rol')->latest('creado_en')->paginate(20);
+        $search = $request->get('search');
+        $usuarios = Usuario::with('rol')
+            ->when($search, function ($q, $search) {
+                $q->where('nombre', 'ilike', "%{$search}%")
+                  ->orWhere('ap_paterno', 'ilike', "%{$search}%")
+                  ->orWhere('ap_materno', 'ilike', "%{$search}%")
+                  ->orWhere('correo', 'ilike', "%{$search}%");
+            })
+            ->latest('creado_en')->paginate(20);
         $esSuperAdmin = Auth::user()->correo === 'prueba@edu.bo';
         return view('admin.usuarios', compact('usuarios', 'esSuperAdmin'));
     }
