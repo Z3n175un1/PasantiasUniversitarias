@@ -33,7 +33,9 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre</th>
+                        <th>Nombre(s)</th>
+                        <th>Ap. Paterno</th>
+                        <th>Ap. Materno</th>
                         <th>Correo</th>
                         <th>Universidad</th>
                         <th>Carrera</th>
@@ -46,6 +48,8 @@
                         <tr>
                             <td>{{ $estudiante->id }}</td>
                             <td class="font-weight-bold">{{ $estudiante->usuario->nombre ?? 'N/A' }}</td>
+                            <td>{{ $estudiante->usuario->ap_paterno ?? 'N/A' }}</td>
+                            <td>{{ $estudiante->usuario->ap_materno ?? 'N/A' }}</td>
                             <td>{{ $estudiante->usuario->correo ?? 'N/A' }}</td>
                             <td>{{ $estudiante->universidad }}</td>
                             <td>{{ $estudiante->carrera }}</td>
@@ -54,7 +58,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No hay estudiantes registrados</td>
+                            <td colspan="9" class="text-center text-muted py-4">No hay estudiantes registrados</td>
                         </tr>
                     @endforelse
                 </tbody>

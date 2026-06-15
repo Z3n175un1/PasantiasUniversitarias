@@ -470,7 +470,7 @@ class AdminController extends Controller
                 if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
                 $data['items'] = $query->orderBy('creado_en', 'desc')->get();
                 $data['titulo'] = 'Reporte de Usuarios';
-                $data['columnas'] = ['ID', 'Nombre', 'Correo', 'Rol', 'Activo', 'Registro'];
+                $data['columnas'] = ['ID', 'Nombre(s)', 'Ap. Paterno', 'Ap. Materno', 'Correo', 'Rol', 'Activo', 'Registro'];
                 break;
 
             case 'ofertas':
@@ -488,7 +488,7 @@ class AdminController extends Controller
                 if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
                 $data['items'] = $query->orderBy('id', 'desc')->get();
                 $data['titulo'] = 'Reporte de Postulaciones';
-                $data['columnas'] = ['ID', 'Estudiante', 'Oferta', 'Estado', 'Puntaje', 'Fecha'];
+                $data['columnas'] = ['ID', 'Nombre(s)', 'Ap. Paterno', 'Ap. Materno', 'Oferta', 'Estado', 'Puntaje', 'Fecha'];
                 break;
 
             case 'logs':
@@ -497,7 +497,7 @@ class AdminController extends Controller
                 if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
                 $data['items'] = $query->orderBy('creado_en', 'desc')->get();
                 $data['titulo'] = 'Reporte de Actividad';
-                $data['columnas'] = ['ID', 'Usuario', 'Acción', 'Tipo', 'Fecha'];
+                $data['columnas'] = ['ID', 'Nombre(s)', 'Ap. Paterno', 'Ap. Materno', 'Acción', 'Tipo', 'Fecha'];
                 break;
         }
 
@@ -662,11 +662,13 @@ class AdminController extends Controller
                 if ($fecha_desde) $query->whereDate('creado_en', '>=', $fecha_desde);
                 if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
                 $items = $query->orderBy('id', 'desc')->get();
-                $headers = ['ID', 'Nombre', 'Correo', 'Rol', 'Activo', 'Fecha Registro'];
+                $headers = ['ID', 'Nombre(s)', 'Ap. Paterno', 'Ap. Materno', 'Correo', 'Rol', 'Activo', 'Fecha Registro'];
                 foreach ($items as $item) {
                     $rows[] = [
                         $item->id,
-                        trim(($item->nombre ?? '') . ' ' . ($item->ap_paterno ?? '') . ' ' . ($item->ap_materno ?? '')),
+                        $item->nombre ?? '',
+                        $item->ap_paterno ?? '',
+                        $item->ap_materno ?? '',
                         $item->correo,
                         $item->rol->nombre ?? 'N/A',
                         $item->activo ? 'Sí' : 'No',
@@ -700,11 +702,13 @@ class AdminController extends Controller
                 if ($fecha_desde) $query->whereDate('creado_en', '>=', $fecha_desde);
                 if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
                 $items = $query->orderBy('id', 'desc')->get();
-                $headers = ['ID', 'Estudiante', 'Oferta', 'Estado', 'Puntaje TOPSIS', 'Fecha'];
+                $headers = ['ID', 'Nombre(s)', 'Ap. Paterno', 'Ap. Materno', 'Oferta', 'Estado', 'Puntaje TOPSIS', 'Fecha'];
                 foreach ($items as $item) {
                     $rows[] = [
                         $item->id,
-                        trim(($item->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($item->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($item->perfilEstudiante->usuario->ap_materno ?? '')),
+                        $item->perfilEstudiante->usuario->nombre ?? '',
+                        $item->perfilEstudiante->usuario->ap_paterno ?? '',
+                        $item->perfilEstudiante->usuario->ap_materno ?? '',
                         $item->ofertaPasantia->titulo ?? 'N/A',
                         $item->estadoPostulacion->nombre ?? 'N/A',
                         $item->puntaje_topsis ?? '—',
@@ -719,11 +723,13 @@ class AdminController extends Controller
                 if ($fecha_desde) $query->whereDate('creado_en', '>=', $fecha_desde);
                 if ($fecha_hasta) $query->whereDate('creado_en', '<=', $fecha_hasta);
                 $items = $query->orderBy('creado_en', 'desc')->get();
-                $headers = ['ID', 'Usuario', 'Acción', 'Tipo Entidad', 'Entidad ID', 'Valor Anterior', 'Valor Nuevo', 'Fecha'];
+                $headers = ['ID', 'Nombre(s)', 'Ap. Paterno', 'Ap. Materno', 'Acción', 'Tipo Entidad', 'Entidad ID', 'Valor Anterior', 'Valor Nuevo', 'Fecha'];
                 foreach ($items as $item) {
                     $rows[] = [
                         $item->id,
-                        trim(($item->usuario->nombre ?? '') . ' ' . ($item->usuario->ap_paterno ?? '') . ' ' . ($item->usuario->ap_materno ?? '')),
+                        $item->usuario->nombre ?? '',
+                        $item->usuario->ap_paterno ?? '',
+                        $item->usuario->ap_materno ?? '',
                         $item->accion,
                         $item->tipoEntidad->nombre ?? 'N/A',
                         $item->entidad_id ?? '—',

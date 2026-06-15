@@ -101,7 +101,9 @@
                                 @switch($tipo)
                                     @case('usuarios')
                                         <td>{{ $item->id }}</td>
-                                        <td class="font-weight-bold">{{ trim(($item->nombre ?? '') . ' ' . ($item->ap_paterno ?? '') . ' ' . ($item->ap_materno ?? '')) }}</td>
+                                        <td class="font-weight-bold">{{ $item->nombre ?? '' }}</td>
+                                        <td>{{ $item->ap_paterno ?? '' }}</td>
+                                        <td>{{ $item->ap_materno ?? '' }}</td>
                                         <td>{{ $item->correo }}</td>
                                         <td>
                                             @php
@@ -142,7 +144,9 @@
 
                                     @case('postulaciones')
                                         <td>{{ $item->id }}</td>
-                                        <td>{{ trim(($item->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($item->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($item->perfilEstudiante->usuario->ap_materno ?? '')) }}</td>
+                                        <td>{{ $item->perfilEstudiante->usuario->nombre ?? '' }}</td>
+                                        <td>{{ $item->perfilEstudiante->usuario->ap_paterno ?? '' }}</td>
+                                        <td>{{ $item->perfilEstudiante->usuario->ap_materno ?? '' }}</td>
                                         <td>{{ $item->ofertaPasantia->titulo ?? 'N/A' }}</td>
                                         <td>{{ $item->estadoPostulacion->nombre ?? 'N/A' }}</td>
                                         <td>{{ $item->puntaje_topsis ?? '—' }}</td>
@@ -151,7 +155,9 @@
 
                                     @case('logs')
                                         <td>{{ $item->id }}</td>
-                                        <td>{{ trim(($item->usuario->nombre ?? '') . ' ' . ($item->usuario->ap_paterno ?? '') . ' ' . ($item->usuario->ap_materno ?? '')) }}</td>
+                                        <td>{{ $item->usuario->nombre ?? '' }}</td>
+                                        <td>{{ $item->usuario->ap_paterno ?? '' }}</td>
+                                        <td>{{ $item->usuario->ap_materno ?? '' }}</td>
                                         <td>{{ $item->accion }}</td>
                                         <td>{{ $item->tipoEntidad->nombre ?? 'N/A' }}</td>
                                         <td>{{ $item->creado_en ? \Carbon\Carbon::parse($item->creado_en)->format('d/m/Y H:i') : 'N/A' }}</td>
