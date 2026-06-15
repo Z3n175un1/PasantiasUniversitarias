@@ -201,195 +201,108 @@
                 <section id="postulantes" class="tab-content space-y-6">
                     <div class="flex items-center justify-between">
                         <h2 class="text-xl font-bold text-slate-900">Cola Priorizada de Postulantes</h2>
-                        <form method="GET" action="{{ route('dashboard.company') }}#postulantes" class="flex items-center gap-2">
-                            <select name="pasantia_id" onchange="this.form.submit()"
-                                class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-indigo-400 cursor-pointer">
-                                <option value="">Todas las pasantías</option>
-                                @foreach($ofertas as $of)
-                                    <option value="{{ $of->id }}" {{ $pasantiaFiltro == $of->id ? 'selected' : '' }}>{{ $of->titulo }}</option>
-                                @endforeach
-                            </select>
-                        </form>
+                        <select onchange="filtrarOferta(this.value)"
+                            class="px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold outline-none focus:border-indigo-400 cursor-pointer">
+                            <option value="">Todas las pasantías</option>
+                            @foreach($ofertas as $of)
+                                <option value="{{ $of->id }}">{{ $of->titulo }}</option>
+                            @endforeach
+                        </select>
                     </div>
-                    @if(!$pasantiaFiltro)
-                        {{-- Vista agrupada por oferta cuando se selecciona "Todas las pasantías" --}}
-                        <div class="space-y-6">
-                            @forelse($ofertas as $oferta)
-                                @php $postulaciones_oferta = $postulaciones_por_oferta->get($oferta->id, collect()); @endphp
-                                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                                    <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-100 flex items-center justify-between">
-                                        <div>
-                                            <h3 class="font-bold text-slate-900">{{ $oferta->titulo }}</h3>
-                                            <p class="text-xs text-slate-400">{{ $oferta->ubicacion->ciudad ?? 'Remoto' }} • {{ $postulaciones_oferta->count() }} postulante(s)</p>
-                                        </div>
-                                        <span class="px-3 py-1.5 text-xs font-bold rounded-full {{ $postulaciones_oferta->count() > 0 ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-400' }}">
-                                            {{ $postulaciones_oferta->count() > 0 ? $postulaciones_oferta->count() . ' postulante(s)' : 'Sin postulantes' }}
-                                        </span>
-                                    </div>
-                                    @if($postulaciones_oferta->count() > 0)
-                                        <div class="divide-y divide-slate-50">
-                                            @foreach($postulaciones_oferta as $index => $post)
-                                                <div class="p-4 hover:bg-slate-50/50 transition">
-                                                    <div class="flex items-center justify-between">
-                                                        <div class="flex items-center gap-3">
-                                                            <div class="w-9 h-9 {{ $index == 0 ? 'bg-amber-100 text-amber-700 ring-2 ring-amber-400' : 'bg-slate-100 text-slate-700' }} rounded-xl flex items-center justify-center font-bold text-xs">
-                                                                {{ $loop->iteration }}
-                                                            </div>
-                                                            <div>
-                                                                <h4 class="font-bold text-slate-900 text-sm">{{ trim(($post->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_materno ?? '')) }}</h4>
-                                                                <p class="text-xs text-slate-400">{{ $post->perfilEstudiante->carrera ?? 'N/A' }} - {{ $post->perfilEstudiante->universidad ?? '' }}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="flex items-center gap-2">
-                                                            @if($post->puntaje_topsis !== null)
-                                                                <div class="px-2.5 py-1 {{ $index == 0 ? 'bg-amber-50 text-amber-700' : 'bg-indigo-50 text-indigo-700' }} font-extrabold rounded-xl text-xs">
-                                                                    TOPSIS: {{ round($post->puntaje_topsis) }}%
-                                                                </div>
-                                                            @endif
-                                                            <form action="{{ route('company.postulaciones.estado', $post->id) }}" method="POST" class="flex items-center gap-1">
-                                                                @csrf
-                                                                @method('PATCH')
-                                                                <select name="estado_postulacion_id" onchange="this.form.submit()" class="text-xs font-bold rounded-full px-2.5 py-1 border-0 cursor-pointer bg-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-50 text-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-700 outline-none">
-                                                                    @foreach($estados_postulacion as $estado)
-                                                                        <option value="{{ $estado->id }}" {{ $post->estado_postulacion_id == $estado->id ? 'selected' : '' }}>{{ $estado->nombre }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </form>
-                                                            <a href="{{ route('company.citatorio', $post->id) }}" target="_blank" class="px-2.5 py-1 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 transition">
-                                                                <i data-lucide="file-text" class="w-3 h-3 inline mr-0.5"></i>Citatorio
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="flex flex-wrap gap-2 mt-2 ml-12">
-                                                        @if($post->perfilEstudiante->documentos && $post->perfilEstudiante->documentos->count() > 0)
-                                                            @foreach($post->perfilEstudiante->documentos as $doc)
-                                                                <a href="{{ route('documentos.ver', $doc->id) }}" target="_blank"
-                                                                   class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-[10px] font-semibold transition">
-                                                                    <i data-lucide="file" class="w-3 h-3"></i>
-                                                                    {{ $doc->tipoDocumento->nombre ?? 'Documento' }}
-                                                                </a>
-                                                            @endforeach
-                                                        @endif
-                                                        @if($post->perfilEstudiante->habilidades && $post->perfilEstudiante->habilidades->count() > 0)
-                                                            @foreach($post->perfilEstudiante->habilidades as $hab)
-                                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 rounded-lg text-[10px] font-semibold">
-                                                                    <i data-lucide="code" class="w-3 h-3"></i>
-                                                                    {{ $hab->habilidad->nombre ?? 'Habilidad' }}
-                                                                </span>
-                                                            @endforeach
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <div class="p-6 text-center">
-                                            <p class="text-sm text-slate-400">Sin postulantes aún para esta oferta.</p>
-                                        </div>
-                                    @endif
-                                </div>
-                            @empty
-                                <div class="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center">
-                                    <i data-lucide="briefcase" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-                                    <h3 class="font-bold text-slate-500">No tienes ofertas publicadas</h3>
-                                    <p class="text-sm text-slate-400 mt-1">Crea una oferta para empezar a recibir postulaciones.</p>
-                                </div>
-                            @endforelse
-                        </div>
-                    @elseif($todas_postulaciones->count() > 5)
-                        <div class="space-y-4">
-                            @foreach($todas_postulaciones as $index => $post)
-                                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
-                                    <div class="p-5">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-10 h-10 {{ $index == 0 ? 'bg-amber-100 text-amber-700 ring-2 ring-amber-400' : 'bg-slate-100 text-slate-700' }} rounded-xl flex items-center justify-center font-bold text-sm">
-                                                    {{ $loop->iteration }}
-                                                </div>
-                                                <div>
-                                                    <h4 class="font-bold text-slate-900">{{ trim(($post->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_materno ?? '')) }}</h4>
-                                                    <p class="text-xs text-slate-400">{{ $post->perfilEstudiante->carrera ?? 'N/A' }} - {{ $post->perfilEstudiante->universidad ?? '' }}</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                @if($post->puntaje_topsis !== null)
-                                                    <div class="px-3 py-1.5 {{ $index == 0 ? 'bg-amber-50 text-amber-700' : ($index == 1 ? 'bg-slate-50 text-slate-700' : ($index == 2 ? 'bg-orange-50 text-orange-700' : 'bg-indigo-50 text-indigo-700')) }} font-extrabold rounded-xl text-xs flex items-center gap-1.5">
-                                                        <i data-lucide="{{ $index == 0 ? 'crown' : 'trophy' }}" class="w-3.5 h-3.5"></i>
-                                                        TOPSIS: {{ round($post->puntaje_topsis) }}%
-                                                    </div>
-                                                @endif
-                                                <form action="{{ route('company.postulaciones.estado', $post->id) }}" method="POST" class="flex items-center gap-1">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <select name="estado_postulacion_id" onchange="this.form.submit()" class="text-xs font-bold rounded-full px-2.5 py-1 border-0 cursor-pointer bg-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-50 text-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-700 outline-none">
-                                                        @foreach($estados_postulacion as $estado)
-                                                            <option value="{{ $estado->id }}" {{ $post->estado_postulacion_id == $estado->id ? 'selected' : '' }}>{{ $estado->nombre }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </form>
-                                                <a href="{{ route('company.citatorio', $post->id) }}" target="_blank" class="px-3 py-1.5 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 transition">
-                                                    <i data-lucide="file-text" class="w-3.5 h-3.5 inline mr-1"></i>Citatorio
-                                                </a>
-                                            </div>
-                                        </div>
 
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3 pt-4 border-t border-slate-100">
-                                            <div>
-                                                <p class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">Documentos</p>
-                                                @if($post->perfilEstudiante->documentos && $post->perfilEstudiante->documentos->count() > 0)
-                                                    <div class="flex flex-wrap gap-2">
+                    <div class="space-y-6" id="ofertas-postulantes">
+                        @forelse($ofertas as $oferta)
+                            @php $postulaciones_oferta = $postulaciones_por_oferta->get($oferta->id, collect()); @endphp
+                            <div class="oferta-group bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden" data-oferta-id="{{ $oferta->id }}">
+                                <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-100 flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-slate-900">{{ $oferta->titulo }}</h3>
+                                        <p class="text-xs text-slate-400">{{ $oferta->ubicacion->ciudad ?? 'Remoto' }} • {{ $postulaciones_oferta->count() }} postulante(s)</p>
+                                    </div>
+                                    <span class="px-3 py-1.5 text-xs font-bold rounded-full {{ $postulaciones_oferta->count() > 0 ? 'bg-green-50 text-green-700' : 'bg-slate-100 text-slate-400' }}">
+                                        {{ $postulaciones_oferta->count() > 0 ? $postulaciones_oferta->count() . ' postulante(s)' : 'Sin postulantes' }}
+                                    </span>
+                                </div>
+                                @if($postulaciones_oferta->count() > 0)
+                                    <div class="divide-y divide-slate-50">
+                                        @foreach($postulaciones_oferta as $index => $post)
+                                            <div class="p-4 hover:bg-slate-50/50 transition">
+                                                <div class="flex items-center justify-between">
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="w-9 h-9 {{ $index == 0 ? 'bg-amber-100 text-amber-700 ring-2 ring-amber-400' : 'bg-slate-100 text-slate-700' }} rounded-xl flex items-center justify-center font-bold text-xs">
+                                                            {{ $loop->iteration }}
+                                                        </div>
+                                                        <div>
+                                                            <h4 class="font-bold text-slate-900 text-sm">{{ trim(($post->perfilEstudiante->usuario->nombre ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_paterno ?? '') . ' ' . ($post->perfilEstudiante->usuario->ap_materno ?? '')) }}</h4>
+                                                            <p class="text-xs text-slate-400">{{ $post->perfilEstudiante->carrera ?? 'N/A' }} - {{ $post->perfilEstudiante->universidad ?? '' }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center gap-2">
+                                                        @if($post->puntaje_topsis !== null)
+                                                            <div class="px-2.5 py-1 {{ $index == 0 ? 'bg-amber-50 text-amber-700' : 'bg-indigo-50 text-indigo-700' }} font-extrabold rounded-xl text-xs">
+                                                                TOPSIS: {{ round($post->puntaje_topsis) }}%
+                                                            </div>
+                                                        @endif
+                                                        <form action="{{ route('company.postulaciones.estado', $post->id) }}" method="POST" class="flex items-center gap-1">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <select name="estado_postulacion_id" onchange="this.form.submit()" class="text-xs font-bold rounded-full px-2.5 py-1 border-0 cursor-pointer bg-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-50 text-{{ $post->estado_postulacion_id == 1 ? 'amber' : ($post->estado_postulacion_id == 4 ? 'green' : 'blue') }}-700 outline-none">
+                                                                @foreach($estados_postulacion as $estado)
+                                                                    <option value="{{ $estado->id }}" {{ $post->estado_postulacion_id == $estado->id ? 'selected' : '' }}>{{ $estado->nombre }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </form>
+                                                        <a href="{{ route('company.citatorio', $post->id) }}" target="_blank" class="px-2.5 py-1 bg-indigo-600 text-white font-bold rounded-xl text-xs hover:bg-indigo-700 transition">
+                                                            <i data-lucide="file-text" class="w-3 h-3 inline mr-0.5"></i>Citatorio
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="flex flex-wrap gap-2 mt-2 ml-12">
+                                                    @if($post->perfilEstudiante->documentos && $post->perfilEstudiante->documentos->count() > 0)
                                                         @foreach($post->perfilEstudiante->documentos as $doc)
                                                             <a href="{{ route('documentos.ver', $doc->id) }}" target="_blank"
-                                                               class="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-xs font-semibold transition">
+                                                               class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg text-[10px] font-semibold transition">
                                                                 <i data-lucide="file" class="w-3 h-3"></i>
                                                                 {{ $doc->tipoDocumento->nombre ?? 'Documento' }}
                                                             </a>
                                                         @endforeach
-                                                    </div>
-                                                @else
-                                                    <p class="text-xs text-slate-400">Sin documentos</p>
-                                                @endif
-                                            </div>
-                                            <div>
-                                                <p class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-2">Habilidades</p>
-                                                @if($post->perfilEstudiante->habilidades && $post->perfilEstudiante->habilidades->count() > 0)
-                                                    <div class="flex flex-wrap gap-2">
+                                                    @endif
+                                                    @if($post->perfilEstudiante->habilidades && $post->perfilEstudiante->habilidades->count() > 0)
                                                         @foreach($post->perfilEstudiante->habilidades as $hab)
-                                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-green-50 text-green-700 rounded-lg text-xs font-semibold">
+                                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-700 rounded-lg text-[10px] font-semibold">
                                                                 <i data-lucide="code" class="w-3 h-3"></i>
                                                                 {{ $hab->habilidad->nombre ?? 'Habilidad' }}
                                                             </span>
                                                         @endforeach
-                                                    </div>
-                                                @else
-                                                    <p class="text-xs text-slate-400">Sin habilidades registradas</p>
-                                                @endif
+                                                    @endif
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        <div class="mt-3 pt-3 border-t border-slate-100">
-                                            <p class="text-xs text-slate-400">
-                                                Oferta: <span class="font-semibold text-slate-600">{{ $post->ofertaPasantia->titulo ?? 'N/A' }}</span>
-                                            </p>
-                                        </div>
+                                        @endforeach
                                     </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    @elseif($todas_postulaciones->count() > 0)
-                        <div class="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center">
-                            <i data-lucide="clock" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-                            <h3 class="font-bold text-slate-500">En espera de más candidatos</h3>
-                            <p class="text-sm text-slate-400 mt-1">Se necesitan al menos 6 postulantes para generar una cola priorizada con una buena elección. Actualmente hay {{ $todas_postulaciones->count() }}.</p>
-                        </div>
-                    @else
-                        <div class="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center">
-                            <i data-lucide="users" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-                            <h3 class="font-bold text-slate-500">No hay postulaciones aún</h3>
-                            <p class="text-sm text-slate-400 mt-1">Los estudiantes postularán a tus ofertas y aparecerán aquí.</p>
-                        </div>
-                    @endif
+                                @else
+                                    <div class="p-6 text-center">
+                                        <p class="text-sm text-slate-400">Sin postulantes aún para esta oferta.</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @empty
+                            <div class="bg-white p-12 rounded-[2rem] border border-slate-100 shadow-sm text-center">
+                                <i data-lucide="briefcase" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+                                <h3 class="font-bold text-slate-500">No tienes ofertas publicadas</h3>
+                                <p class="text-sm text-slate-400 mt-1">Crea una oferta para empezar a recibir postulaciones.</p>
+                            </div>
+                        @endforelse
+                    </div>
                 </section>
+
+                <script>
+                function filtrarOferta(id) {
+                    document.querySelectorAll('.oferta-group').forEach(function(el) {
+                        el.style.display = !id || el.getAttribute('data-oferta-id') === id ? '' : 'none';
+                    });
+                    var total = document.querySelectorAll('.oferta-group[style*="display: none"]').length;
+                }
+                </script>
 
                 {{-- Perfil de Empresa --}}
                 <section id="perfil" class="tab-content space-y-6">

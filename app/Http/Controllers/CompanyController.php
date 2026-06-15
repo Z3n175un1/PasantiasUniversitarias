@@ -30,20 +30,16 @@ class CompanyController extends Controller
         $ofertasIds = $ofertas->pluck('id');
 
         $total_postulantes = Postulacion::whereIn('oferta_pasantia_id', $ofertasIds)->count();
-        $queryPostulaciones = Postulacion::with([
+        $todas_postulaciones = Postulacion::with([
                 'perfilEstudiante.usuario',
                 'perfilEstudiante.documentos.tipoDocumento',
                 'perfilEstudiante.habilidades.habilidad',
                 'ofertaPasantia',
                 'estadoPostulacion'
             ])
-            ->whereIn('oferta_pasantia_id', $ofertasIds);
-
-        if ($pasantiaFiltro) {
-            $queryPostulaciones->where('oferta_pasantia_id', $pasantiaFiltro);
-        }
-
-        $todas_postulaciones = $queryPostulaciones->orderByRaw('puntaje_topsis DESC NULLS LAST')->get();
+            ->whereIn('oferta_pasantia_id', $ofertasIds)
+            ->orderByRaw('puntaje_topsis DESC NULLS LAST')
+            ->get();
         $postulaciones_por_oferta = $todas_postulaciones->groupBy('oferta_pasantia_id');
         $postulaciones_recientes = $todas_postulaciones->take(5);
         $estados_postulacion = EstadoPostulacion::all();
@@ -129,7 +125,7 @@ class CompanyController extends Controller
             'todas_postulaciones', 'postulaciones_recientes',
             'postulaciones_por_oferta',
             'estados_postulacion', 'ubicaciones', 'carreras', 'modalidades',
-            'habilidades', 'pasantiaFiltro'
+            'habilidades'
         ));
     }
 
@@ -367,7 +363,7 @@ class CompanyController extends Controller
             'creado_en' => now(),
         ]);
 
-        return back()->with('success', '¡Bien hecho! Actualizaste el estado de la postulación. :D');
+        return redirect()->to(route('dashboard.company') . '#postulantes')->with('success', '¡Bien hecho! Actualizaste el estado de la postulación. :D');
     }
 
     public function citatorio($postulacion_id)
