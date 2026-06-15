@@ -822,6 +822,7 @@
                     container.innerHTML = '';
                     if (data.requisitos_habilidad && data.requisitos_habilidad.length > 0) {
                         data.requisitos_habilidad.forEach(req => {
+                            if (req.peso < 1) req.peso = Math.round(req.peso * 100);
                             agregarFilaHabilidad('edit', req);
                         });
                     } else {

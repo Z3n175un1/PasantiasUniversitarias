@@ -188,7 +188,7 @@ class AdminController extends Controller
             $request->validate([
                 'nombre_empresa' => 'required|string|max:200',
                 'industria' => 'required|string|max:100',
-                'telefono' => 'nullable|string|max:30',
+                'telefono' => 'nullable|numeric|digits_between:7,15',
                 'direccion' => 'nullable|string|max:255',
             ]);
         } elseif ($request->rol_id == 1) {

@@ -157,6 +157,8 @@ class CompanyController extends Controller
             }
         }
 
+        \DB::statement("SELECT setval(pg_get_serial_sequence('ofertas_pasantia', 'id'), (SELECT MAX(id) FROM ofertas_pasantia))");
+
         $oferta = OfertaPasantia::create([
             'perfil_empresa_id' => $empresa->id,
             'ubicacion_id' => $request->ubicacion_id,
@@ -175,11 +177,13 @@ class CompanyController extends Controller
 
         if ($request->has('habilidades')) {
             foreach ($request->habilidades as $req) {
+                $peso = (float) $req['peso'];
+                if ($peso < 1) $peso *= 100;
                 RequisitoHabilidadOferta::create([
                     'oferta_pasantia_id' => $oferta->id,
                     'habilidad_id' => $req['habilidad_id'],
                     'nivel_minimo' => $req['nivel_minimo'],
-                    'peso' => $req['peso'],
+                    'peso' => round($peso),
                     'tipo_criterio' => $req['tipo_criterio'],
                 ]);
             }
@@ -243,11 +247,13 @@ class CompanyController extends Controller
         $oferta->requisitosHabilidad()->delete();
         if ($request->has('habilidades')) {
             foreach ($request->habilidades as $req) {
+                $peso = (float) $req['peso'];
+                if ($peso < 1) $peso *= 100;
                 RequisitoHabilidadOferta::create([
                     'oferta_pasantia_id' => $oferta->id,
                     'habilidad_id' => $req['habilidad_id'],
                     'nivel_minimo' => $req['nivel_minimo'],
-                    'peso' => $req['peso'],
+                    'peso' => round($peso),
                     'tipo_criterio' => $req['tipo_criterio'],
                 ]);
             }
@@ -302,7 +308,7 @@ class CompanyController extends Controller
             'nombre_empresa' => 'required|string|max:200',
             'industria' => 'required|string|max:100',
             'descripcion' => 'nullable|string|max:2000',
-            'telefono' => 'nullable|string|max:30',
+            'telefono' => 'nullable|numeric|digits_between:7,15',
             'direccion' => 'nullable|string|max:255',
             'tamano_empresa' => 'nullable|string|in:Pequeña,Mediana,Grande',
             'anio_fundacion' => 'nullable|integer|min:1800|max:' . date('Y'),
