@@ -5,7 +5,6 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Lang;
 
 class ResetPassword extends Notification
 {
@@ -36,12 +35,12 @@ class ResetPassword extends Notification
             ->subject('Recuperación de Contraseña — UWorkFlow')
             ->greeting('¡Hola, ' . $notifiable->nombre . '!')
             ->line('Recibimos una solicitud para restablecer la contraseña de tu cuenta en **UWorkFlow**.')
-            ->line('Para continuar, haz clic en el siguiente botón:')
-            ->action('Restablecer Contraseña', $url)
-            ->line('Este enlace expirará en **' . $expire . ' minutos**.')
-            ->line('Si no solicitaste este cambio, puedes ignorar este mensaje.')
-            ->salutation('Atentamente, el equipo de UWorkFlow')
-            ->level('primary');
+            ->line('Para continuar con el proceso, haz clic en el botón de aquí abajo:')
+            ->action('Restablecer Mi Contraseña', $url)
+            ->line('Este enlace expirará en **' . $expire . ' minutos** por razones de seguridad.')
+            ->line('Si **no** solicitaste este cambio, ignora este mensaje. Tu cuenta permanecerá segura.')
+            ->line('---')
+            ->salutation('Atentamente, el equipo de **UWorkFlow**');
     }
 
     public function toArray(object $notifiable): array

@@ -24,7 +24,7 @@
         .error-text.visible { display: block; }
     </style>
 </head>
-<body class="text-[#0f172a] overflow-x-hidden min-h-screen flex flex-col justify-between">
+<body class="text-[#0f172a] overflow-x-hidden bg-[#f8fafc]">
     @include('componentes.navbar')
 
     @if(session('success'))
@@ -44,30 +44,30 @@
         </div>
     @endif
 
-    <main class="flex-1 max-w-[1400px] w-full mx-auto px-[8%] py-10">
-        <div class="flex flex-col lg:flex-row gap-8">
-            <aside class="lg:w-64 flex flex-col gap-2">
-                <button data-tab="inicio" class="tab-btn active flex items-center gap-3 px-5 py-3.5 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-200 transition-all text-left text-sm w-full">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+    <main class="max-w-[1400px] w-full mx-auto px-[8%] py-10">
+        <div class="flex flex-col lg:flex-row gap-8 items-start">
+            <aside class="lg:w-64 flex flex-col gap-2 sticky top-8">
+                <button data-tab="inicio" class="tab-btn active flex items-center gap-3 px-5 py-3.5 bg-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-blue-200 transition-all duration-300 ease-out text-left text-sm w-full hover:shadow-xl hover:-translate-y-0.5 active:scale-95">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5 shrink-0"></i>
                     Panel de Control
                 </button>
-                <button data-tab="ofertas" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all text-left text-sm w-full">
-                    <i data-lucide="briefcase" class="w-5 h-5"></i>
+                <button data-tab="ofertas" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all duration-300 ease-out text-left text-sm w-full hover:shadow-md hover:-translate-y-0.5 active:scale-95">
+                    <i data-lucide="briefcase" class="w-5 h-5 shrink-0"></i>
                     Gestionar Ofertas
                     <span class="ml-auto bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full font-bold">{{ $ofertas->count() }}</span>
                 </button>
-                <button data-tab="postulantes" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all text-left text-sm w-full">
-                    <i data-lucide="users" class="w-5 h-5"></i>
+                <button data-tab="postulantes" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all duration-300 ease-out text-left text-sm w-full hover:shadow-md hover:-translate-y-0.5 active:scale-95">
+                    <i data-lucide="users" class="w-5 h-5 shrink-0"></i>
                     Candidatos / Postulantes
                     <span class="ml-auto bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full font-bold">{{ $total_postulantes }}</span>
                 </button>
-                <button data-tab="perfil" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all text-left text-sm w-full">
-                    <i data-lucide="building-2" class="w-5 h-5"></i>
+                <button data-tab="perfil" class="tab-btn flex items-center gap-3 px-5 py-3.5 text-slate-600 hover:bg-slate-100 font-semibold rounded-2xl transition-all duration-300 ease-out text-left text-sm w-full hover:shadow-md hover:-translate-y-0.5 active:scale-95">
+                    <i data-lucide="building-2" class="w-5 h-5 shrink-0"></i>
                     Perfil de Empresa
                 </button>
                 <div class="h-px bg-slate-200 my-4"></div>
-                <button onclick="openModalCrear()" class="flex items-center justify-center gap-2 px-5 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all text-sm w-full shadow-md shadow-indigo-100">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                <button onclick="openModalCrear()" class="flex items-center justify-center gap-2 px-5 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl transition-all duration-300 ease-out text-sm w-full shadow-md shadow-indigo-100 hover:shadow-lg hover:-translate-y-0.5 active:scale-95">
+                    <i data-lucide="plus-circle" class="w-5 h-5 shrink-0"></i>
                     Publicar Vacante
                 </button>
             </aside>

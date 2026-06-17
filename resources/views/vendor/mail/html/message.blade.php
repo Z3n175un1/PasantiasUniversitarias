@@ -21,7 +21,8 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-© {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }}
+© {{ date('Y') }} UWorkFlow. Todos los derechos reservados.<br>
+<a href="{{ config('app.url') }}" style="color: #6b7280;">{{ config('app.url') }}</a>
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>
